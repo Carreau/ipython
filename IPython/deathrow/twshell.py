@@ -76,7 +76,7 @@ class TwistedInteractiveShell(InteractiveShell):
         # Check that all things to kill are callable:
         for t in on_kill:
             if not callable(t):
-                raise TypeError,'on_kill must be a list of callables'
+                raise TypeError('on_kill must be a list of callables')
         self.on_kill = on_kill
         # thread identity of the "worker thread" (that may execute code directly)
         self.worker_ident = None
