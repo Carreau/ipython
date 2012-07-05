@@ -221,7 +221,7 @@ class PathObj(path):
             if os.path.isfile(tgt):
                 return path(tgt)
 
-        raise AttributeError, name  # <<< DON'T FORGET THIS LINE !!
+        raise AttributeError(name)  # <<< DON'T FORGET THIS LINE !!
     def __str__(self):
         return self.path
 

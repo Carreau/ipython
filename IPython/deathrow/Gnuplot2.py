@@ -324,8 +324,7 @@ class Gnuplot(Gnuplot_ori.Gnuplot):
         # override switch only which needs to be explicitly set to zero
         if hardcopy:
             if psargs['filename'] is None:
-                raise ValueError, \
-                      'If you request hardcopy, you must give a filename.'
+                raise ValueError('If you request hardcopy, you must give a filename.')
 
             # set null output so nothing goes to screen. hardcopy() restores output
             self('set term dumb')

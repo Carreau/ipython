@@ -79,7 +79,7 @@ class OutputTrap:
     def trap_out(self):
         """Trap and log stdout."""
         if sys.stdout is self.out:
-            raise OutputTrapError,'You are already trapping stdout.'
+            raise OutputTrapError('You are already trapping stdout.')
         if not self.debug:
             self._out_save = sys.stdout
             sys.stdout = self.out
@@ -88,7 +88,7 @@ class OutputTrap:
         """Release stdout."""
         if not self.debug:
             if not sys.stdout is self.out:
-                raise OutputTrapError,'You are not trapping stdout.'
+                raise OutputTrapError('You are not trapping stdout.')
             sys.stdout = self._out_save
             self.out_save = None
 
@@ -112,7 +112,7 @@ class OutputTrap:
     def trap_err(self):
         """Trap and log stderr."""
         if sys.stderr is self.err:
-            raise OutputTrapError,'You are already trapping stderr.'
+            raise OutputTrapError('You are already trapping stderr.')
         if not self.debug:
             self._err_save = sys.stderr
             sys.stderr = self.err
@@ -121,7 +121,7 @@ class OutputTrap:
         """Release stderr."""
         if not self.debug:
             if not sys.stderr is self.err:
-                raise OutputTrapError,'You are not trapping stderr.'
+                raise OutputTrapError('You are not trapping stderr.')
             sys.stderr = self._err_save
             self.err_save = None
 
