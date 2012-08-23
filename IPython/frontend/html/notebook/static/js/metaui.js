@@ -18,18 +18,19 @@ var IPython = (function (IPython) {
         this.metainner = $('<div/>');
         this.cell = cell;
         var that = this;
-        var metawrapper = $('<div/>').addClass('metaedit2')
+        this.element = $('<div/>').addClass('metaedit2')
                 .append(this.metainner)
-        this.fadeI();
+        //this.fadeI();
+        this.add_raw_edit_button();
         this.add_button('bt1',['Group Stop','Slide Stop','Show With Previous',"Never Show"]);
         this.add_button('bt2',['In & Out','In / Out','In Only','Out Only']);
         //this.add_button('bt3',['button ---','button +++','button ===']);
-        return this;//metawrapper;
+        return this;
     };
-   
+
     MetaUI.prototype.raw_edit = function(md){
 
-        var ta = $('<textarea/>')
+        var textarea = $('<textarea/>')
             .attr('rows','13')
             .attr('cols','75')
             .attr('name','metadata')
@@ -40,51 +41,62 @@ var IPython = (function (IPython) {
                     $('<fieldset/>').append(
                         $('<label/>')
                         .attr('for','metadata')
-                        .text('Metadata')
+                        .text("Metadata (I know what I'm dooing and I won't complain if it breaks my notebook)")
                         )
                         .append($('<br/>'))
                         .append(
-                            ta
+                            textarea
                         )
                     )
-                
             );
+        var editor = CodeMirror.fromTextArea(textarea[0], {
+            lineNumbers: true,
+            matchBrackets: true,
+        });
+        var that = this;
         $(this.dialogform).dialog({
                 autoOpen: true,
                 height: 300,
                 width: 650,
-                modal: true
-        });
-        var editor = CodeMirror.fromTextArea(ta[0], {
-            lineNumbers: true,
-            matchBrackets: true,
+                modal: true,
+                buttons: {
+                    "Ok": function() {
+                        //validate json and set it
+                        try {
+                           var json = JSON.parse(editor.getValue());
+                           that.cell.metadata = json;
+                           $( this ).dialog( "close" );
+                        }
+                        catch(e)
+                        {
+                           alert('invalid json');
+                        }
+                    },
+                    Cancel: function() {
+                        $( this ).dialog( "close" );
+                    }
+                },
+                close: function() {
+                    //cleanup on close
+                    $(this).remove();
+                }
         });
         this.cell.unselect();
+        editor.refresh();
     }
 
-
-    MetaUI.prototype.fadeO = function(){
-        //fadeout all inner element unless they are sticky
-        this.cell.metadata.test = 1;
-        var sb = this.subelements;
-        for(var i in sb){
-            if(sb[i].sticky != true){
-                $(sb[i]).fadeTo("fast",0)
-            }
-        }
+    MetaUI.prototype.add_raw_edit_button = function() {
+        var button_container = $('<div/>').addClass('bc')
+        var that = this;
+        var button = $('<div/>').button({label:'Raw Edit'})
+                .click(function(){that.raw_edit()})
+        button_container.append(button);
+        this.subelements.push(button_container);
+        this.metainner.append(button_container);
     }
 
-    MetaUI.prototype.fadeI = function(){
-        //FadeIn all elements
-        for(var i in this.subelements){
-            this.subelements[i].fadeTo("fast",1)
-        }
-    }
-
-
-
-    MetaUI.prototype.add_button = function (sk,labels) {
-       var labels = labels || ["on","off"]
+    MetaUI.prototype.add_button = function (subkey,labels) {
+       var labels = labels || ["on","off"];
        var that = this;
        var bc = $('<div/>').addClass('bc');
        var button =  $('<div/>').button({label:labels[0]})
@@ -92,7 +104,7 @@ var IPython = (function (IPython) {
            button.click(function(){
                button.value = (button.value+1)% labels.length || 0;
                button.sticky = (button.value != 0);
-               that.cell.metadata[sk] = labels[button.value];
+               that.cell.metadata[subkey] = labels[button.value];
                $(button).button( "option", "label",labels[button.value]);
             });
        bc.append(button)
