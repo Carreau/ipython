@@ -22,8 +22,8 @@ var IPython = (function (IPython) {
                 .append(this.metainner)
         //this.fadeI();
         this.add_raw_edit_button();
-        this.add_button('bt1',['Group Stop','Slide Stop','Show With Previous',"Never Show"]);
-        this.add_button('bt2',['In & Out','In / Out','In Only','Out Only']);
+        //this.add_button('bt1',['Group Stop','Slide Stop','Show With Previous',"Never Show"]);
+        //this.add_button('bt2',['In & Out','In / Out','In Only','Out Only']);
         //this.add_button('bt3',['button ---','button +++','button ===']);
         return this;
     };
@@ -81,15 +81,15 @@ var IPython = (function (IPython) {
                     $(this).remove();
                 }
         });
-        this.cell.unselect();
         editor.refresh();
+        this.cell.unselect();
     }
 
     MetaUI.prototype.add_raw_edit_button = function() {
         var button_container = $('<div/>').addClass('button_container')
         var that = this;
         var button = $('<div/>').button({label:'Raw Edit'})
-                .click(function(){that.raw_edit()})
+                .click(function(){that.raw_edit(); return false;})
         button_container.append(button);
         this.subelements.push(button_container);
         this.metainner.append(button_container);
