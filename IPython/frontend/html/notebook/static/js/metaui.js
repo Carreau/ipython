@@ -86,7 +86,7 @@ var IPython = (function (IPython) {
     }
 
     MetaUI.prototype.add_raw_edit_button = function() {
-        var button_container = $('<div/>').addClass('bc')
+        var button_container = $('<div/>').addClass('button_container')
         var that = this;
         var button = $('<div/>').button({label:'Raw Edit'})
                 .click(function(){that.raw_edit()})
@@ -98,7 +98,7 @@ var IPython = (function (IPython) {
     MetaUI.prototype.add_button = function (subkey,labels) {
        var labels = labels || ["on","off"];
        var that = this;
-       var bc = $('<div/>').addClass('bc');
+       var button_container = $('<div/>').addClass('button_container');
        var button =  $('<div/>').button({label:labels[0]})
            button.value = 0;
            button.click(function(){
@@ -107,9 +107,9 @@ var IPython = (function (IPython) {
                that.cell.metadata[subkey] = labels[button.value];
                $(button).button( "option", "label",labels[button.value]);
             });
-       bc.append(button)
-       this.subelements.push(bc);
-       this.metainner.append(bc);
+       button_container.append(button)
+       this.subelements.push(button_container);
+       this.metainner.append(button_container);
        return button
     }
 
