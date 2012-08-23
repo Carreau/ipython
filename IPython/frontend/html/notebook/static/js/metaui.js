@@ -18,14 +18,12 @@ var IPython = (function (IPython) {
         this.metainner = $('<div/>');
         this.cell = cell;
         var that = this;
-        var metawrapper = $('<div/>').addClass('metaedit')
+        var metawrapper = $('<div/>').addClass('metaedit2')
                 .append(this.metainner)
-                .hover(function(){that.fadeI()},function(){that.fadeO()})
         this.fadeI();
         this.add_button('bt1',['Group Stop','Slide Stop','Show With Previous',"Never Show"]);
         this.add_button('bt2',['In & Out','In / Out','In Only','Out Only']);
         //this.add_button('bt3',['button ---','button +++','button ===']);
-        this.fadeO();
         return metawrapper;
     };
    
@@ -53,6 +51,7 @@ var IPython = (function (IPython) {
     MetaUI.prototype.add_button = function (sk,labels) {
        var labels = labels || ["on","off"]
        var that = this;
+       var bc = $('<div/>').addClass('bc');
        var button =  $('<div/>').button({label:labels[0]})
            button.value = 0;
            button.click(function(){
@@ -61,8 +60,9 @@ var IPython = (function (IPython) {
                that.cell.metadata[sk] = labels[button.value];
                $(button).button( "option", "label",labels[button.value]);
             });
-       this.subelements.push(button);
-       this.metainner.append(button)
+       bc.append(button)
+       this.subelements.push(bc);
+       this.metainner.append(bc);
        return button
     }
 
