@@ -24,9 +24,44 @@ var IPython = (function (IPython) {
         this.add_button('bt1',['Group Stop','Slide Stop','Show With Previous',"Never Show"]);
         this.add_button('bt2',['In & Out','In / Out','In Only','Out Only']);
         //this.add_button('bt3',['button ---','button +++','button ===']);
-        return metawrapper;
+        return this;//metawrapper;
     };
    
+    MetaUI.prototype.raw_edit = function(md){
+
+        var ta = $('<textarea/>')
+            .attr('rows','13')
+            .attr('cols','75')
+            .attr('name','metadata')
+            .text(JSON.stringify(this.cell.metadata, null,4)||'');
+        this.dialogform = $('<div/>').attr('title','Edit the metadata')
+            .append(
+                $('<form/>').append(
+                    $('<fieldset/>').append(
+                        $('<label/>')
+                        .attr('for','metadata')
+                        .text('Metadata')
+                        )
+                        .append($('<br/>'))
+                        .append(
+                            ta
+                        )
+                    )
+                
+            );
+        $(this.dialogform).dialog({
+                autoOpen: true,
+                height: 300,
+                width: 650,
+                modal: true
+        });
+        var editor = CodeMirror.fromTextArea(ta[0], {
+            lineNumbers: true,
+            matchBrackets: true,
+        });
+        this.cell.unselect();
+    }
+
 
     MetaUI.prototype.fadeO = function(){
         //fadeout all inner element unless they are sticky
