@@ -1,8 +1,6 @@
 /*Css for the metadata edit area*/
 
-
-
-.metaedit2{
+.metaedit{
     border:thin solid #DDD;
     margin-left:81px;
     border-bottom:none;
@@ -12,11 +10,11 @@
     display:none;
 }
 
-.code_cell .metaedit2{
+.code_cell .metaedit{
     margin-left:81px;
 }
 
-.text_cell .metaedit2{
+.text_cell .metaedit{
     margin-left:0px;
 }
 
@@ -25,11 +23,11 @@
     border-top-left-radius: 0px;
 }
 
-.editmetaon .metaedit2 {
+.editmetaon .metaedit {
     display:block;
 }
 
-.metaedit2 ui-button {
+.metaedit ui-button {
     border :none;
 }
 
@@ -39,10 +37,7 @@
 }
 
 .button_container .ui-state-default, .button_container .ui-state-hover, .button_container .ui-state-hover span{
-    border-bottom-left-radius : 0px;
-    border-bottom-right-radius : 0px;
-    border-top-right-radius : 0px;
-    border-top-left-radius : 0px;
+    border-radius : 0 0 0 0;
     border : none;
 }
 

@@ -431,7 +431,6 @@ var IPython = (function (IPython) {
                 result = index;
             };
         });
-        console.log(result);
         return result;
     };
 

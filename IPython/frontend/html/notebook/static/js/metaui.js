@@ -18,7 +18,7 @@ var IPython = (function (IPython) {
         this.metainner = $('<div/>');
         this.cell = cell;
         var that = this;
-        this.element = $('<div/>').addClass('metaedit2')
+        this.element = $('<div/>').addClass('metaedit')
                 .append(this.metainner)
         //this.fadeI();
         this.add_raw_edit_button();
