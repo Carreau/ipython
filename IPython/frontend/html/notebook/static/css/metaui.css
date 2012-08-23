@@ -1,0 +1,48 @@
+/*Css for the metadata edit area*/
+
+
+
+.metaedit2{
+    border:thin solid #DDD;
+    margin-left:81px;
+    border-bottom:none;
+    background : #EEE;
+    border-top-right-radius: 3px;
+    border-top-left-radius: 3px;
+    display:none;
+}
+
+.code_cell .metaedit2{
+    margin-left:81px;
+}
+
+.text_cell .metaedit2{
+    margin-left:0px;
+}
+
+.editmetaon div.input_area , .editmetaon div.text_cell_input{
+    border-top-right-radius: 0px;
+    border-top-left-radius: 0px;
+}
+
+.editmetaon .metaedit2 {
+    display:block;
+}
+
+.metaedit2 ui-button {
+    border :none;
+}
+
+.button_container {
+ float:right;
+ /*width:60px;*/
+}
+
+.button_container .ui-state-default, .button_container .ui-state-hover, .button_container .ui-state-hover span{
+    border-bottom-left-radius : 0px;
+    border-bottom-right-radius : 0px;
+    border-top-right-radius : 0px;
+    border-top-left-radius : 0px;
+    border : none;
+}
+
