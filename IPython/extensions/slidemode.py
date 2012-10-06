@@ -88,7 +88,8 @@ jscode = r"""
             $('#maintoolbar').after(pt);
             var ptoolbar = new IPython.ToolBar('#toolbar_present');
             IPython.ptoolbar = ptoolbar;
-            ptoolbar.add_buttons_group([{label:'Stop', icon:'ui-icon-stop', callback:function(){that.stop()}}])
+            ptoolbar.add_buttons_group([{label:'Pause', icon:'ui-icon-pause', callback:function(){that.stop()}}])
+            ptoolbar.add_buttons_group([{label:'Stop', icon:'ui-icon-stop', callback:function(){that.restart();that.stop()}}])
             ptoolbar.add_buttons_group([
                      {label:'Restart from 0', icon:'ui-icon-arrowthickstop-1-w', callback:function(){that.stop(); that.restart(); that.start()}}
                      ])
