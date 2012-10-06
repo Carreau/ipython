@@ -76,26 +76,27 @@ jscode = r"""
       }
 
       var is_marked_cell = function(cell){
-          return (cell.code_mirror.getValue().match(/(\n)?(<!--|#)?====(-->)?(\n)?/) != null)
+          return (cell.metadata.slideshow.slide_start)
       }
       Presentation.prototype.create_toolbar = function(){
             var pt = $('<div/>').attr('id','toolbar_present').addClass('toolbar');
             var that = this;
             this.avc = $('<div/>').button({label:that.eta()});
             pt.append(this.avc);
+            console.log(pt);
 
-            $('#toolbar').after(pt);
+            $('#maintoolbar').after(pt);
             var ptoolbar = new IPython.ToolBar('#toolbar_present');
             IPython.ptoolbar = ptoolbar;
-            ptoolbar.addButtonsGroup([{label:'Stop', icon:'ui-icon-stop', callback:function(){that.stop()}}])
-            ptoolbar.addButtonsGroup([
+            ptoolbar.add_buttons_group([{label:'Stop', icon:'ui-icon-stop', callback:function(){that.stop()}}])
+            ptoolbar.add_buttons_group([
                      {label:'Restart from 0', icon:'ui-icon-arrowthickstop-1-w', callback:function(){that.stop(); that.restart(); that.start()}}
                      ])
-            ptoolbar.addButtonsGroup([
+            ptoolbar.add_buttons_group([
                      {label:'Prev Slide', icon:'ui-icon-seek-prev', callback:function(){that.prev_group()}},
                      {label:'Next Slide', icon:'ui-icon-seek-next', callback:function(){that.next_group()}},
                                     ])
-            ptoolbar.addButtonsGroup([
+            ptoolbar.add_buttons_group([
                      {label:'Step Next', icon:'ui-icon-play', callback:function(){that.next()}}
                      ])
             bind_remote('#toolbar_present');
@@ -160,7 +161,7 @@ jscode = r"""
 
       Presentation.prototype.resume = function(){
           this.create_toolbar();
-          $('#menubar, #pager_splitter, #pager, #header,#toolbar').addClass('pmode');
+          $('#menubar, #pager_splitter, #pager, #header,#maintoolbar').addClass('pmode');
           $('.cell').fadeOut();
           if(this.current_is_marked()){
               $('.cell:nth('+this.ccell+')').fadeIn();
@@ -262,7 +263,7 @@ jscode = r"""
 
     var sid = 'start_pmode'
     if(($('#'+sid)).length == 0) {
-          IPython.toolbar.addButtonsGroup([
+          IPython.toolbar.add_buttons_group([
                   {'label'  :'Start Slideshow',
                     'icon'  :'ui-icon-image',
                     'callback':function(){IPython.slideshow.resume()},'id':sid},
