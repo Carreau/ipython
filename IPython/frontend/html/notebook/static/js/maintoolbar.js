@@ -120,7 +120,7 @@ var IPython = (function (IPython) {
                 {
                     id : 'show_meta',
                     label : 'Show Per Cell Toolbar',
-                    icon : 'ui-icon-image',
+                    icon : 'ui-icon-tag',
                     callback : function () {
                     $('body').toggleClass('editmetaon');
                         }
