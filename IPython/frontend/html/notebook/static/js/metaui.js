@@ -17,14 +17,23 @@ var IPython = (function (IPython) {
         this.subelements = [];
         this.metainner = $('<div/>');
         this.cell = cell;
+        this._update_array = [];
         var that = this;
         this.element = $('<div/>').addClass('metaedit')
                 .append(this.metainner)
         //this.fadeI();
         this.add_raw_edit_button();
+        var slide_s = MetaUI.slide_start({false:'Nothing Special',true:'Slide Start'})
         this.add_button(
-            MetaUI.cycle_init_helper({false:'Nothing Special',true:'Slide Start'}),
-            MetaUI.cycle_helper({false:'Nothing Special',true:'Slide Start'})
+            slide_s.init,
+            slide_s.click,
+            slide_s.update
+            );
+        slide_s = MetaUI.slide_step({false:'No step',true:'Is Step'})
+        this.add_button(
+            slide_s.init,
+            slide_s.click,
+            slide_s.update
             );
 
         return this;
@@ -98,7 +107,7 @@ var IPython = (function (IPython) {
     }
 
     //
-    MetaUI.prototype.add_button = function (init_callback,click_callback) {
+    MetaUI.prototype.add_button = function (init_callback,click_callback,update_callback) {
        var button_container = $('<div/>').addClass('button_container');
        var that = this;
        var button =  $('<div/>').button({label:'None'})
@@ -108,37 +117,68 @@ var IPython = (function (IPython) {
        init_callback(button, this.cell);
        button_container.append(button)
        var that = this; 
-       var lup = MetaUI.cycle_update_helper({false:'Nothing Special',true:'Slide Start'});
-       this.update = function(){lup(button, that.cell)};
+       this._update_array.push(function(){update_callback(button, that.cell)})
+       this.update();
        this.subelements.push(button_container);
        this.metainner.append(button_container);
        return button
     }
 
+    MetaUI.prototype.update = function(){
+        for( var v in this._update_array){
+            this._update_array[v]()
+        }
+    }
+
     
-    MetaUI.cycle_update_helper = function(dict) {
-        return function(button,cell){
-            $(button).button( "option", "label", dict[cell.metadata.slideshow.slide_start]);
-        }
-    }
+    MetaUI.slide_start = function(dict){
+       
+        var  update = function(button,cell){
+            try{
+                $(button).button("option", "label", dict[cell.metadata.slideshow.slide_start]);
+            }catch(e){}
+        };
 
-    MetaUI.cycle_init_helper = function(dict) {
-        return function(button,cell){
-            $(button).button( "option", "label",'inited'); 
+        var init = function(button,cell){
             if (cell.metadata.slideshow == undefined) {
-                 cell.metadata.slideshow = {}
+                cell.metadata.slideshow = {}
             }
-            $(button).button( "option", "label", dict[cell.metadata.slideshow.slide_start]);
-        }
-    }
-
-
-    MetaUI.cycle_helper = function(dict){
-         return  function(button, cell){
+            update(button,cell)
+         };
+        
+        var click = function(button, cell){
             cell.metadata.slideshow.slide_start = !cell.metadata.slideshow.slide_start;
-            $(button).button( "option", "label", dict[cell.metadata.slideshow.slide_start]);
-        }
+            update(button,cell)
+        };
+
+       return {init:init, click:click, update:update}
     }
+
+
+    MetaUI.slide_step = function(dict){
+       
+        var  update = function(button,cell){
+            try{
+                $(button).button("option", "label", dict[cell.metadata.slideshow.slide_step]);
+            }catch(e){}
+        };
+
+        var init = function(button,cell){
+            if (cell.metadata.slideshow == undefined) {
+                cell.metadata.slideshow = {}
+            }
+            update(button,cell)
+         };
+        
+        var click = function(button, cell){
+            cell.metadata.slideshow.slide_step = !cell.metadata.slideshow.slide_step;
+            update(button,cell)
+        };
+
+       return {init:init, click:click, update:update}
+    }
+
+
 
     IPython.MetaUI = MetaUI;
 

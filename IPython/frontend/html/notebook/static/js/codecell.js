@@ -324,7 +324,6 @@ var IPython = (function (IPython) {
                 };
             };
         };
-    this.metaui.update();
     };
 
 

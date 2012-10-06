@@ -103,6 +103,7 @@ var IPython = (function (IPython) {
         if (data.metadata !== undefined) {
             this.metadata = data.metadata;
         }
+        this.metaui.update()
     };
 
 
