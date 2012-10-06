@@ -22,9 +22,11 @@ var IPython = (function (IPython) {
                 .append(this.metainner)
         //this.fadeI();
         this.add_raw_edit_button();
-        //this.add_button('bt1',['Group Stop','Slide Stop','Show With Previous',"Never Show"]);
-        //this.add_button('bt2',['In & Out','In / Out','In Only','Out Only']);
-        //this.add_button('bt3',['button ---','button +++','button ===']);
+        this.add_button(
+            MetaUI.cycle_init_helper({false:'Nothing Special',true:'Slide Start'}),
+            MetaUI.cycle_helper({false:'Nothing Special',true:'Slide Start'})
+            );
+
         return this;
     };
 
@@ -95,24 +97,48 @@ var IPython = (function (IPython) {
         this.metainner.append(button_container);
     }
 
-    MetaUI.prototype.add_button = function (subkey,labels) {
-       var labels = labels || ["on","off"];
-       var that = this;
+    //
+    MetaUI.prototype.add_button = function (init_callback,click_callback) {
        var button_container = $('<div/>').addClass('button_container');
-       var button =  $('<div/>').button({label:labels[0]})
-           button.value = 0;
+       var that = this;
+       var button =  $('<div/>').button({label:'None'})
            button.click(function(){
-               button.value = (button.value+1)% labels.length || 0;
-               button.sticky = (button.value != 0);
-               that.cell.metadata[subkey] = labels[button.value];
-               $(button).button( "option", "label",labels[button.value]);
+               click_callback(button,that.cell);
             });
+       init_callback(button, this.cell);
        button_container.append(button)
+       var that = this; 
+       var lup = MetaUI.cycle_update_helper({false:'Nothing Special',true:'Slide Start'});
+       this.update = function(){lup(button, that.cell)};
        this.subelements.push(button_container);
        this.metainner.append(button_container);
        return button
     }
 
+    
+    MetaUI.cycle_update_helper = function(dict) {
+        return function(button,cell){
+            $(button).button( "option", "label", dict[cell.metadata.slideshow.slide_start]);
+        }
+    }
+
+    MetaUI.cycle_init_helper = function(dict) {
+        return function(button,cell){
+            $(button).button( "option", "label",'inited'); 
+            if (cell.metadata.slideshow == undefined) {
+                 cell.metadata.slideshow = {}
+            }
+            $(button).button( "option", "label", dict[cell.metadata.slideshow.slide_start]);
+        }
+    }
+
+
+    MetaUI.cycle_helper = function(dict){
+         return  function(button, cell){
+            cell.metadata.slideshow.slide_start = !cell.metadata.slideshow.slide_start;
+            $(button).button( "option", "label", dict[cell.metadata.slideshow.slide_start]);
+        }
+    }
 
     IPython.MetaUI = MetaUI;
 
