@@ -116,7 +116,7 @@ var IPython = (function (IPython) {
             });
        init_callback(button, this.cell);
        button_container.append(button)
-       var that = this; 
+       var that = this;
        this._update_array.push(function(){update_callback(button, that.cell)})
        this.update();
        this.subelements.push(button_container);
@@ -130,25 +130,33 @@ var IPython = (function (IPython) {
         }
     }
 
-    
+
     MetaUI.slide_start = function(dict){
-       
-        var  update = function(button,cell){
-            try{
+
+        var  _update = function(button,cell){
                 $(button).button("option", "label", dict[cell.metadata.slideshow.slide_start]);
-            }catch(e){}
         };
 
-        var init = function(button,cell){
+
+        var update = function(button,cell){
             if (cell.metadata.slideshow == undefined) {
                 cell.metadata.slideshow = {}
+                console.log('non md, making empty')
             }
-            update(button,cell)
+
+            if (cell.metadata.slideshow.slide_start == undefined){
+                cell.metadata.slideshow.slide_start =false;
+            }
+
+            _update(button,cell)
          };
-        
+
+        var init = update;
+
         var click = function(button, cell){
+            console.log(cell);
             cell.metadata.slideshow.slide_start = !cell.metadata.slideshow.slide_start;
-            update(button,cell)
+            _update(button,cell)
         };
 
        return {init:init, click:click, update:update}
@@ -156,7 +164,7 @@ var IPython = (function (IPython) {
 
 
     MetaUI.slide_step = function(dict){
-       
+
         var  update = function(button,cell){
             try{
                 $(button).button("option", "label", dict[cell.metadata.slideshow.slide_step]);
@@ -169,7 +177,7 @@ var IPython = (function (IPython) {
             }
             update(button,cell)
          };
-        
+
         var click = function(button, cell){
             cell.metadata.slideshow.slide_step = !cell.metadata.slideshow.slide_step;
             update(button,cell)
