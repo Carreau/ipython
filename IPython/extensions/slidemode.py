@@ -27,7 +27,7 @@ import os
 path = os.path.realpath(__file__)
 print(path)
 
-f = io.open(path[:-2]+'js')
+f = io.open('.'.join(path.split('.')[:-1] + ['js']))
 
 js= f.read()
 
