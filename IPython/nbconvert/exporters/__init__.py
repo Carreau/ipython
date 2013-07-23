@@ -1,6 +1,7 @@
 from .basichtml import BasicHTMLExporter
 from .export import *
 from .exporter import Exporter
+from .baseexporter import BaseExporter
 from .fullhtml import FullHTMLExporter
 from .reveal import RevealExporter
 from .latex import LatexExporter
