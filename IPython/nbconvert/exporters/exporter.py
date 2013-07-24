@@ -40,7 +40,7 @@ from IPython.nbconvert import transformers as nbtransformers
 from IPython.nbconvert import filters
 
 
-from IPython.nbconvert.exporter.baseexporter import BaseExporter, ResourcesDict
+from .baseexporter import BaseExporter, ResourcesDict
 
 #-----------------------------------------------------------------------------
 # Globals and constants
