@@ -4,6 +4,9 @@ import asyncio
 import os
 import sys
 import warnings
+
+import asyncio
+
 from warnings import warn
 
 from IPython.core.interactiveshell import InteractiveShell, InteractiveShellABC
@@ -28,6 +31,7 @@ from prompt_toolkit.shortcuts import PromptSession, CompleteStyle, print_formatt
 from prompt_toolkit.styles import DynamicStyle, merge_styles
 from prompt_toolkit.styles.pygments import style_from_pygments_cls, style_from_pygments_dict
 from prompt_toolkit import __version__ as ptk_version
+from prompt_toolkit.eventloop.defaults import use_asyncio_event_loop
 
 from pygments.styles import get_style_by_name
 from pygments.style import Style
@@ -312,12 +316,17 @@ class TerminalInteractiveShell(InteractiveShell):
 
         editing_mode = getattr(EditingMode, self.editing_mode.upper())
 
+<<<<<<< HEAD
         self.pt_loop = asyncio.new_event_loop()
         # from prompt_toolkit.eventloop.defaults import use_asyncio_event_loop
         # from prompt_toolkit.patch_stdout import patch_stdout
 
         # # Tell prompt_toolkit to use the asyncio event loop.
         # use_asyncio_event_loop()
+=======
+
+        # Tell prompt_toolkit to use the asyncio event loop.
+>>>>>>> 3511193be... cleanup
         self.pt_app = PromptSession(
                             editing_mode=editing_mode,
                             key_bindings=key_bindings,
@@ -569,7 +578,7 @@ class TerminalInteractiveShell(InteractiveShell):
         # out of our internal code.
         if display_banner is not DISPLAY_BANNER_DEPRECATED:
             warn('mainloop `display_banner` argument is deprecated since IPython 5.0. Call `show_banner()` if needed.', DeprecationWarning, stacklevel=2)
-        import asyncio
+        use_asyncio_event_loop()
         loop = asyncio.get_event_loop()
         loop.run_until_complete(asyncio.ensure_future(self._mainloop()))
 
