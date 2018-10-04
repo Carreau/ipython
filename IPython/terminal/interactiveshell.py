@@ -7,6 +7,7 @@ import warnings
 from warnings import warn
 
 from IPython.core.interactiveshell import InteractiveShell, InteractiveShellABC
+from IPython.core.async_helpers import _pseudo_sync_runner
 from IPython.utils import io
 from IPython.utils.py3compat import input
 from IPython.utils.terminal import toggle_set_term_title, set_term_title, restore_term_title
@@ -288,6 +289,7 @@ class TerminalInteractiveShell(InteractiveShell):
                 while self.check_complete('\n'.join(lines))[0] == 'incomplete':
                     lines.append( input(prompt_continuation) )
                 return '\n'.join(lines)
+            # asyncify this.
             self.prompt_for_code = prompt
             return
 
@@ -448,7 +450,12 @@ class TerminalInteractiveShell(InteractiveShell):
 
         return options
 
-    async def prompt_for_code(self):
+
+    def prompt_for_code(self):
+        return _pseudo_sync_runner(self.prompt_for_code_async())
+
+
+    async def prompt_for_code_async(self):
         if self.rl_next_input:
             default = self.rl_next_input
             self.rl_next_input = None
@@ -534,7 +541,10 @@ class TerminalInteractiveShell(InteractiveShell):
 
     rl_next_input = None
 
-    async def interact(self, display_banner=DISPLAY_BANNER_DEPRECATED):
+    def interact(self):
+        return _pseudo_sync_runner(self.interact_async())
+
+    async def interact_async(self, display_banner=DISPLAY_BANNER_DEPRECATED):
 
         if display_banner is not DISPLAY_BANNER_DEPRECATED:
             warn('interact `display_banner` argument is deprecated since IPython 5.0. Call `show_banner()` if needed.', DeprecationWarning, stacklevel=2)
@@ -544,7 +554,7 @@ class TerminalInteractiveShell(InteractiveShell):
             print(self.separate_in, end='')
 
             try:
-                code = await self.prompt_for_code()
+                code = await self.prompt_for_code_async()
             except EOFError:
                 if (not self.confirm_exit) \
                         or self.ask_yes_no('Do you really want to exit ([y]/n)?','y','n'):
@@ -566,7 +576,7 @@ class TerminalInteractiveShell(InteractiveShell):
     async def _mainloop(self):
         while True:
             try:
-                await self.interact()
+                await self.interact_async()
                 break
             except KeyboardInterrupt as e:
                 import traceback
