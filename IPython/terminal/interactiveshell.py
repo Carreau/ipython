@@ -52,6 +52,12 @@ class _NoStyle(Style): pass
 
 
 
+
+def mark_original(function):
+    function.original = True
+    return function
+
+
 _style_overrides_light_bg = {
             Token.Prompt: '#0000ff',
             Token.PromptNum: '#0000ee bold',
@@ -297,6 +303,7 @@ class TerminalInteractiveShell(InteractiveShell):
             self.prompt_for_code = prompt
             return
 
+        use_asyncio_event_loop()
         # Set up keyboard shortcuts
         key_bindings = create_ipython_shortcuts(self)
 
@@ -316,17 +323,14 @@ class TerminalInteractiveShell(InteractiveShell):
 
         editing_mode = getattr(EditingMode, self.editing_mode.upper())
 
-<<<<<<< HEAD
         self.pt_loop = asyncio.new_event_loop()
         # from prompt_toolkit.eventloop.defaults import use_asyncio_event_loop
         # from prompt_toolkit.patch_stdout import patch_stdout
 
         # # Tell prompt_toolkit to use the asyncio event loop.
         # use_asyncio_event_loop()
-=======
 
         # Tell prompt_toolkit to use the asyncio event loop.
->>>>>>> 3511193be... cleanup
         self.pt_app = PromptSession(
                             editing_mode=editing_mode,
                             key_bindings=key_bindings,
@@ -459,7 +463,7 @@ class TerminalInteractiveShell(InteractiveShell):
 
         return options
 
-
+    @mark_original
     def prompt_for_code(self):
         return _pseudo_sync_runner(self.prompt_for_code_async())
 
@@ -563,7 +567,10 @@ class TerminalInteractiveShell(InteractiveShell):
             print(self.separate_in, end='')
 
             try:
-                code = await self.prompt_for_code_async()
+                if getattr(self.prompt_for_code, 'original', False):
+                    code = await self.prompt_for_code_async()
+                else:
+                    code = self.prompt_for_code()
             except EOFError:
                 if (not self.confirm_exit) \
                         or self.ask_yes_no('Do you really want to exit ([y]/n)?','y','n'):
@@ -578,7 +585,6 @@ class TerminalInteractiveShell(InteractiveShell):
         # out of our internal code.
         if display_banner is not DISPLAY_BANNER_DEPRECATED:
             warn('mainloop `display_banner` argument is deprecated since IPython 5.0. Call `show_banner()` if needed.', DeprecationWarning, stacklevel=2)
-        use_asyncio_event_loop()
         loop = asyncio.get_event_loop()
         loop.run_until_complete(asyncio.ensure_future(self._mainloop()))
 
