@@ -34,12 +34,13 @@ before_install:
   - python --version
 
 install:
-  - pip install pip --upgrade
-  - pip install setuptools --upgrade
-  - pip install -e file://$PWD#egg=ipython[test] --upgrade
-  - pip install trio curio --upgrade --upgrade-strategy eager
-  - pip install pytest matplotlib
-  - pip install codecov check-manifest --upgrade
+  - python -m ensurepip
+  - python -m pip install pip --upgrade
+  - python -m pip install setuptools --upgrade
+  - python -m pip install -e file://$PWD#egg=ipython[test] --upgrade
+  - python -m pip install trio curio --upgrade --upgrade-strategy eager
+  - python -m pip install pytest matplotlib
+  - python -m pip install codecov check-manifest --upgrade
 
 script:
   - check-manifest
