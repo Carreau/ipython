@@ -23,7 +23,7 @@ from textwrap import dedent
 import types
 import io as stdlib_io
 
-from typing import Union
+from typing import Union, Optional
 
 # IPython's own
 from IPython.core import page
@@ -111,7 +111,7 @@ def get_encoding(obj):
             encoding, lines = openpy.detect_encoding(buffer.readline)
         return encoding
 
-def getdoc(obj) -> Union[str,None]:
+def getdoc(obj) -> Optional[str]:
     """Stable wrapper around inspect.getdoc.
 
     This can't crash because of attribute problems.
