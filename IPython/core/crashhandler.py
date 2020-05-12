@@ -24,7 +24,6 @@ import sys
 import traceback
 from pprint import pformat
 
-from IPython.core import ultratb
 from IPython.core.release import author_email
 from IPython.utils.sysinfo import sys_info
 from IPython.utils.py3compat import input
@@ -159,6 +158,7 @@ class CrashHandler(object):
         # properly expanded out in the user message template
         self.crash_report_fname = report_name
         self.info['crash_report_fname'] = report_name
+        from IPython.core import ultratb
         TBhandler = ultratb.VerboseTB(
             color_scheme=color_scheme,
             long_header=1,

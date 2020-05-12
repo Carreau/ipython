@@ -20,7 +20,6 @@ import re
 import sys
 import ast
 from itertools import chain
-from urllib.request import urlopen
 from urllib.parse import urlencode
 
 # Our own packages
@@ -271,6 +270,7 @@ class CodeMagics(Magics):
           "content": code
         }).encode('utf-8')
 
+        from urllib.request import urlopen
         response = urlopen("http://dpaste.com/api/v2/", post_data)
         return response.headers.get('Location')
 

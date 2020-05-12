@@ -14,7 +14,6 @@ import random
 import glob
 from warnings import warn
 
-from IPython.utils.process import system
 from IPython.utils.decorators import undoc
 
 #-----------------------------------------------------------------------------
@@ -360,6 +359,7 @@ def target_update(target,deps,cmd):
     command if target is outdated."""
 
     if target_outdated(target,deps):
+        from IPython.utils.process import system
         system(cmd)
 
 

@@ -96,7 +96,6 @@ import sys
 import time
 import traceback
 
-import stack_data
 from pygments.formatters.terminal256 import Terminal256Formatter
 from pygments.styles import get_style_by_name
 
@@ -143,6 +142,7 @@ def _format_traceback_lines(lines, Colors, has_colors, lvals):
     lvals: str
         Values of local variables, already colored, to inject just after the error line.
     """
+    import stack_data
     numbers_width = INDENT_SIZE - 1
     res = []
 
@@ -585,6 +585,7 @@ class VerboseTB(TBTools):
         Colors = self.Colors  # just a shorthand + quicker name lookup
         ColorsNormal = Colors.Normal  # used a lot
 
+        import stack_data
         if isinstance(frame_info, stack_data.RepeatedFrames):
             return '    %s[... skipping similar frames: %s]%s\n' % (
                 Colors.excName, frame_info.description, ColorsNormal)
