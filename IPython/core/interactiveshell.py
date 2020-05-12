@@ -81,7 +81,7 @@ from warnings import warn
 from logging import error
 import IPython.core.hooks
 
-from typing import List as ListType, Tuple, Any, Callable, Optional
+from typing import List as ListType, Tuple, Callable, Optional
 from ast import AST
 
 # NoOpContext is deprecated, but ipykernel imports it from here.
@@ -143,7 +143,7 @@ def removed_co_newlocals(function:types.FunctionType) -> types.FunctionType:
     code = function.__code__
     new_co_flags = code.co_flags & ~CO_NEWLOCALS
     if sys.version_info > (3, 8, 0, 'alpha', 3):
-        new_code = code.replace(co_flags=new_co_flags)
+        new_code = code.replace(co_flags=new_co_flags) #type : ignore
     else:
         new_code = CodeType(
             code.co_argcount,
@@ -214,7 +214,7 @@ def _ast_asyncify(cell:str, wrapper_name:str) -> ast.Module:
         return ast.parse(cell)
     tree = ast.parse(_asyncify(cell))
 
-    function_def = tree.body[0]
+    function_def = tree.body[0]  # type: ignore
     function_def.name = wrapper_name
     try_block = function_def.body[0]
     lastexpr = try_block.body[-1]
