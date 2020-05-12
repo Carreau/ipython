@@ -30,6 +30,8 @@ from traitlets import (
     default, observe,
 )
 
+from typing import Any, Union, Type, Sequence
+
 
 class DisplayFormatter(Configurable):
 
@@ -310,7 +312,7 @@ class BaseFormatter(Configurable):
     """
 
     format_type = Unicode('text/plain')
-    _return_type = str
+    _return_type:Union[Type, Sequence[Type]] = str
 
     enabled = Bool(True).tag(config=True)
 

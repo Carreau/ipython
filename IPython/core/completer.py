@@ -126,7 +126,7 @@ import warnings
 from contextlib import contextmanager
 from importlib import import_module
 from types import SimpleNamespace
-from typing import Iterable, Iterator, List, Tuple, Union, Any, Sequence, Dict, NamedTuple, Pattern, Optional
+from typing import Iterable, Iterator, List, Tuple, Any, Sequence, Dict, NamedTuple, Pattern, Optional, AnyStr
 
 from IPython.core.error import TryNext
 from IPython.core.inputtransformer2 import ESC_MAGIC
@@ -753,7 +753,7 @@ def get__all__entries(obj):
     return [w for w in words if isinstance(w, str)]
 
 
-def match_dict_keys(keys: List[Union[str, bytes]], prefix: str, delims: str) -> Tuple[str, int, List[str]]:
+def match_dict_keys(keys: List[AnyStr], prefix: str, delims: str) -> Tuple[str, int, List[str]]:
     """Used by dict_key_matches, matching the prefix to a list of keys
 
     Parameters

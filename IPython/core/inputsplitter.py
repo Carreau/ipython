@@ -321,7 +321,7 @@ class InputSplitter(object):
     # List with lines of input accumulated so far
     _buffer = None
     # Command compiler
-    _compile = None
+    _compile:codeop.CommandCompiler
     # Boolean indicating whether the current block is complete
     _is_complete = None
     # Boolean indicating whether the current block has an unrecoverable syntax error
