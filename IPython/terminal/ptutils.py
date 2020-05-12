@@ -160,20 +160,41 @@ class IPythonPTLexer(Lexer):
     """
     Wrapper around PythonLexer and BashLexer.
     """
-    def __init__(self):
-        l = pygments_lexers
-        self.python_lexer = PygmentsLexer(l.Python3Lexer)
-        self.shell_lexer = PygmentsLexer(l.BashLexer)
+    @property
+    def python_lexer(self):
+        if not self._python_lexer:
+            self._python_lexer = PygmentsLexer(pygments_lexers.Python3Lexer)
+        return self._python_lexer
 
-        self.magic_lexers = {
-            'HTML': PygmentsLexer(l.HtmlLexer),
-            'html': PygmentsLexer(l.HtmlLexer),
-            'javascript': PygmentsLexer(l.JavascriptLexer),
-            'js': PygmentsLexer(l.JavascriptLexer),
-            'perl': PygmentsLexer(l.PerlLexer),
-            'ruby': PygmentsLexer(l.RubyLexer),
-            'latex': PygmentsLexer(l.TexLexer),
-        }
+    @property
+    def shell_lexer(self):
+        if not self._shell_lexer:
+            l = pygments_lexers
+            self._shell_lexer = PygmentsLexer(l.BashLexer)
+        return self._shell_lexer
+
+
+    @property
+    def magic_lexers(self):
+        l = pygments_lexers
+        if not self._magic_lexers:
+            self._magic_lexer = {
+                'HTML': PygmentsLexer(l.HtmlLexer),
+                'html': PygmentsLexer(l.HtmlLexer),
+                'javascript': PygmentsLexer(l.JavascriptLexer),
+                'js': PygmentsLexer(l.JavascriptLexer),
+                'perl': PygmentsLexer(l.PerlLexer),
+                'ruby': PygmentsLexer(l.RubyLexer),
+                'latex': PygmentsLexer(l.TexLexer),
+            }
+        return self._magic_lexers
+
+
+
+    def __init__(self):
+        self._python_lexer = None
+        self._shell_lexer = None
+        self._magic_lexers = None
 
     def lex_document(self, document):
         text = document.text.lstrip()

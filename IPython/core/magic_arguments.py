@@ -199,6 +199,7 @@ class magic_arguments(ArgDecorator):
         self.name = name
 
     def __call__(self, func):
+        print(func)
         if not getattr(func, 'has_arguments', False):
             func.has_arguments = True
             func.decorators = []

@@ -144,14 +144,7 @@ import __main__
 # skip module docstests
 skip_doctest = True
 
-try:
-    import jedi
-    jedi.settings.case_insensitive_completion = False
-    import jedi.api.helpers
-    import jedi.api.classes
-    JEDI_INSTALLED = True
-except ImportError:
-    JEDI_INSTALLED = False
+JEDI_INSTALLED = True
 #-----------------------------------------------------------------------------
 # Globals
 #-----------------------------------------------------------------------------
@@ -1415,6 +1408,8 @@ class IPCompleter(Completer):
                     completion_filter = lambda x:x
                 else:
                     raise ValueError("Don't understand self.omit__names == {}".format(self.omit__names))
+        import jedi
+        jedi.settings.case_insensitive_completion = False
 
         interpreter = jedi.Interpreter(text[:offset], namespaces)
         try_jedi = True

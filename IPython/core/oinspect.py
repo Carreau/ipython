@@ -713,7 +713,6 @@ class Inspector(Colorable):
         An object info dict with known fields from `info_fields`. Keys are
         strings, values are string or None.
         """
-
         if info is None:
             ismagic = False
             isalias = False

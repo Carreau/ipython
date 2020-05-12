@@ -53,7 +53,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "extensions"))
 from .core.getipython import get_ipython
 from .core import release
 from .core.application import Application
-from .terminal.embed import embed
+# from .terminal.embed import embed
 
 from .core.interactiveshell import InteractiveShell
 from .testing import test
