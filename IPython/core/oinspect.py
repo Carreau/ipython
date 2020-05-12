@@ -132,7 +132,7 @@ def getdoc(obj) -> Union[str,None]:
     return docstr
 
 
-def getsource(obj, oname='') -> Union[str,None]:
+def getsource(obj, oname='') -> Optional[str]:
     """Wrapper around inspect.getsource.
 
     This can be modified by other projects to provide customized source
@@ -365,7 +365,7 @@ class Inspector(Colorable):
         self.str_detail_level = str_detail_level
         self.set_active_scheme(scheme)
 
-    def _getdef(self,obj,oname='') -> Union[str,None]:
+    def _getdef(self,obj,oname='') -> Optional[str]:
         """Return the call signature for any callable object.
 
         If any exception is generated, None is returned instead and the
@@ -998,15 +998,15 @@ def _render_signature(obj_signature, obj_name) -> str:
     pos_only = False
     kw_only = True
     for param in obj_signature.parameters.values():
-        if param.kind == inspect._POSITIONAL_ONLY:
+        if param.kind == inspect._POSITIONAL_ONLY: # type: ignore
             pos_only = True
         elif pos_only:
             result.append('/')
             pos_only = False
 
-        if param.kind == inspect._VAR_POSITIONAL:
+        if param.kind == inspect._VAR_POSITIONAL: # type: ignore
             kw_only = False
-        elif param.kind == inspect._KEYWORD_ONLY and kw_only:
+        elif param.kind == inspect._KEYWORD_ONLY and kw_only: # type: ignore
             result.append('*')
             kw_only = False
 
@@ -1024,7 +1024,7 @@ def _render_signature(obj_signature, obj_name) -> str:
     else:
         rendered = '{}({})'.format(obj_name, ', '.join(result))
 
-    if obj_signature.return_annotation is not inspect._empty:
+    if obj_signature.return_annotation is not inspect._empty:  # type: ignore
         anno = inspect.formatannotation(obj_signature.return_annotation)
         rendered += ' -> {}'.format(anno)
 
