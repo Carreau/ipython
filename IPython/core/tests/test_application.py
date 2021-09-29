@@ -4,8 +4,6 @@
 import os
 import tempfile
 
-import nose.tools as nt
-
 from traitlets import Unicode
 
 from IPython.core.application import BaseIPythonApplication
@@ -66,8 +64,8 @@ def test_cli_priority():
 
         app = TestApp()
         app.initialize(['--profile-dir', td])
-        nt.assert_equal(app.test, 'config file')
+        assert app.test == 'config file'
         app = TestApp()
         app.initialize(['--profile-dir', td, '--TestApp.test=cli'])
-        nt.assert_equal(app.test, 'cli')
+        assert app.test == 'cli'
 

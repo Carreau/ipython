@@ -4,7 +4,6 @@ Test for async helpers.
 Should only trigger on python 3.5+ or will have syntax errors.
 """
 from itertools import chain, repeat
-import nose.tools as nt
 from textwrap import dedent, indent
 from unittest import TestCase
 from IPython.testing.decorators import skip_without
