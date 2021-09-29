@@ -27,8 +27,6 @@ import tempfile
 from pathlib import Path
 from unittest import TestCase
 
-import nose.tools as nt
-
 from IPython.core.profileapp import list_profiles_in, list_bundled_profiles
 from IPython.core.profiledir import ProfileDir
 
@@ -139,14 +137,14 @@ def test_list_profiles_in():
             found_unicode = True
             break
     if dec.unicode_paths:
-        nt.assert_true(found_unicode)
-    nt.assert_equal(set(profiles), {'foo', 'hello'})
+        assert found_unicode
+    assert set(profiles) == {'foo', 'hello'}
 
 
 def test_list_bundled_profiles():
     # This variable will need to be updated when a new profile gets bundled
     bundled = sorted(list_bundled_profiles())
-    nt.assert_equal(bundled, [])
+    assert bundled == []
 
 
 def test_profile_create_ipython_dir():
