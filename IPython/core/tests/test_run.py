@@ -26,8 +26,7 @@ import textwrap
 import unittest
 from unittest.mock import patch
 
-import nose.tools as nt
-from nose import SkipTest
+import pytest
 
 from IPython.testing import decorators as dec
 from IPython.testing import tools as tt
@@ -188,7 +187,7 @@ class TestMagicRunPass(tt.TempFileMixin):
         bid1 = id(_ip.user_ns['__builtins__'])
         self.run_tmpfile()
         bid2 = id(_ip.user_ns['__builtins__'])
-        nt.assert_equal(bid1, bid2)
+        assert bid1 == bid2
 
     def test_builtins_type(self):
         """Check that the type of __builtins__ doesn't change with %run.
@@ -199,7 +198,7 @@ class TestMagicRunPass(tt.TempFileMixin):
         """
         _ip = get_ipython()
         self.run_tmpfile()
-        nt.assert_equal(type(_ip.user_ns['__builtins__']),type(sys))
+        assert type(_ip.user_ns['__builtins__']) == type(sys)
         
     def test_run_profile( self ):
         """Test that the option -p, which invokes the profiler, do not
@@ -234,7 +233,7 @@ class TestMagicRunSimple(tt.TempFileMixin):
         self.mktmp(src)
         _ip.magic('run %s' % self.fname)
         _ip.run_cell('t = isinstance(f(), foo)')
-        nt.assert_true(_ip.user_ns['t'])
+        assert _ip.user_ns['t']
 
     def test_obj_del(self):
         """Test that object's __del__ methods are called on exit."""
@@ -242,7 +241,7 @@ class TestMagicRunSimple(tt.TempFileMixin):
             try:
                 import win32api
             except ImportError as e:
-                raise SkipTest("Test requires pywin32") from e
+                raise unittest.SkipTest("Test requires pywin32") from e
         src = ("class A(object):\n"
                "    def __del__(self):\n"
                "        print('object A deleted')\n"
@@ -271,7 +270,7 @@ class TestMagicRunSimple(tt.TempFileMixin):
             self.mktmp(src)
             _ip.magic('run %s' % self.fname)
             _ip.run_cell('ip == get_ipython()')
-            nt.assert_equal(_ip.user_ns['i'], 4)
+            assert _ip.user_ns['i'] == 4
     
     def test_run_second(self):
         """Test that running a second file doesn't clobber the first, gh-3547
@@ -285,7 +284,7 @@ class TestMagicRunSimple(tt.TempFileMixin):
             
             _ip.magic('run %s' % self.fname)
             _ip.magic('run %s' % empty.fname)
-            nt.assert_equal(_ip.user_ns['afunc'](), 1)
+            assert _ip.user_ns['afunc']() == 1
 
     @dec.skip_win32
     def test_tclass(self):
@@ -313,14 +312,14 @@ tclass.py: deleting object: C-third
         _ip.run_cell("zz = 23")
         try:
             _ip.magic('run -i %s' % self.fname)
-            nt.assert_equal(_ip.user_ns['yy'], 23)
+            assert _ip.user_ns['yy'] == 23
         finally:
             _ip.magic('reset -f')
             
         _ip.run_cell("zz = 23")
         try:
             _ip.magic('run -i %s' % self.fname)
-            nt.assert_equal(_ip.user_ns['yy'], 23)
+            assert _ip.user_ns['yy'] == 23
         finally:
             _ip.magic('reset -f')
             
@@ -329,7 +328,7 @@ tclass.py: deleting object: C-third
         mydir = os.path.dirname(__file__)
         na = os.path.join(mydir, 'nonascii.py')
         _ip.magic('run "%s"' % na)
-        nt.assert_equal(_ip.user_ns['u'], u'Ўт№Ф')
+        assert _ip.user_ns['u'] == u'Ўт№Ф'
 
     def test_run_py_file_attribute(self):
         """Test handling of `__file__` attribute in `%run <file>.py`."""
@@ -342,10 +341,10 @@ tclass.py: deleting object: C-third
 
         # Check that __file__ was equal to the filename in the script's
         # namespace.
-        nt.assert_equal(_ip.user_ns['t'], self.fname)
+        assert _ip.user_ns['t'] == self.fname
 
         # Check that __file__ was not leaked back into user_ns.
-        nt.assert_equal(file1, file2)
+        assert file1 == file2
 
     def test_run_ipy_file_attribute(self):
         """Test handling of `__file__` attribute in `%run <file.ipy>`."""
@@ -358,10 +357,10 @@ tclass.py: deleting object: C-third
 
         # Check that __file__ was equal to the filename in the script's
         # namespace.
-        nt.assert_equal(_ip.user_ns['t'], self.fname)
+        assert _ip.user_ns['t'] == self.fname
 
         # Check that __file__ was not leaked back into user_ns.
-        nt.assert_equal(file1, file2)
+        assert file1 == file2
 
     def test_run_formatting(self):
         """ Test that %run -t -N<N> does not raise a TypeError for N > 1."""
@@ -394,16 +393,16 @@ tclass.py: deleting object: C-third
         
         _ip.magic("run %s" % self.fname)
         
-        nt.assert_equal(_ip.user_ns['answer'], 42)
+        assert _ip.user_ns['answer'] == 42
 
     def test_run_nb_error(self):
         """Test %run notebook.ipynb error"""
         from nbformat import v4, writes
         # %run when a file name isn't provided
-        nt.assert_raises(Exception, _ip.magic, "run")
+        pytest.raises(Exception, _ip.magic, "run")
 
         # %run when a file doesn't exist
-        nt.assert_raises(Exception, _ip.magic, "run foobar.ipynb")
+        pytest.raises(Exception, _ip.magic, "run foobar.ipynb")
 
         # %run on a notebook with an error
         nb = v4.new_notebook(
@@ -413,7 +412,7 @@ tclass.py: deleting object: C-third
         )
         src = writes(nb, version=4)
         self.mktmp(src, ext='.ipynb')
-        nt.assert_raises(Exception, _ip.magic, "run %s" % self.fname)
+        pytest.raises(Exception, _ip.magic, "run %s" % self.fname)
 
     def test_file_options(self):
         src = ('import sys\n'
@@ -421,7 +420,7 @@ tclass.py: deleting object: C-third
         self.mktmp(src)
         test_opts = '-x 3 --verbose'
         _ip.run_line_magic("run", '{0} {1}'.format(self.fname, test_opts))
-        nt.assert_equal(_ip.user_ns['a'], test_opts)
+        assert _ip.user_ns['a'] == test_opts
 
 
 class TestMagicRunWithPackage(unittest.TestCase):
@@ -503,13 +502,13 @@ class TestMagicRunWithPackage(unittest.TestCase):
         _ip.user_ns.pop('a', None)
         test_opts = '-x abc -m test'
         _ip.run_line_magic('run', '-m {0}.args {1}'.format(self.package, test_opts))
-        nt.assert_equal(_ip.user_ns['a'], test_opts)
+        assert _ip.user_ns['a'] == test_opts
 
     def test_module_options_with_separator(self):
         _ip.user_ns.pop('a', None)
         test_opts = '-x abc -m test'
         _ip.run_line_magic('run', '-m {0}.args -- {1}'.format(self.package, test_opts))
-        nt.assert_equal(_ip.user_ns['a'], test_opts)
+        assert _ip.user_ns['a'] == test_opts
 
 def test_run__name__():
     with TemporaryDirectory() as td:
@@ -519,14 +518,14 @@ def test_run__name__():
         
         _ip.user_ns.pop('q', None)
         _ip.magic('run {}'.format(path))
-        nt.assert_equal(_ip.user_ns.pop('q'), '__main__')
+        assert _ip.user_ns.pop('q') == '__main__'
         
         _ip.magic('run -n {}'.format(path))
-        nt.assert_equal(_ip.user_ns.pop('q'), 'foo')
+        assert _ip.user_ns.pop('q') == 'foo'
 
         try:
             _ip.magic('run -i -n {}'.format(path))
-            nt.assert_equal(_ip.user_ns.pop('q'), 'foo')
+            assert _ip.user_ns.pop('q') == 'foo'
         finally:
             _ip.magic('reset -f')
 
@@ -546,9 +545,9 @@ def test_run_tb():
         with capture_output() as io:
             _ip.magic('run {}'.format(path))
         out = io.stdout
-        nt.assert_not_in("execfile", out)
-        nt.assert_in("RuntimeError", out)
-        nt.assert_equal(out.count("---->"), 3)
+        assert "execfile" not in out
+        assert "RuntimeError" in out
+        assert out.count("---->") == 3
         del ip.user_ns['bar']
         del ip.user_ns['foo']
 
@@ -572,10 +571,10 @@ def test_multiprocessing_run():
                 _ip.run_line_magic('run', path)
                 _ip.run_cell("i_m_undefined")
             out = io.stdout
-            nt.assert_in("hoy", out)
-            nt.assert_not_in("AttributeError", out)
-            nt.assert_in("NameError", out)
-            nt.assert_equal(out.count("---->"), 1)
+            assert "hoy" in out
+            assert "AttributeError" not in out
+            assert "NameError" in out
+            assert out.count("---->") == 1
         except:
             raise
         finally:
@@ -595,7 +594,7 @@ def test_script_tb():
                 "foo()",
             ]))
         out, err = tt.ipexec(path)
-        nt.assert_not_in("execfile", out)
-        nt.assert_in("RuntimeError", out)
-        nt.assert_equal(out.count("---->"), 3)
+        assert "execfile" not in out
+        assert "RuntimeError" in out
+        assert out.count("---->") == 3
 
