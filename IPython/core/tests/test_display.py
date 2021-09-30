@@ -488,25 +488,25 @@ def test_image_alt_tag():
     """Simple test for display.Image(args, alt=x,)"""
     thisurl = "http://example.com/image.png"
     img = display.Image(url=thisurl, alt="an image")
-    nt.assert_equal(u'<img src="%s" alt="an image"/>' % (thisurl), img._repr_html_())
+    assert u'<img src="%s" alt="an image"/>' % (thisurl) == img._repr_html_()
     img = display.Image(url=thisurl, unconfined=True, alt="an image")
-    nt.assert_equal(
-        u'<img src="%s" class="unconfined" alt="an image"/>' % (thisurl),
+    assert (
+        u'<img src="%s" class="unconfined" alt="an image"/>' % (thisurl) ==
         img._repr_html_(),
     )
     img = display.Image(url=thisurl, alt='>"& <')
-    nt.assert_equal(
-        u'<img src="%s" alt="&gt;&quot;&amp; &lt;"/>' % (thisurl), img._repr_html_()
+    assert (
+        u'<img src="%s" alt="&gt;&quot;&amp; &lt;"/>' % (thisurl) == img._repr_html_()
     )
 
     img = display.Image(url=thisurl, metadata={"alt": "an image"})
-    nt.assert_equal(img.alt, "an image")
+    assert img.alt == "an image"
 
     here = os.path.dirname(__file__)
     img = display.Image(os.path.join(here, "2x2.png"), alt="an image")
-    nt.assert_equal(img.alt, "an image")
+    assert img.alt == "an image"
     _, md = img._repr_png_()
-    nt.assert_equal(md["alt"], "an image")
+    assert md["alt"] == "an image"
 
 
 def test_image_bad_filename_raises_proper_exception():
