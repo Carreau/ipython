@@ -11,8 +11,6 @@ from io import StringIO
 from subprocess import Popen, PIPE
 import unittest
 
-import nose.tools as nt
-
 from IPython.utils.io import IOStream, Tee, capture_output
 
 
@@ -22,7 +20,7 @@ def test_tee_simple():
     text = 'Hello'
     tee = Tee(chan, channel='stdout')
     print(text, file=chan)
-    nt.assert_equal(chan.getvalue(), text+"\n")
+    assert chan.getvalue() == text+"\n"
 
 
 class TeeTestCase(unittest.TestCase):
@@ -39,7 +37,7 @@ class TeeTestCase(unittest.TestCase):
 
         print(text, end='', file=chan)
         trap_val = trap.getvalue()
-        nt.assert_equal(chan.getvalue(), text)
+        self.assertEqual(chan.getvalue(), text)
 
         tee.close()
 
@@ -85,5 +83,5 @@ class TestIOStream(unittest.TestCase):
             print('hi, stdout')
             print('hi, stderr', file=sys.stderr)
         
-        nt.assert_equal(io.stdout, 'hi, stdout\n')
-        nt.assert_equal(io.stderr, 'hi, stderr\n')
+        self.assertEqual(io.stdout, 'hi, stdout\n')
+        self.assertEqual(io.stderr, 'hi, stderr\n')
