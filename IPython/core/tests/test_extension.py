@@ -91,4 +91,4 @@ def test_extension_builtins():
 
 def test_non_extension():
     em = get_ipython().extension_manager
-    assert em.load_extension('sys') == "no load function"
+    assert em.load_extension("sys") == "no load function"
