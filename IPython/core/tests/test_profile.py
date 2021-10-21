@@ -138,7 +138,7 @@ def test_list_profiles_in():
             break
     if dec.unicode_paths:
         assert found_unicode
-    assert set(profiles) == {'foo', 'hello'}
+    assert set(profiles) == {"foo", "hello"}
 
 
 def test_list_bundled_profiles():
