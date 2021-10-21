@@ -26,26 +26,26 @@ from IPython.testing import tools as tt
 
 @dec.skip_win32
 def test_full_path_posix():
-    spath = '/foo/bar.py'
-    result = tt.full_path(spath,['a.txt','b.txt'])
-    assert result, ['/foo/a.txt' == '/foo/b.txt']
-    spath = '/foo'
-    result = tt.full_path(spath,['a.txt','b.txt'])
-    assert result, ['/a.txt' == '/b.txt']
-    result = tt.full_path(spath,'a.txt')
-    assert result == ['/a.txt']
+    spath = "/foo/bar.py"
+    result = tt.full_path(spath, ["a.txt", "b.txt"])
+    assert result, ["/foo/a.txt" == "/foo/b.txt"]
+    spath = "/foo"
+    result = tt.full_path(spath, ["a.txt", "b.txt"])
+    assert result, ["/a.txt" == "/b.txt"]
+    result = tt.full_path(spath, "a.txt")
+    assert result == ["/a.txt"]
 
 
 @dec.skip_if_not_win32
 def test_full_path_win32():
-    spath = 'c:\\foo\\bar.py'
-    result = tt.full_path(spath,['a.txt','b.txt'])
-    assert result, ['c:\\foo\\a.txt' == 'c:\\foo\\b.txt']
-    spath = 'c:\\foo'
-    result = tt.full_path(spath,['a.txt','b.txt'])
-    assert result, ['c:\\a.txt' == 'c:\\b.txt']
-    result = tt.full_path(spath,'a.txt')
-    assert result == ['c:\\a.txt']
+    spath = "c:\\foo\\bar.py"
+    result = tt.full_path(spath, ["a.txt", "b.txt"])
+    assert result, ["c:\\foo\\a.txt" == "c:\\foo\\b.txt"]
+    spath = "c:\\foo"
+    result = tt.full_path(spath, ["a.txt", "b.txt"])
+    assert result, ["c:\\a.txt" == "c:\\b.txt"]
+    result = tt.full_path(spath, "a.txt")
+    assert result == ["c:\\a.txt"]
 
     
 def test_parser():
