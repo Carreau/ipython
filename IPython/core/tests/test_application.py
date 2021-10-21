@@ -63,9 +63,8 @@ def test_cli_priority():
             f.write("c.TestApp.test = 'config file'")
 
         app = TestApp()
-        app.initialize(['--profile-dir', td])
-        assert app.test == 'config file'
+        app.initialize(["--profile-dir", td])
+        assert app.test == "config file"
         app = TestApp()
-        app.initialize(['--profile-dir', td, '--TestApp.test=cli'])
-        assert app.test == 'cli'
-
+        app.initialize(["--profile-dir", td, "--TestApp.test=cli"])
+        assert app.test == "cli"
