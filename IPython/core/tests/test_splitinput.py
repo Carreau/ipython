@@ -33,5 +33,5 @@ def test_split_user_input():
 
 def test_LineInfo():
     """Simple test for LineInfo construction and str()"""
-    linfo = LineInfo('  %cd /home')
-    str(linfo) == 'LineInfo [  |%|cd|/home]'
+    linfo = LineInfo("  %cd /home")
+    str(linfo) == "LineInfo [  |%|cd|/home]"
