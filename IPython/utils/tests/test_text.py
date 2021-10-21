@@ -117,8 +117,9 @@ def eval_formatter_check(f):
     assert s == ns["u"]
     # This decodes in a platform dependent manner, but it shouldn't error out
     s = f.format("{b}", **ns)
-        
-    pytest.raises(NameError, f.format, '{dne}', **ns)
+
+    pytest.raises(NameError, f.format, "{dne}", **ns)
+
 
 def eval_formatter_slicing_check(f):
     ns = dict(n=12, pi=math.pi, stuff='hello there', os=os)
