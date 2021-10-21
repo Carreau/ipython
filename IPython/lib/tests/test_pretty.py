@@ -477,7 +477,7 @@ def test_function_pretty():
             return 42
         return "Don't panic"
 
-    assert 'meaning_of_life(question=None)' in pretty.pretty(meaning_of_life)
+    assert "meaning_of_life(question=None)" in pretty.pretty(meaning_of_life)
 
 
 class OrderedCounter(Counter, OrderedDict):
