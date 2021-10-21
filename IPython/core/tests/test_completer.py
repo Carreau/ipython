@@ -301,7 +301,7 @@ class TestCompleter(unittest.TestCase):
 
         # do not return more than 1 matches fro \beta, only the latex one.
         name, matches = ip.complete("\\β")
-        self.assertEqual(matches, ['\\beta'])
+        self.assertEqual(matches, ["\\beta"])
 
     def test_back_unicode_completion(self):
         ip = get_ipython()
@@ -313,8 +313,8 @@ class TestCompleter(unittest.TestCase):
         ip = get_ipython()
 
         name, matches = ip.complete("\\ROMAN NUMERAL FIVE")
-        self.assertEqual(matches, ["Ⅴ"] ) # This is not a V
-        self.assertEqual(matches, ["\u2164"] ) # same as above but explicit.
+        self.assertEqual(matches, ["Ⅴ"])  # This is not a V
+        self.assertEqual(matches, ["\u2164"])  # same as above but explicit.
 
     @unittest.skip("now we have a completion for \jmath")
     @decorators.knownfailureif(
@@ -973,7 +973,7 @@ class TestCompleter(unittest.TestCase):
         _, matches = complete(line_buffer="d['f")
         self.assertIn("foo", matches)
         self.assertNotIn("foo']", matches)
-        self.assertNotIn("foo\"]", matches)
+        self.assertNotIn('foo"]', matches)
         _, matches = complete(line_buffer="d['foo")
         self.assertIn("foo", matches)
 
@@ -1017,16 +1017,15 @@ class TestCompleter(unittest.TestCase):
 
         # - can complete second key
         _, matches = complete(line_buffer="d['foo', 'b")
-        self.assertIn('bar', matches)
-        self.assertNotIn('foo', matches)
-        self.assertNotIn('foobar', matches)
+        self.assertIn("bar", matches)
+        self.assertNotIn("foo", matches)
+        self.assertNotIn("foobar", matches)
 
         # - can complete third key
         _, matches = complete(line_buffer="d['foo', 'bar', 'fo")
-        self.assertIn('foobar', matches)
-        self.assertNotIn('foo', matches)
-        self.assertNotIn('bar', matches)
-
+        self.assertIn("foobar", matches)
+        self.assertNotIn("foo", matches)
+        self.assertNotIn("bar", matches)
 
     def test_dict_key_completion_contexts(self):
         """Test expression contexts in which dict key completion occurs"""
