@@ -218,33 +218,39 @@ class InteractiveShellTestCase(unittest.TestCase):
     def test_var_expand_local(self):
         """Test local variable expansion in !system and %magic calls"""
         # !system
-        ip.run_cell('def test():\n'
-                    '    lvar = "ttt"\n'
-                    '    ret = !echo {lvar}\n'
-                    '    return ret[0]\n')
-        res = ip.user_ns['test']()
-        self.assertIn('ttt', res)
-        
+        ip.run_cell(
+            "def test():\n"
+            '    lvar = "ttt"\n'
+            "    ret = !echo {lvar}\n"
+            "    return ret[0]\n"
+        )
+        res = ip.user_ns["test"]()
+        self.assertIn("ttt", res)
+
         # %magic
-        ip.run_cell('def makemacro():\n'
-                    '    macroname = "macro_var_expand_locals"\n'
-                    '    %macro {macroname} codestr\n')
-        ip.user_ns['codestr'] = "str(12)"
-        ip.run_cell('makemacro()')
-        self.assertIn('macro_var_expand_locals', ip.user_ns)
-    
+        ip.run_cell(
+            "def makemacro():\n"
+            '    macroname = "macro_var_expand_locals"\n'
+            "    %macro {macroname} codestr\n"
+        )
+        ip.user_ns["codestr"] = "str(12)"
+        ip.run_cell("makemacro()")
+        self.assertIn("macro_var_expand_locals", ip.user_ns)
+
     def test_var_expand_self(self):
         """Test variable expansion with the name 'self', which was failing.
         
         See https://github.com/ipython/ipython/issues/1878#issuecomment-7698218
         """
-        ip.run_cell('class cTest:\n'
-                    '  classvar="see me"\n'
-                    '  def test(self):\n'
-                    '    res = !echo Variable: {self.classvar}\n'
-                    '    return res[0]\n')
-        self.assertIn('see me', ip.user_ns['cTest']().test())
-    
+        ip.run_cell(
+            "class cTest:\n"
+            '  classvar="see me"\n'
+            "  def test(self):\n"
+            "    res = !echo Variable: {self.classvar}\n"
+            "    return res[0]\n"
+        )
+        self.assertIn("see me", ip.user_ns["cTest"]().test())
+
     def test_bad_var_expand(self):
         """var_expand on invalid formats shouldn't raise"""
         # SyntaxError
@@ -410,10 +416,10 @@ class InteractiveShellTestCase(unittest.TestCase):
             def foo(self):
                 return 'bar'
         a = A()
-        a.__dict__['foo'] = 'baz'
-        self.assertEqual(a.foo, 'bar')
-        found = ip._ofind('a.foo', [('locals', locals())])
-        self.assertIs(found['obj'], A.foo)
+        a.__dict__["foo"] = "baz"
+        self.assertEqual(a.foo, "bar")
+        found = ip._ofind("a.foo", [("locals", locals())])
+        self.assertIs(found["obj"], A.foo)
 
     def test_custom_syntaxerror_exception(self):
         called = []
@@ -888,20 +894,20 @@ def test_user_variables():
     r = ip.user_expressions({ key:key for key in keys})
 
     assert keys == set(r.keys())
-    dummy = r['dummy']
-    assert {'status', 'data', 'metadata'} == set(dummy.keys())
-    assert dummy['status'] == 'ok'
-    data = dummy['data']
-    metadata = dummy['metadata']
-    assert data.get('text/html') == d._repr_html_()
+    dummy = r["dummy"]
+    assert {"status", "data", "metadata"} == set(dummy.keys())
+    assert dummy["status"] == "ok"
+    data = dummy["data"]
+    metadata = dummy["metadata"]
+    assert data.get("text/html") == d._repr_html_()
     js, jsmd = d._repr_javascript_()
-    assert data.get('application/javascript') == js
-    assert metadata.get('application/javascript') == jsmd
-    
-    dne = r['doesnotexist']
-    assert dne['status'] == 'error'
-    assert dne['ename'] == 'NameError'
-    
+    assert data.get("application/javascript") == js
+    assert metadata.get("application/javascript") == jsmd
+
+    dne = r["doesnotexist"]
+    assert dne["status"] == "error"
+    assert dne["ename"] == "NameError"
+
     # back to text only
     ip.display_formatter.active_types = ['text/plain']
     
@@ -916,17 +922,17 @@ def test_user_expression():
     import pprint
     pprint.pprint(r)
     assert set(r.keys()) == set(query.keys())
-    a = r['a']
-    assert {'status', 'data', 'metadata'} == set(a.keys())
-    assert a['status'] == 'ok'
-    data = a['data']
-    metadata = a['metadata']
-    assert data.get('text/plain') == '3'
-    
-    b = r['b']
-    assert b['status'] == 'error'
-    assert b['ename'] == 'ZeroDivisionError'
-    
+    a = r["a"]
+    assert {"status", "data", "metadata"} == set(a.keys())
+    assert a["status"] == "ok"
+    data = a["data"]
+    metadata = a["metadata"]
+    assert data.get("text/plain") == "3"
+
+    b = r["b"]
+    assert b["status"] == "error"
+    assert b["ename"] == "ZeroDivisionError"
+
     # back to text only
     ip.display_formatter.active_types = ['text/plain']
 
