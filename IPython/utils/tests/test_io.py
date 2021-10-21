@@ -20,7 +20,7 @@ def test_tee_simple():
     text = 'Hello'
     tee = Tee(chan, channel='stdout')
     print(text, file=chan)
-    assert chan.getvalue() == text+"\n"
+    assert chan.getvalue() == text + "\n"
 
 
 class TeeTestCase(unittest.TestCase):
@@ -80,8 +80,8 @@ class TestIOStream(unittest.TestCase):
         """capture_output() context works"""
         
         with capture_output() as io:
-            print('hi, stdout')
-            print('hi, stderr', file=sys.stderr)
-        
-        self.assertEqual(io.stdout, 'hi, stdout\n')
-        self.assertEqual(io.stderr, 'hi, stderr\n')
+            print("hi, stdout")
+            print("hi, stderr", file=sys.stderr)
+
+        self.assertEqual(io.stdout, "hi, stdout\n")
+        self.assertEqual(io.stderr, "hi, stderr\n")
