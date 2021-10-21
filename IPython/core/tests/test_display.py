@@ -491,8 +491,8 @@ def test_image_alt_tag():
     assert u'<img src="%s" alt="an image"/>' % (thisurl) == img._repr_html_()
     img = display.Image(url=thisurl, unconfined=True, alt="an image")
     assert (
-        u'<img src="%s" class="unconfined" alt="an image"/>' % (thisurl) ==
-        img._repr_html_(),
+        u'<img src="%s" class="unconfined" alt="an image"/>' % (thisurl)
+        == img._repr_html_(),
     )
     img = display.Image(url=thisurl, alt='>"& <')
     assert (
