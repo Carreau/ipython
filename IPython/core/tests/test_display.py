@@ -39,7 +39,7 @@ def test_image_mimes():
         mime = display.Image._MIMETYPES[format]
         img = display.Image(b'garbage', format=format)
         data, metadata = fmt(img)
-        assert sorted(data), sorted([mime == 'text/plain'])
+        assert sorted(data), sorted([mime == "text/plain"])
 
 
 def test_geojson():
@@ -60,8 +60,10 @@ def test_geojson():
             "attribution": "Celestia/praesepe",
             "minZoom": 0,
             "maxZoom": 18,
-        })
-    assert u'<IPython.core.display.GeoJSON object>' == str(gj)
+        },
+    )
+    assert u"<IPython.core.display.GeoJSON object>" == str(gj)
+
 
 def test_retina_png():
     here = os.path.dirname(__file__)
@@ -69,8 +71,9 @@ def test_retina_png():
     assert img.height == 1
     assert img.width == 1
     data, md = img._repr_png_()
-    assert md['width'] == 1
-    assert md['height'] == 1
+    assert md["width"] == 1
+    assert md["height"] == 1
+
 
 def test_embed_svg_url():
     import gzip
@@ -102,9 +105,10 @@ def test_embed_svg_url():
 
     with mock.patch('urllib.request.urlopen', side_effect=mocked_urlopen):
         svg = display.SVG(url=url)
-        assert svg._repr_svg_().startswith('<svg')
-        svg = display.SVG(url=url + 'z')
-        assert svg._repr_svg_().startswith('<svg')
+        assert svg._repr_svg_().startswith("<svg")
+        svg = display.SVG(url=url + "z")
+        assert svg._repr_svg_().startswith("<svg")
+
 
 def test_retina_jpeg():
     here = os.path.dirname(__file__)
@@ -112,8 +116,9 @@ def test_retina_jpeg():
     assert img.height == 1
     assert img.width == 1
     data, md = img._repr_jpeg_()
-    assert md['width'] == 1
-    assert md['height'] == 1
+    assert md["width"] == 1
+    assert md["height"] == 1
+
 
 def test_base64image():
     display.Image("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAAA1BMVEUAAACnej3aAAAAAWJLR0QAiAUdSAAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB94BCRQnOqNu0b4AAAAKSURBVAjXY2AAAAACAAHiIbwzAAAAAElFTkSuQmCC")
@@ -121,17 +126,29 @@ def test_base64image():
 def test_image_filename_defaults():
     '''test format constraint, and validity of jpeg and png'''
     tpath = ipath.get_ipython_package_dir()
-    pytest.raises(ValueError, display.Image, filename=os.path.join(tpath, 'testing/tests/badformat.zip'),
-                     embed=True)
+    pytest.raises(
+        ValueError,
+        display.Image,
+        filename=os.path.join(tpath, "testing/tests/badformat.zip"),
+        embed=True,
+    )
     pytest.raises(ValueError, display.Image)
-    pytest.raises(ValueError, display.Image, data='this is not an image', format='badformat', embed=True)
+    pytest.raises(
+        ValueError,
+        display.Image,
+        data="this is not an image",
+        format="badformat",
+        embed=True,
+    )
     # check boths paths to allow packages to test at build and install time
     imgfile = os.path.join(tpath, 'core/tests/2x2.png')
     img = display.Image(filename=imgfile)
-    assert 'png' == img.format
+    assert "png" == img.format
     assert img._repr_png_() is not None
-    img = display.Image(filename=os.path.join(tpath, 'testing/tests/logo.jpg'), embed=False)
-    assert 'jpeg' == img.format
+    img = display.Image(
+        filename=os.path.join(tpath, "testing/tests/logo.jpg"), embed=False
+    )
+    assert "jpeg" == img.format
     assert img._repr_jpeg_() is None
 
 def _get_inline_config():
@@ -213,27 +230,28 @@ def test_display_available():
         ip.run_cell('display')
 
 def test_textdisplayobj_pretty_repr():
-     p = display.Pretty("This is a simple test")
-     assert repr(p) == '<IPython.core.display.Pretty object>'
-     assert p.data == 'This is a simple test'
+    p = display.Pretty("This is a simple test")
+    assert repr(p) == "<IPython.core.display.Pretty object>"
+    assert p.data == "This is a simple test"
 
-     p._show_mem_addr = True
-     assert repr(p) == object.__repr__(p)
+    p._show_mem_addr = True
+    assert repr(p) == object.__repr__(p)
+
 
 def test_displayobject_repr():
-    h = display.HTML('<br />')
-    assert repr(h) == '<IPython.core.display.HTML object>'
+    h = display.HTML("<br />")
+    assert repr(h) == "<IPython.core.display.HTML object>"
     h._show_mem_addr = True
     assert repr(h) == object.__repr__(h)
     h._show_mem_addr = False
-    assert repr(h) == '<IPython.core.display.HTML object>'
+    assert repr(h) == "<IPython.core.display.HTML object>"
 
-    j = display.Javascript('')
-    assert repr(j) == '<IPython.core.display.Javascript object>'
+    j = display.Javascript("")
+    assert repr(j) == "<IPython.core.display.Javascript object>"
     j._show_mem_addr = True
     assert repr(j) == object.__repr__(j)
     j._show_mem_addr = False
-    assert repr(j) == '<IPython.core.display.Javascript object>'
+    assert repr(j) == "<IPython.core.display.Javascript object>"
 
 @mock.patch('warnings.warn')
 def test_encourage_iframe_over_html(m_warn):
@@ -255,18 +273,22 @@ def test_encourage_iframe_over_html(m_warn):
 
 def test_progress():
     p = display.ProgressBar(10)
-    assert '0/10' in repr(p)
-    p.html_width = '100%'
+    assert "0/10" in repr(p)
+    p.html_width = "100%"
     p.progress = 5
-    assert p._repr_html_() == "<progress style='width:100%' max='10' value='5'></progress>"
+    assert (
+        p._repr_html_() == "<progress style='width:100%' max='10' value='5'></progress>"
+    )
+
 
 def test_progress_iter():
     with capture_output(display=False) as captured:
         for i in display.ProgressBar(5):
             out = captured.stdout
-            assert '{0}/5'.format(i) in out
+            assert "{0}/5".format(i) in out
     out = captured.stdout
-    assert '5/5' in out
+    assert "5/5" in out
+
 
 def test_json():
     d = {'a': 5}
@@ -284,13 +306,13 @@ def test_json():
         display.JSON(d, expanded=True, root='custom'),
     ]
     for j, md in zip(json_objs, metadata):
-        assert j._repr_json_(), (d == md)
+        assert j._repr_json_(), d == md
 
     with warnings.catch_warnings(record=True) as w:
         warnings.simplefilter("always")
         j = display.JSON(json.dumps(d))
         assert len(w) == 1
-        assert j._repr_json_(), (d == metadata[0])
+        assert j._repr_json_(), d == metadata[0]
 
     json_objs = [
         display.JSON(lis),
@@ -299,13 +321,14 @@ def test_json():
         display.JSON(lis, expanded=True, root='custom'),
     ]
     for j, md in zip(json_objs, metadata):
-        assert j._repr_json_(), (lis == md)
+        assert j._repr_json_(), lis == md
 
     with warnings.catch_warnings(record=True) as w:
         warnings.simplefilter("always")
         j = display.JSON(json.dumps(lis))
         assert len(w) == 1
-        assert j._repr_json_(), (lis == metadata[0])
+        assert j._repr_json_(), lis == metadata[0]
+
 
 def test_video_embedding():
     """use a tempfile, with dummy-data, to ensure that video embedding doesn't crash"""
@@ -346,7 +369,8 @@ def test_video_embedding():
 def test_html_metadata():
     s = "<h1>Test</h1>"
     h = display.HTML(s, metadata={"isolated": True})
-    assert h._repr_html_(), (s == {"isolated": True})
+    assert h._repr_html_(), s == {"isolated": True}
+
 
 def test_display_id():
     ip = get_ipython()
@@ -429,11 +453,11 @@ def test_display_handle():
     ip = get_ipython()
     handle = display.DisplayHandle()
     assert isinstance(handle.display_id, str)
-    handle = display.DisplayHandle('my-id')
-    assert handle.display_id == 'my-id'
-    with mock.patch.object(ip.display_pub, 'publish') as pub:
-        handle.display('x')
-        handle.update('y')
+    handle = display.DisplayHandle("my-id")
+    assert handle.display_id == "my-id"
+    with mock.patch.object(ip.display_pub, "publish") as pub:
+        handle.display("x")
+        handle.update("y")
 
     args, kwargs = pub.call_args_list[0]
     assert args == ()
