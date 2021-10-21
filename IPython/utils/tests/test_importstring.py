@@ -35,5 +35,4 @@ def test_import_nested():
 
 def test_import_raises():
     "Test that failing imports raise the right exception"
-    pytest.raises(ImportError, import_item, 'IPython.foobar')
-    
+    pytest.raises(ImportError, import_item, "IPython.foobar")
