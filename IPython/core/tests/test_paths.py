@@ -83,7 +83,7 @@ def test_get_ipython_dir_3():
         assert ipdir == os.path.join(tmphome.name, ".ipython")
         if sys.platform != 'darwin':
             assert len(w) == 1
-            assert 'Moving' in str(w[0])
+            assert "Moving" in str(w[0])
     finally:
         tmphome.cleanup()
 
@@ -108,7 +108,8 @@ def test_get_ipython_dir_4():
         assert ipdir == os.path.join(HOME_TEST_DIR, ".ipython")
         if sys.platform != 'darwin':
             assert len(w) == 1
-            assert 'Ignoring' in str(w[0])
+            assert "Ignoring" in str(w[0])
+
 
 def test_get_ipython_dir_5():
     """test_get_ipython_dir_5, use .ipython if exists and XDG defined, but doesn't exist."""
@@ -145,7 +146,7 @@ def test_get_ipython_dir_6():
             }), warnings.catch_warnings(record=True) as w:
         ipdir = paths.get_ipython_dir()
 
-    assert ipdir == os.path.join(HOME_TEST_DIR, '.ipython')
+    assert ipdir == os.path.join(HOME_TEST_DIR, ".ipython")
     assert len(w) == 0
 
 def test_get_ipython_dir_7():
@@ -154,7 +155,8 @@ def test_get_ipython_dir_7():
     with modified_env({'IPYTHONDIR': os.path.join('~', 'somewhere')}), \
             patch.object(paths, '_writable_dir', return_value=True):
         ipdir = paths.get_ipython_dir()
-    assert ipdir == os.path.join(home_dir, 'somewhere')
+    assert ipdir == os.path.join(home_dir, "somewhere")
+
 
 @skip_win32
 def test_get_ipython_dir_8():
@@ -163,14 +165,16 @@ def test_get_ipython_dir_8():
         # test only when HOME directory actually writable
         return
 
-    with patch.object(paths, '_writable_dir', lambda path: bool(path)), \
-            patch.object(paths, 'get_xdg_dir', return_value=None), \
-            modified_env({
-                'IPYTHON_DIR': None,
-                'IPYTHONDIR': None,
-                'HOME': '/',
-            }):
-        assert paths.get_ipython_dir() == '/.ipython'
+    with patch.object(paths, "_writable_dir", lambda path: bool(path)), patch.object(
+        paths, "get_xdg_dir", return_value=None
+    ), modified_env(
+        {
+            "IPYTHON_DIR": None,
+            "IPYTHONDIR": None,
+            "HOME": "/",
+        }
+    ):
+        assert paths.get_ipython_dir() == "/.ipython"
 
 
 def test_get_ipython_cache_dir():
