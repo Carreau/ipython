@@ -56,11 +56,12 @@ def test_ipython_embed():
         std = out.decode('UTF-8')
 
         assert p.returncode == 0
-        assert '3 . 14' in std
-        if os.name != 'nt':
+        assert "3 . 14" in std
+        if os.name != "nt":
             # TODO: Fix up our different stdout references, see issue gh-14
-            assert 'IPython' in std
-        assert 'bye!' in std
+            assert "IPython" in std
+        assert "bye!" in std
+
 
 @skip_win32
 def test_nest_embed():
