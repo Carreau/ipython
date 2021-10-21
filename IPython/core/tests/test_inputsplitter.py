@@ -99,7 +99,7 @@ def test_get_input_encoding():
     assert isinstance(encoding, str)
     # simple-minded check that at least encoding a simple string works with the
     # encoding we got.
-    assert u'test'.encode(encoding) == b'test'
+    assert u"test".encode(encoding) == b"test"
 
 
 class NoInputEncodingTestCase(unittest.TestCase):
@@ -525,38 +525,38 @@ if __name__ == '__main__':
 # Tests for cell magics support
 
 def test_last_blank():
-    assert not isp.last_blank('')
-    assert not isp.last_blank('abc')
-    assert not isp.last_blank('abc\n')
-    assert not isp.last_blank('abc\na')
+    assert not isp.last_blank("")
+    assert not isp.last_blank("abc")
+    assert not isp.last_blank("abc\n")
+    assert not isp.last_blank("abc\na")
 
-    assert isp.last_blank('\n')
-    assert isp.last_blank('\n ')
-    assert isp.last_blank('abc\n ')
-    assert isp.last_blank('abc\n\n')
-    assert isp.last_blank('abc\nd\n\n')
-    assert isp.last_blank('abc\nd\ne\n\n')
-    assert isp.last_blank('abc \n \n \n\n')
+    assert isp.last_blank("\n")
+    assert isp.last_blank("\n ")
+    assert isp.last_blank("abc\n ")
+    assert isp.last_blank("abc\n\n")
+    assert isp.last_blank("abc\nd\n\n")
+    assert isp.last_blank("abc\nd\ne\n\n")
+    assert isp.last_blank("abc \n \n \n\n")
 
 
 def test_last_two_blanks():
-    assert not isp.last_two_blanks('')
-    assert not isp.last_two_blanks('abc')
-    assert not isp.last_two_blanks('abc\n')
-    assert not isp.last_two_blanks('abc\n\na')
-    assert not isp.last_two_blanks('abc\n \n')
-    assert not isp.last_two_blanks('abc\n\n')
+    assert not isp.last_two_blanks("")
+    assert not isp.last_two_blanks("abc")
+    assert not isp.last_two_blanks("abc\n")
+    assert not isp.last_two_blanks("abc\n\na")
+    assert not isp.last_two_blanks("abc\n \n")
+    assert not isp.last_two_blanks("abc\n\n")
 
-    assert isp.last_two_blanks('\n\n')
-    assert isp.last_two_blanks('\n\n ')
-    assert isp.last_two_blanks('\n \n')
-    assert isp.last_two_blanks('abc\n\n ')
-    assert isp.last_two_blanks('abc\n\n\n')
-    assert isp.last_two_blanks('abc\n\n \n')
-    assert isp.last_two_blanks('abc\n\n \n ')
-    assert isp.last_two_blanks('abc\n\n \n \n')
-    assert isp.last_two_blanks('abc\nd\n\n\n')
-    assert isp.last_two_blanks('abc\nd\ne\nf\n\n\n')
+    assert isp.last_two_blanks("\n\n")
+    assert isp.last_two_blanks("\n\n ")
+    assert isp.last_two_blanks("\n \n")
+    assert isp.last_two_blanks("abc\n\n ")
+    assert isp.last_two_blanks("abc\n\n\n")
+    assert isp.last_two_blanks("abc\n\n \n")
+    assert isp.last_two_blanks("abc\n\n \n ")
+    assert isp.last_two_blanks("abc\n\n \n \n")
+    assert isp.last_two_blanks("abc\nd\n\n\n")
+    assert isp.last_two_blanks("abc\nd\ne\nf\n\n\n")
 
 
 class CellMagicsCommon(object):
@@ -580,14 +580,14 @@ class CellModeCellMagics(CellMagicsCommon, unittest.TestCase):
 
     def test_incremental(self):
         sp = self.sp
-        sp.push('%%cellm firstline\n')
-        assert sp.push_accepts_more() #1
-        sp.push('line2\n')
-        assert sp.push_accepts_more() #2
-        sp.push('\n')
+        sp.push("%%cellm firstline\n")
+        assert sp.push_accepts_more()  # 1
+        sp.push("line2\n")
+        assert sp.push_accepts_more()  # 2
+        sp.push("\n")
         # This should accept a blank line and carry on until the cell is reset
-        assert sp.push_accepts_more() #3
-    
+        assert sp.push_accepts_more()  # 3
+
     def test_no_strip_coding(self):
         src = '\n'.join([
             '%%writefile foo.py',
@@ -595,7 +595,7 @@ class CellModeCellMagics(CellMagicsCommon, unittest.TestCase):
             'print(u"üñîçø∂é")',
         ])
         out = self.sp.transform_cell(src)
-        assert '# coding: utf-8' in out
+        assert "# coding: utf-8" in out
 
 
 class LineModeCellMagics(CellMagicsCommon, unittest.TestCase):
@@ -603,11 +603,12 @@ class LineModeCellMagics(CellMagicsCommon, unittest.TestCase):
 
     def test_incremental(self):
         sp = self.sp
-        sp.push('%%cellm line2\n')
-        assert sp.push_accepts_more() #1
-        sp.push('\n')
+        sp.push("%%cellm line2\n")
+        assert sp.push_accepts_more()  # 1
+        sp.push("\n")
         # In this case, a blank line should end the cell magic
-        assert not sp.push_accepts_more() #2
+        assert not sp.push_accepts_more()  # 2
+
 
 indentation_samples = [
     ('a = 1', 0),
