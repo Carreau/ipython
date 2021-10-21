@@ -149,7 +149,7 @@ def test_rehashx():
     assert len(_ip.alias_manager.aliases) > 10
     for name, cmd in _ip.alias_manager.aliases:
         # we must strip dots from alias names
-        assert '.' not in name
+        assert "." not in name
 
     # rehashx must fill up syscmdlist
     scoms = _ip.db['syscmdlist']
@@ -168,16 +168,17 @@ def test_magic_parse_options():
         expected = 'c:x'
     else:
         expected = path
-    assert opts['f'] == expected
+    assert opts["f"] == expected
+
 
 def test_magic_parse_long_options():
     """Magic.parse_options can handle --foo=bar long options"""
     ip = get_ipython()
     m = DummyMagics(ip)
-    opts, _ = m.parse_options('--foo --bar=bubble', 'a', 'foo', 'bar=')
-    assert 'foo' in opts
-    assert 'bar' in opts
-    assert opts['bar'] == "bubble"
+    opts, _ = m.parse_options("--foo --bar=bubble", "a", "foo", "bar=")
+    assert "foo" in opts
+    assert "bar" in opts
+    assert opts["bar"] == "bubble"
 
 
 def doctest_hist_f():
@@ -277,8 +278,8 @@ def test_macro():
     for i, cmd in enumerate(cmds, start=1):
         ip.history_manager.store_inputs(i, cmd)
     ip.magic("macro test 1-3")
-    assert ip.user_ns["test"].value == "\n".join(cmds)+"\n"
-    
+    assert ip.user_ns["test"].value == "\n".join(cmds) + "\n"
+
     # List macros
     assert "test" in ip.magic("macro")
 
@@ -304,54 +305,59 @@ def test_magic_magic():
         ip.magic("magic")
     
     stdout = captured.stdout
-    assert '%magic' in stdout
-    assert 'IPython' in stdout
-    assert 'Available' in stdout
+    assert "%magic" in stdout
+    assert "IPython" in stdout
+    assert "Available" in stdout
 
 
 @dec.skipif_not_numpy
 def test_numpy_reset_array_undec():
     "Test '%reset array' functionality"
-    _ip.ex('import numpy as np')
-    _ip.ex('a = np.empty(2)')
-    assert 'a' in _ip.user_ns
-    _ip.magic('reset -f array')
-    assert 'a' not in _ip.user_ns
+    _ip.ex("import numpy as np")
+    _ip.ex("a = np.empty(2)")
+    assert "a" in _ip.user_ns
+    _ip.magic("reset -f array")
+    assert "a" not in _ip.user_ns
+
 
 def test_reset_out():
     "Test '%reset out' magic"
     _ip.run_cell("parrot = 'dead'", store_history=True)
     # test '%reset -f out', make an Out prompt
     _ip.run_cell("parrot", store_history=True)
-    assert 'dead' in [_ip.user_ns[x] for x in ('_','__','___')]
-    _ip.magic('reset -f out')
-    assert not 'dead' in [_ip.user_ns[x] for x in ('_','__','___')]
-    assert len(_ip.user_ns['Out']) == 0
+    assert "dead" in [_ip.user_ns[x] for x in ("_", "__", "___")]
+    _ip.magic("reset -f out")
+    assert not "dead" in [_ip.user_ns[x] for x in ("_", "__", "___")]
+    assert len(_ip.user_ns["Out"]) == 0
+
 
 def test_reset_in():
     "Test '%reset in' magic"
     # test '%reset -f in'
     _ip.run_cell("parrot", store_history=True)
-    assert 'parrot' in [_ip.user_ns[x] for x in ('_i','_ii','_iii')]
-    _ip.magic('%reset -f in')
-    assert not 'parrot' in [_ip.user_ns[x] for x in ('_i','_ii','_iii')]
-    assert len(set(_ip.user_ns['In'])) == 1
+    assert "parrot" in [_ip.user_ns[x] for x in ("_i", "_ii", "_iii")]
+    _ip.magic("%reset -f in")
+    assert not "parrot" in [_ip.user_ns[x] for x in ("_i", "_ii", "_iii")]
+    assert len(set(_ip.user_ns["In"])) == 1
+
 
 def test_reset_dhist():
     "Test '%reset dhist' magic"
-    _ip.run_cell("tmp = [d for d in _dh]") # copy before clearing
-    _ip.magic('cd ' + os.path.dirname(pytest.__file__))
-    _ip.magic('cd -')
-    assert len(_ip.user_ns['_dh']) > 0
-    _ip.magic('reset -f dhist')
-    assert len(_ip.user_ns['_dh']) == 0
-    _ip.run_cell("_dh = [d for d in tmp]") #restore
+    _ip.run_cell("tmp = [d for d in _dh]")  # copy before clearing
+    _ip.magic("cd " + os.path.dirname(pytest.__file__))
+    _ip.magic("cd -")
+    assert len(_ip.user_ns["_dh"]) > 0
+    _ip.magic("reset -f dhist")
+    assert len(_ip.user_ns["_dh"]) == 0
+    _ip.run_cell("_dh = [d for d in tmp]")  # restore
+
 
 def test_reset_in_length():
     "Test that '%reset in' preserves In[] length"
     _ip.run_cell("print 'foo'")
     _ip.run_cell("reset -f in")
-    assert len(_ip.user_ns['In']) == _ip.displayhook.prompt_count+1
+    assert len(_ip.user_ns["In"]) == _ip.displayhook.prompt_count + 1
+
 
 class TestResetErrors(TestCase):
 
@@ -446,18 +452,21 @@ def test_multiline_time():
         a = "ho"
         b = "hey"
         a+b
-        """))
-    assert ip.user_ns_hidden['_'] == 'hohey'
+        """
+        )
+    )
+    assert ip.user_ns_hidden["_"] == "hohey"
+
 
 def test_time_local_ns():
     """
     Test that local_ns is actually global_ns when running a cell magic
     """
     ip = get_ipython()
-    ip.run_cell("%%time\n"
-                "myvar = 1")
-    assert ip.user_ns['myvar'] == 1
-    del ip.user_ns['myvar']
+    ip.run_cell("%%time\n" "myvar = 1")
+    assert ip.user_ns["myvar"] == 1
+    del ip.user_ns["myvar"]
+
 
 def test_doctest_mode():
     "Toggle doctest_mode twice, it should be a no-op and run without error"
@@ -470,8 +479,8 @@ def test_parse_options():
     # These are only the most minimal of tests, more should be added later.  At
     # the very least we check that basic text/unicode calls work OK.
     m = DummyMagics(_ip)
-    assert m.parse_options('foo', '')[1] == 'foo'
-    assert m.parse_options(u'foo', '')[1] == u'foo'
+    assert m.parse_options("foo", "")[1] == "foo"
+    assert m.parse_options(u"foo", "")[1] == u"foo"
 
 
 def test_parse_options_preserve_non_option_string():
@@ -659,11 +668,12 @@ def test_timeit_special_syntax():
         ip.user_ns['lmagic_out'] = line
 
     # line mode test
-    _ip.run_line_magic('timeit', '-n1 -r1 %lmagic my line')
-    assert _ip.user_ns['lmagic_out'] == 'my line'
+    _ip.run_line_magic("timeit", "-n1 -r1 %lmagic my line")
+    assert _ip.user_ns["lmagic_out"] == "my line"
     # cell mode test
-    _ip.run_cell_magic('timeit', '-n1 -r1', '%lmagic my line2')
-    assert _ip.user_ns['lmagic_out'] == 'my line2'
+    _ip.run_cell_magic("timeit", "-n1 -r1", "%lmagic my line2")
+    assert _ip.user_ns["lmagic_out"] == "my line2"
+
 
 def test_timeit_return():
     """
@@ -698,17 +708,19 @@ def test_prun_special_syntax():
         ip.user_ns['lmagic_out'] = line
 
     # line mode test
-    _ip.run_line_magic('prun', '-q %lmagic my line')
-    assert _ip.user_ns['lmagic_out'] == 'my line'
+    _ip.run_line_magic("prun", "-q %lmagic my line")
+    assert _ip.user_ns["lmagic_out"] == "my line"
     # cell mode test
-    _ip.run_cell_magic('prun', '-q', '%lmagic my line2')
-    assert _ip.user_ns['lmagic_out'] == 'my line2'
+    _ip.run_cell_magic("prun", "-q", "%lmagic my line2")
+    assert _ip.user_ns["lmagic_out"] == "my line2"
+
 
 @dec.skipif(execution.profile is None)
 def test_prun_quotes():
     "Test that prun does not clobber string escapes (GH #1302)"
     _ip.magic(r"prun -q x = '\t'")
-    assert _ip.user_ns['x'] == '\t'
+    assert _ip.user_ns["x"] == "\t"
+
 
 def test_extension():
     # Debugging information for failures of this test
@@ -724,7 +736,7 @@ def test_extension():
         _ip.user_ns.pop('arq', None)
         invalidate_caches()   # Clear import caches
         _ip.magic("load_ext daft_extension")
-        assert _ip.user_ns['arq'] == 185
+        assert _ip.user_ns["arq"] == 185
         _ip.magic("unload_ext daft_extension")
         assert 'arq' not in _ip.user_ns
     finally:
@@ -795,11 +807,11 @@ class CellMagicTestCase(TestCase):
 
     def check_ident(self, magic):
         # Manually called, we get the result
-        out = _ip.run_cell_magic(magic, 'a', 'b')
-        assert out == ('a','b')
+        out = _ip.run_cell_magic(magic, "a", "b")
+        assert out == ("a", "b")
         # Via run_cell, it goes into the user's namespace via displayhook
-        _ip.run_cell('%%' + magic +' c\nd\n')
-        assert _ip.user_ns['_'] == ('c','d\n')
+        _ip.run_cell("%%" + magic + " c\nd\n")
+        assert _ip.user_ns["_"] == ("c", "d\n")
 
     def test_cell_magic_func_deco(self):
         "Cell magic using simple decorator"
@@ -854,8 +866,9 @@ def test_file():
             'line2',
         ]))
         s = Path(fname).read_text()
-        assert 'line1\n' in s
-        assert 'line2' in s
+        assert "line1\n" in s
+        assert "line2" in s
+
 
 @dec.skip_win32
 def test_file_single_quote():
@@ -868,8 +881,9 @@ def test_file_single_quote():
             'line2',
         ]))
         s = Path(fname).read_text()
-        assert 'line1\n' in s
-        assert 'line2' in s
+        assert "line1\n" in s
+        assert "line2" in s
+
 
 @dec.skip_win32
 def test_file_double_quote():
@@ -882,8 +896,9 @@ def test_file_double_quote():
             'line2',
         ]))
         s = Path(fname).read_text()
-        assert 'line1\n' in s
-        assert 'line2' in s
+        assert "line1\n" in s
+        assert "line2" in s
+
 
 def test_file_var_expand():
     """%%writefile $filename"""
@@ -896,8 +911,9 @@ def test_file_var_expand():
             'line2',
         ]))
         s = Path(fname).read_text()
-        assert 'line1\n' in s
-        assert 'line2' in s
+        assert "line1\n" in s
+        assert "line2" in s
+
 
 def test_file_unicode():
     """%%writefile with unicode cell"""
@@ -910,8 +926,9 @@ def test_file_unicode():
         ]))
         with io.open(fname, encoding='utf-8') as f:
             s = f.read()
-        assert u'liné1\n' in s
-        assert u'liné2' in s
+        assert u"liné1\n" in s
+        assert u"liné2" in s
+
 
 def test_file_amend():
     """%%writefile -a amends files"""
@@ -927,8 +944,9 @@ def test_file_amend():
             'line4',
         ]))
         s = Path(fname).read_text()
-        assert 'line1\n' in s
-        assert 'line3\n' in s
+        assert "line1\n" in s
+        assert "line3\n" in s
+
 
 def test_file_spaces():
     """%%file with spaces in filename"""
@@ -940,14 +958,16 @@ def test_file_spaces():
             'line2',
         ]))
         s = Path(fname).read_text()
-        assert 'line1\n' in s
-        assert 'line2' in s
-    
+        assert "line1\n" in s
+        assert "line2" in s
+
+
 def test_script_config():
     ip = get_ipython()
     ip.config.ScriptMagics.script_magics = ['whoda']
     sm = script.ScriptMagics(shell=ip)
-    assert 'whoda' in sm.magics['cell']
+    assert "whoda" in sm.magics["cell"]
+
 
 @dec.skip_iptest_but_not_pytest
 @dec.skip_win32
@@ -960,7 +980,7 @@ def test_script_out():
     ip = get_ipython()
     ip.run_cell_magic("script", "--out output sh", "echo 'hi'")
     assert asyncio.get_event_loop().is_running() is False
-    assert ip.user_ns['output'] == 'hi\n'
+    assert ip.user_ns["output"] == "hi\n"
 
 
 @dec.skip_iptest_but_not_pytest
@@ -973,7 +993,7 @@ def test_script_err():
     assert asyncio.get_event_loop().is_running() is False
     ip.run_cell_magic("script", "--err error sh", "echo 'hello' >&2")
     assert asyncio.get_event_loop().is_running() is False
-    assert ip.user_ns['error'] == 'hello\n'
+    assert ip.user_ns["error"] == "hello\n"
 
 
 @dec.skip_iptest_but_not_pytest
@@ -987,8 +1007,8 @@ def test_script_out_err():
     ip.run_cell_magic(
         "script", "--out output --err error sh", "echo 'hi'\necho 'hello' >&2"
     )
-    assert ip.user_ns['output'] == 'hi\n'
-    assert ip.user_ns['error'] == 'hello\n'
+    assert ip.user_ns["output"] == "hi\n"
+    assert ip.user_ns["error"] == "hello\n"
 
 
 @dec.skip_iptest_but_not_pytest
@@ -1040,7 +1060,7 @@ def test_script_defaults():
         except Exception:
             pass
         else:
-            assert cmd in ip.magics_manager.magics['cell']
+            assert cmd in ip.magics_manager.magics["cell"]
 
 
 @magics_class
@@ -1060,19 +1080,20 @@ def test_line_cell_info():
     """%%foo and %foo magics are distinguishable to inspect"""
     ip = get_ipython()
     ip.magics_manager.register(FooFoo)
-    oinfo = ip.object_inspect('foo')
-    assert oinfo['found']
-    assert oinfo['ismagic']
-    
-    oinfo = ip.object_inspect('%%foo')
-    assert oinfo['found']
-    assert oinfo['ismagic']
-    assert oinfo['docstring'] == FooFoo.cell_foo.__doc__
+    oinfo = ip.object_inspect("foo")
+    assert oinfo["found"]
+    assert oinfo["ismagic"]
 
-    oinfo = ip.object_inspect('%foo')
-    assert oinfo['found']
-    assert oinfo['ismagic']
-    assert oinfo['docstring'] == FooFoo.line_foo.__doc__
+    oinfo = ip.object_inspect("%%foo")
+    assert oinfo["found"]
+    assert oinfo["ismagic"]
+    assert oinfo["docstring"] == FooFoo.cell_foo.__doc__
+
+    oinfo = ip.object_inspect("%foo")
+    assert oinfo["found"]
+    assert oinfo["ismagic"]
+    assert oinfo["docstring"] == FooFoo.line_foo.__doc__
+
 
 def test_multiple_magics():
     ip = get_ipython()
@@ -1080,9 +1101,10 @@ def test_multiple_magics():
     foo2 = FooFoo(ip)
     mm = ip.magics_manager
     mm.register(foo1)
-    assert mm.magics['line']['foo'].__self__ is foo1
+    assert mm.magics["line"]["foo"].__self__ is foo1
     mm.register(foo2)
-    assert mm.magics['line']['foo'].__self__ is foo2
+    assert mm.magics["line"]["foo"].__self__ is foo2
+
 
 def test_alias_magic():
     """Test %alias_magic."""
@@ -1090,22 +1112,24 @@ def test_alias_magic():
     mm = ip.magics_manager
 
     # Basic operation: both cell and line magics are created, if possible.
-    ip.run_line_magic('alias_magic', 'timeit_alias timeit')
-    assert 'timeit_alias' in mm.magics['line']
-    assert 'timeit_alias' in mm.magics['cell']
+    ip.run_line_magic("alias_magic", "timeit_alias timeit")
+    assert "timeit_alias" in mm.magics["line"]
+    assert "timeit_alias" in mm.magics["cell"]
 
     # --cell is specified, line magic not created.
-    ip.run_line_magic('alias_magic', '--cell timeit_cell_alias timeit')
-    assert 'timeit_cell_alias' not in mm.magics['line']
-    assert 'timeit_cell_alias' in mm.magics['cell']
+    ip.run_line_magic("alias_magic", "--cell timeit_cell_alias timeit")
+    assert "timeit_cell_alias" not in mm.magics["line"]
+    assert "timeit_cell_alias" in mm.magics["cell"]
 
     # Test that line alias is created successfully.
-    ip.run_line_magic('alias_magic', '--line env_alias env')
-    assert ip.run_line_magic('env', '') == ip.run_line_magic('env_alias', '')
+    ip.run_line_magic("alias_magic", "--line env_alias env")
+    assert ip.run_line_magic("env", "") == ip.run_line_magic("env_alias", "")
 
     # Test that line alias with parameters passed in is created successfully.
-    ip.run_line_magic('alias_magic', '--line history_alias history --params ' + shlex.quote('3'))
-    assert 'history_alias' in mm.magics['line']
+    ip.run_line_magic(
+        "alias_magic", "--line history_alias history --params " + shlex.quote("3")
+    )
+    assert "history_alias" in mm.magics["line"]
 
 
 def test_save():
@@ -1156,17 +1180,17 @@ def test_store():
     ip.run_line_magic('load_ext', 'storemagic')
     
     # make sure the storage is empty
-    ip.run_line_magic('store', '-z')
-    ip.user_ns['var'] = 42
-    ip.run_line_magic('store', 'var')
-    ip.user_ns['var'] = 39
-    ip.run_line_magic('store', '-r')
-    assert ip.user_ns['var'] == 42
+    ip.run_line_magic("store", "-z")
+    ip.user_ns["var"] = 42
+    ip.run_line_magic("store", "var")
+    ip.user_ns["var"] = 39
+    ip.run_line_magic("store", "-r")
+    assert ip.user_ns["var"] == 42
 
-    ip.run_line_magic('store', '-d var')
-    ip.user_ns['var'] = 39
-    ip.run_line_magic('store' , '-r')
-    assert ip.user_ns['var'] == 39
+    ip.run_line_magic("store", "-d var")
+    ip.user_ns["var"] = 39
+    ip.run_line_magic("store", "-r")
+    assert ip.user_ns["var"] == 39
 
 
 def _run_edit_test(arg_s, exp_filename=None,
@@ -1233,8 +1257,9 @@ def test_ls_magic():
     lsmagic = ip.magic('lsmagic')
     with warnings.catch_warnings(record=True) as w:
         j = json_formatter(lsmagic)
-    assert sorted(j) == ['cell', 'line']
-    assert w == [] # no warnings
+    assert sorted(j) == ["cell", "line"]
+    assert w == []  # no warnings
+
 
 def test_strip_initial_indent():
     def sii(s):
