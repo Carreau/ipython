@@ -95,10 +95,11 @@ def test_bad_precision():
     """test various invalid values for float_precision."""
     f = PlainTextFormatter()
     def set_fp(p):
-        f.float_precision=p
-    pytest.raises(ValueError, set_fp, '%')
-    pytest.raises(ValueError, set_fp, '%.3f%i')
-    pytest.raises(ValueError, set_fp, 'foo')
+        f.float_precision = p
+
+    pytest.raises(ValueError, set_fp, "%")
+    pytest.raises(ValueError, set_fp, "%.3f%i")
+    pytest.raises(ValueError, set_fp, "foo")
     pytest.raises(ValueError, set_fp, -1)
 
 def test_for_type():
@@ -134,14 +135,15 @@ def test_for_type_by_name():
     mod = C.__module__
     
     # initial return, None
-    assert f.for_type_by_name(mod, 'C', foo_printer) is None
+    assert f.for_type_by_name(mod, "C", foo_printer) is None
     # no func queries
-    assert f.for_type_by_name(mod, 'C') is foo_printer
+    assert f.for_type_by_name(mod, "C") is foo_printer
     # shouldn't change anything
-    assert f.for_type_by_name(mod, 'C') is foo_printer
+    assert f.for_type_by_name(mod, "C") is foo_printer
     # None should do the same
-    assert f.for_type_by_name(mod, 'C', None) is foo_printer
-    assert f.for_type_by_name(mod, 'C', None) is foo_printer
+    assert f.for_type_by_name(mod, "C", None) is foo_printer
+    assert f.for_type_by_name(mod, "C", None) is foo_printer
+
 
 def test_lookup():
     f = PlainTextFormatter()
