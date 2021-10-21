@@ -45,7 +45,7 @@ def test_command_chain_dispatcher_ff():
     try:
         dp()
     except TryNext as e:
-        assert str(e) == u'fail2'
+        assert str(e) == u"fail2"
     else:
         assert False, "Expected exception was not raised."
 
@@ -65,7 +65,7 @@ def test_command_chain_dispatcher_fofo():
                                  (15, okay2)])
     dp.add(okay1, 5)
 
-    assert dp() == u'okay1'
+    assert dp() == u"okay1"
 
     assert fail1.called
     assert okay1.called
