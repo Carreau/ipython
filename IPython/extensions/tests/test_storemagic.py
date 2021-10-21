@@ -22,10 +22,10 @@ def test_store_restore():
     ip.magic('store foobar foobaz')
 
     # Check storing
-    assert ip.db['autorestore/foo'] == 78
-    assert 'bar' in ip.db['stored_aliases']
-    assert ip.db['autorestore/foobar'] == 79
-    assert ip.db['autorestore/foobaz'] == '80'
+    assert ip.db["autorestore/foo"] == 78
+    assert "bar" in ip.db["stored_aliases"]
+    assert ip.db["autorestore/foobar"] == 79
+    assert ip.db["autorestore/foobaz"] == "80"
 
     # Remove those items
     ip.user_ns.pop('foo', None)
@@ -36,14 +36,14 @@ def test_store_restore():
     ip.user_ns['_dh'][:] = []
 
     # Check restoring
-    ip.magic('store -r foo bar foobar foobaz')
-    assert ip.user_ns['foo'] == 78
-    assert ip.alias_manager.is_alias('bar')
-    assert ip.user_ns['foobar'] == 79
-    assert ip.user_ns['foobaz'] == '80'
+    ip.magic("store -r foo bar foobar foobaz")
+    assert ip.user_ns["foo"] == 78
+    assert ip.alias_manager.is_alias("bar")
+    assert ip.user_ns["foobar"] == 79
+    assert ip.user_ns["foobaz"] == "80"
 
-    ip.magic('store -r') # restores _dh too
-    assert os.path.realpath(tmpd) in ip.user_ns['_dh']
+    ip.magic("store -r")  # restores _dh too
+    assert os.path.realpath(tmpd) in ip.user_ns["_dh"]
 
     os.rmdir(tmpd)
 
@@ -56,10 +56,10 @@ def test_autorestore():
     orig_config = ip.config
     try:
         ip.config = c
-        ip.extension_manager.reload_extension('storemagic')
-        assert 'foo' not in ip.user_ns
+        ip.extension_manager.reload_extension("storemagic")
+        assert "foo" not in ip.user_ns
         c.StoreMagics.autorestore = True
-        ip.extension_manager.reload_extension('storemagic')
-        assert ip.user_ns['foo'] == 95
+        ip.extension_manager.reload_extension("storemagic")
+        assert ip.user_ns["foo"] == 95
     finally:
         ip.config = orig_config
