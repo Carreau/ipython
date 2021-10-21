@@ -16,10 +16,12 @@ def expect_token(expected, cell, cursor_pos):
         else:
             offset += len(line)+1
     column = cursor_pos - offset
-    line_with_cursor = '%s|%s' % (line[:column], line[column:])
-    assert (token, expected ==
-        "Expected %r, got %r in: %r (pos %i)" % (
-        expected, token, line_with_cursor, cursor_pos)
+    line_with_cursor = "%s|%s" % (line[:column], line[column:])
+    assert (
+        token,
+        expected
+        == "Expected %r, got %r in: %r (pos %i)"
+        % (expected, token, line_with_cursor, cursor_pos),
     )
 
 def test_simple(): 
