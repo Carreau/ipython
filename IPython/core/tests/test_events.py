@@ -39,9 +39,9 @@ class CallbackTests(unittest.TestCase):
         def cb2():
             ...
 
-        self.em.register('ping_received', cb1)
-        self.assertRaises(ValueError, self.em.unregister, 'ping_received', cb2)
-        self.em.unregister('ping_received', cb1)
+        self.em.register("ping_received", cb1)
+        self.assertRaises(ValueError, self.em.unregister, "ping_received", cb2)
+        self.em.unregister("ping_received", cb1)
 
     def test_cb_error(self):
         cb = Mock(side_effect=ValueError)
