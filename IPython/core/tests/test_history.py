@@ -40,13 +40,15 @@ def test_history():
             ip.history_manager.output_hist_reprs[3] = "spam"
             ip.history_manager.store_output(3)
 
-            assert ip.history_manager.input_hist_raw == [''] + hist
+            assert ip.history_manager.input_hist_raw == [""] + hist
 
             # Detailed tests for _get_range_session
             grs = ip.history_manager._get_range_session
-            assert list(grs(start=2,stop=-1)) == list(zip([0], [2], hist[1:-1]))
-            assert list(grs(start=-2)) == list(zip([0,0], [2,3], hist[-2:]))
-            assert list(grs(output=True)) == list(zip([0,0,0], [1,2,3], zip(hist, [None,None,'spam'])))
+            assert list(grs(start=2, stop=-1)) == list(zip([0], [2], hist[1:-1]))
+            assert list(grs(start=-2)) == list(zip([0, 0], [2, 3], hist[-2:]))
+            assert list(grs(output=True)) == list(
+                zip([0, 0, 0], [1, 2, 3], zip(hist, [None, None, "spam"]))
+            )
 
             # Check whether specifying a range beyond the end of the current
             # session results in an error (gh-804)
@@ -67,10 +69,10 @@ def test_history():
             for i, cmd in enumerate(newcmds, start=1):
                 ip.history_manager.store_inputs(i, cmd)
             gothist = ip.history_manager.get_range(start=1, stop=4)
-            assert list(gothist) == list(zip([0,0,0],[1,2,3], newcmds))
+            assert list(gothist) == list(zip([0, 0, 0], [1, 2, 3], newcmds))
             # Previous session:
             gothist = ip.history_manager.get_range(-1, 1, 4)
-            assert list(gothist) == list(zip([1,1,1],[1,2,3], hist))
+            assert list(gothist) == list(zip([1, 1, 1], [1, 2, 3], hist))
 
             newhist = [(2, i, c) for (i, c) in enumerate(newcmds, 1)]
 
@@ -88,43 +90,48 @@ def test_history():
             # Check get_hist_search
 
             gothist = ip.history_manager.search("*test*")
-            assert list(gothist) == [(1,2,hist[1])]
+            assert list(gothist) == [(1, 2, hist[1])]
 
             gothist = ip.history_manager.search("*=*")
-            assert list(gothist) == [(1, 1, hist[0]),
-                                     (1, 2, hist[1]),
-                                     (1, 3, hist[2]),
-                                     newhist[0],
-                                     newhist[2],
-                                     newhist[3]]
+            assert list(gothist) == [
+                (1, 1, hist[0]),
+                (1, 2, hist[1]),
+                (1, 3, hist[2]),
+                newhist[0],
+                newhist[2],
+                newhist[3],
+            ]
 
             gothist = ip.history_manager.search("*=*", n=4)
-            assert list(gothist) == [(1, 3, hist[2]),
-                                     newhist[0],
-                                     newhist[2],
-                                     newhist[3]]
+            assert list(gothist) == [
+                (1, 3, hist[2]),
+                newhist[0],
+                newhist[2],
+                newhist[3],
+            ]
 
             gothist = ip.history_manager.search("*=*", unique=True)
-            assert list(gothist) == [(1, 1, hist[0]),
-                                     (1, 2, hist[1]),
-                                     (1, 3, hist[2]),
-                                     newhist[2],
-                                     newhist[3]]
+            assert list(gothist) == [
+                (1, 1, hist[0]),
+                (1, 2, hist[1]),
+                (1, 3, hist[2]),
+                newhist[2],
+                newhist[3],
+            ]
 
             gothist = ip.history_manager.search("*=*", unique=True, n=3)
-            assert list(gothist) == [(1, 3, hist[2]),
-                                     newhist[2],
-                                     newhist[3]]
+            assert list(gothist) == [(1, 3, hist[2]), newhist[2], newhist[3]]
 
             gothist = ip.history_manager.search("b*", output=True)
-            assert list(gothist) == [(1,3,(hist[2],"spam"))]
+            assert list(gothist) == [(1, 3, (hist[2], "spam"))]
 
             # Cross testing: check that magic %save can get previous session.
             testfilename = (tmp_path / "test.py").resolve()
             ip.magic("save " + str(testfilename) + " ~1/1-3")
-            with io.open(testfilename, encoding='utf-8') as testfile:
-                assert (testfile.read() == \
-                                        u"# coding: utf-8\n" + u"\n".join(hist)+u"\n")
+            with io.open(testfilename, encoding="utf-8") as testfile:
+                assert (
+                    testfile.read() == u"# coding: utf-8\n" + u"\n".join(hist) + u"\n"
+                )
 
             # Duplicate line numbers - check that it doesn't crash, and
             # gets a new session
@@ -206,7 +213,7 @@ def test_histmanager_disabled():
             hist = [u'a=1', u'def f():\n    test = 1\n    return test', u"b='€Æ¾÷ß'"]
             for i, h in enumerate(hist, start=1):
                 ip.history_manager.store_inputs(i, h)
-            assert ip.history_manager.input_hist_raw == [''] + hist
+            assert ip.history_manager.input_hist_raw == [""] + hist
             ip.history_manager.reset()
             ip.history_manager.end_session()
         finally:
