@@ -149,13 +149,14 @@ def test_skip_dt_decorator2():
 
 @dec.skip_linux
 def test_linux():
-    assert not sys.platform.startswith('linux'), "This test can't run under linux"
+    assert not sys.platform.startswith("linux"), "This test can't run under linux"
+
 
 @dec.skip_win32
 def test_win32():
-    assert sys.platform != 'win32', "This test can't run under windows"
+    assert sys.platform != "win32", "This test can't run under windows"
+
 
 @dec.skip_osx
 def test_osx():
-    assert sys.platform != 'darwin', "This test can't run under osx"
-
+    assert sys.platform != "darwin", "This test can't run under osx"
