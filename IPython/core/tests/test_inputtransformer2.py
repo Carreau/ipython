@@ -148,7 +148,8 @@ def check_make_token_by_line_never_ends_empty():
     for c in printable:
         assert make_tokens_by_line(c)[-1] != []
         for k in printable:
-            assert make_tokens_by_line(c+k)[-1] != []
+            assert make_tokens_by_line(c + k)[-1] != []
+
 
 def check_find(transformer, case, match=True):
     sample, expected_start, _  = case
@@ -156,7 +157,7 @@ def check_find(transformer, case, match=True):
     res = transformer.find(tbl)
     if match:
         # start_line is stored 0-indexed, expected values are 1-indexed
-        assert (res.start_line+1, res.start_col) == expected_start
+        assert (res.start_line + 1, res.start_col) == expected_start
         return res
     else:
         assert res is None
@@ -249,8 +250,11 @@ def test_find_assign_op_dedent():
         def __init__(self, s):
             self.string = s
 
-    assert _find_assign_op([Tk(s) for s in ('','a','=','b')]) == 2
-    assert _find_assign_op([Tk(s) for s in ('','(', 'a','=','b', ')', '=' ,'5')]) == 6
+    assert _find_assign_op([Tk(s) for s in ("", "a", "=", "b")]) == 2
+    assert (
+        _find_assign_op([Tk(s) for s in ("", "(", "a", "=", "b", ")", "=", "5")]) == 6
+    )
+
 
 def test_check_complete():
     cc = ipt2.TransformerManager().check_complete
@@ -271,9 +275,9 @@ def test_check_complete():
         if True:
             a=1""" )
 
-    assert cc(example) == ('incomplete', 4)
-    assert cc(example+'\n') == ('complete', None)
-    assert cc(example+'\n    ') == ('complete', None)
+    assert cc(example) == ("incomplete", 4)
+    assert cc(example + "\n") == ("complete", None)
+    assert cc(example + "\n    ") == ("complete", None)
 
     # no need to loop on all the letters/numbers.
     short = '12abAB'+string.printable[62:]
@@ -283,7 +287,8 @@ def test_check_complete():
         for k in short:
             cc(c+k)
 
-    assert cc("def f():\n  x=0\n  \\\n  ") == ('incomplete', 2)
+    assert cc("def f():\n  x=0\n  \\\n  ") == ("incomplete", 2)
+
 
 def test_check_complete_II():
     """
@@ -293,7 +298,7 @@ def test_check_complete_II():
 
     """
     cc = ipt2.TransformerManager().check_complete
-    assert cc('''def foo():\n    """''') == ('incomplete', 4)
+    assert cc('''def foo():\n    """''') == ("incomplete", 4)
 
 
 def test_check_complete_invalidates_sunken_brackets():
