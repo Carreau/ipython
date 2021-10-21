@@ -151,8 +151,8 @@ def test_bad_module_all():
     testsdir = os.path.dirname(__file__)
     sys.path.insert(0, testsdir)
     try:
-        results = module_completion('from bad_all import ')
-        assert 'puppies' in results
+        results = module_completion("from bad_all import ")
+        assert "puppies" in results
         for r in results:
             assert isinstance(r, str)
 
