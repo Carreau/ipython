@@ -228,7 +228,8 @@ def test_calldef_none():
     # We should ignore __call__ for all of these.
     for obj in [support_function_one, SimpleClass().method, any, str.upper]:
         i = inspector.info(obj)
-        assert i['call_def'] is None
+        assert i["call_def"] is None
+
 
 def f_kwarg(pos, *, kwonly):
     pass
@@ -264,7 +265,7 @@ def test_getdoc():
 
 def test_empty_property_has_no_source():
     i = inspector.info(property(), detail_level=1)
-    assert i['source'] is None
+    assert i["source"] is None
 
 
 def test_property_sources():
@@ -286,14 +287,14 @@ def test_property_sources():
         adder = property(simple_add) 
 
     i = inspector.info(A.foo, detail_level=1)
-    assert 'def foo(self):' in i['source']
-    assert 'lambda self, v:' in i['source']
+    assert "def foo(self):" in i["source"]
+    assert "lambda self, v:" in i["source"]
 
     i = inspector.info(A.dname, detail_level=1)
-    assert 'def dirname(p)' in i['source']
-    
+    assert "def dirname(p)" in i["source"]
+
     i = inspector.info(A.adder, detail_level=1)
-    assert 'def simple_add(a, b)' in i['source']
+    assert "def simple_add(a, b)" in i["source"]
 
 
 def test_property_docstring_is_in_info_for_detail_level_0():
@@ -394,8 +395,8 @@ def test_pinfo_magic():
 def test_init_colors():
     # ensure colors are not present in signature info
     info = inspector.info(HasSignature)
-    init_def = info['init_definition']
-    assert '[0m' not in init_def
+    init_def = info["init_definition"]
+    assert "[0m" not in init_def
 
 
 def test_builtin_init():
