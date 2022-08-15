@@ -5,7 +5,7 @@ An application for IPython.
 All top-level applications should use the classes in this module for
 handling configuration and creating configurables.
 
-The job of an :class:`Application` is to create the master configuration
+The job of an :class:`Application` is to create the main configuration
 object and then create the configurable objects, passing the config to them.
 """
 
