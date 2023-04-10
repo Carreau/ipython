@@ -1,4 +1,5 @@
 import builtins
+from datetime import datetime
 import inspect
 import os
 import pathlib
@@ -42,7 +43,8 @@ def get_ipython():
 
 @pytest.fixture(scope='session', autouse=True)
 def work_path():
-    path = pathlib.Path("./tmp-ipython-pytest-profiledir")
+    now = datetime.now().isoformat().replace(':', '-').replace('.', '-')
+    path = pathlib.Path(f"./tmp-ipython-pytest-profiledir-{now.isoformat()}")
     os.environ["IPYTHONDIR"] = str(path.absolute())
     if path.exists():
         raise ValueError('IPython dir temporary path already exists ! Did previous test run exit successfully ?')
