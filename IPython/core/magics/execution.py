@@ -19,14 +19,31 @@ import shlex
 import sys
 import time
 import timeit
-from ast import Module
+import ast
+from ast import NodeTransformer, Name, Expr, Assign, Store, Load
+import copy
+
+from ast import (
+    Assign,
+    Call,
+    Expr,
+    Load,
+    Module,
+    Name,
+    NodeTransformer,
+    Store,
+    parse,
+    unparse,
+)
 from io import StringIO
 from logging import error
 from pathlib import Path
 from pdb import Restart
+from textwrap import dedent
 from warnings import warn
 
 from IPython.core import magic_arguments, oinspect, page
+from IPython.core.displayhook import DisplayHook
 from IPython.core.error import UsageError
 from IPython.core.macro import Macro
 from IPython.core.magic import (
@@ -37,8 +54,8 @@ from IPython.core.magic import (
     magics_class,
     needs_local_scope,
     no_var_expand,
-    output_can_be_silenced,
     on_off,
+    output_can_be_silenced,
 )
 from IPython.testing.skipdoctest import skip_doctest
 from IPython.utils.capture import capture_output
@@ -47,7 +64,6 @@ from IPython.utils.ipstruct import Struct
 from IPython.utils.module_paths import find_mod
 from IPython.utils.path import get_py_filename, shellglob
 from IPython.utils.timing import clock, clock2
-from IPython.core.displayhook import DisplayHook
 
 #-----------------------------------------------------------------------------
 # Magic implementation classes
@@ -1474,6 +1490,26 @@ class ExecutionMagics(Magics):
         elif args.output:
             self.shell.user_ns[args.output] = io
 
+    @magic_arguments.magic_arguments()
+    @magic_arguments.argument(
+        "--remove", action="store_true", help="remove the current transformer"
+    )
+    @line_cell_magic
+    def code_wrap(self, line, cell=None):
+        """run the cell, capturing stdout, stderr, and IPython's rich display() calls."""
+        if not cell:
+            args = magic_arguments.parse_argstring(self.code_wrap, line)
+
+        to_remove = getattr(self, "_transformer", None)
+        if to_remove in self.shell.ast_transformers:
+            self.shell.ast_transformers.remove(to_remove)
+        if cell is None:
+            return
+
+        self._transformer = ReplaceCodeTransformer(ast.parse(cell))
+        self.shell.ast_transformers.append(self._transformer)
+
+
 def parse_breakpoint(text, current_file):
     '''Returns (file, line) for file:line and (current_file, line) for line'''
     colon = text.find(':')
@@ -1519,4 +1555,82 @@ def _format_time(timespan, precision=3):
         order = min(-int(math.floor(math.log10(timespan)) // 3), 3)
     else:
         order = 3
-    return u"%.*g %s" % (precision, timespan * scaling[order], units[order])
+    return "%.*g %s" % (precision, timespan * scaling[order], units[order])
+
+
+class ReplaceCodeTransformer(NodeTransformer):
+    def __init__(self, template, mapping=None):
+        assert isinstance(template, ast.Module)
+        self.template = template
+        if mapping is None:
+            mapping = {}
+        self.mapping = mapping
+
+    def visit_Module(self, code):
+        # if not isinstance(code, ast.Module):
+        # recursively called...
+        #    return generic_visit(self, code)
+        last = code.body[-1]
+        if isinstance(last, Expr):
+            code.body.pop()
+            code.body.append(Assign([Name("tmp", ctx=Store())], value=last.value))
+            ast.fix_missing_locations(code)
+            ret = Expr(value=Name("tmp", ctx=Load()))
+            ret = ast.fix_missing_locations(ret)
+            self.mapping["__ret__"] = ret
+        else:
+            self.mapping["__ret__"] = ast.parse("None").body[0]
+        self.mapping["__code__"] = code.body
+        tpl = ast.fix_missing_locations(self.template)
+
+        tx = copy.deepcopy(tpl)
+        node = self.generic_visit(tx)
+        node_2 = ast.fix_missing_locations(node)
+        return node_2
+
+    # this does not work as the name might be in a list and one might want to extend the list.
+    # def visit_Name(self, name):
+    #     if name.id in self.mapping and name.id == "__ret__":
+    #         print(name, "in mapping")
+    #         if isinstance(name.ctx, ast.Store):
+    #             return Name("tmp", ctx=Store())
+    #         else:
+    #             return copy.deepcopy(self.mapping[name.id])
+    #     return name
+
+    def visit_Expr(self, expr):
+        if isinstance(expr.value, Name) and expr.value.id in self.mapping:
+            if self.mapping[expr.value.id] is not None:
+                return copy.deepcopy(self.mapping[expr.value.id])
+        return self.generic_visit(expr)
+
+
+class Mangler(NodeTransformer):
+    """
+    Mangle given names in and ast tree to make sure they do not conflict with
+    user code.
+    """
+
+    def __init__(self, predicate=None):
+        if predicate is None:
+            predicate = lambda name: name.startswith("___")
+        self.predicate = predicate
+
+    def visit_Name(self, node):
+        if self.predicate(node.id):
+            # Once in the ast we do not need
+            # names to be valid identifiers.
+            node.id = "mangle-" + node.id
+        return node
+
+    def visit_ImportFrom(self, node):
+        return self._visit_Import_and_ImportFrom(node)
+
+    def visit_Import(self, node):
+        return self._visit_Import_and_ImportFrom(node)
+
+    def _visit_Import_and_ImportFrom(self, node):
+        for alias in node.names:
+            if self.predicate(alias.asname):
+                alias.asname = "mangle-" + alias.asname
+        return node

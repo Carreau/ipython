@@ -3332,6 +3332,8 @@ class InteractiveShell(SingletonConfigurable):
         """
         for transformer in self.ast_transformers:
             try:
+                import ast
+
                 node = transformer.visit(node)
             except InputRejected:
                 # User-supplied AST transformers can reject an input by raising
@@ -3339,6 +3341,7 @@ class InteractiveShell(SingletonConfigurable):
                 # don't unregister the transform.
                 raise
             except Exception:
+                raise
                 warn("AST transformer %r threw an error. It will be unregistered." % transformer)
                 self.ast_transformers.remove(transformer)
 
