@@ -107,6 +107,9 @@ import sys
 import re
 import os
 
+from typing import List
+from traceback import TracebackException
+
 from IPython import get_ipython
 from IPython.utils import PyColorize
 from IPython.utils import coloransi, py3compat
@@ -184,6 +187,8 @@ class Pdb(OldPdb):
     See the `skip_predicates` commands.
 
     """
+
+    _exceptions: List[Exception]
 
     default_predicates = {
         "tbhide": True,
@@ -314,7 +319,7 @@ class Pdb(OldPdb):
             return frame_locals["__tracebackhide__"]
         return False
 
-    def hidden_frames(self, stack):
+    def hidden_frames(self, stack) -> List[bool]:
         """
         Given an index in the stack return whether it should be skipped.
 
@@ -330,7 +335,22 @@ class Pdb(OldPdb):
             ip_hide = [h if i > ip_start[0] else True for (i, h) in enumerate(ip_hide)]
         return ip_hide
 
-    def interaction(self, frame, traceback):
+    def interaction(self, frame, traceback, *, last_val=None):
+        """
+        Start interaction with the pdb debugger.
+
+        Unlike normal Pdb, traceback can be TracebackType or Exception instance (e.g. sys.last_value).
+
+        In the later case, this will also allow iPdb to jump between chain exceptions when used post-mortem.
+
+        """
+        if isinstance(traceback, BaseException):
+            traceback, exception = traceback.__traceback__, traceback
+        else:
+            exception = None
+
+        # list of exceptions in chain exception, we always start with the current one.
+        self._exceptions = [exception]
         try:
             OldPdb.interaction(self, frame, traceback)
         except KeyboardInterrupt:
@@ -859,12 +879,24 @@ class Pdb(OldPdb):
         stack trace (to an older frame).
 
         Will skip hidden frames.
+
+        When in chained exception this will go up in the upper exception in the
+        chain.
+
         """
         # modified version of upstream that skips
         # frames with __tracebackhide__
         if self.curindex == 0:
-            self.error("Oldest frame")
-            return
+            if len(self._exceptions) > 1:
+                self.message("At older frame, moving to last frame to parent exception")
+                self._exceptions.pop()
+                old_ex = self._exceptions[-1]
+                self.setup(None, old_ex.__traceback__)
+                self.curindex = len(self.stack)
+                arg = "0"
+            else:
+                self.error("Oldest frame")
+                return
         try:
             count = int(arg or 1)
         except ValueError:
@@ -905,10 +937,25 @@ class Pdb(OldPdb):
         stack trace (to a newer frame).
 
         Will skip hidden frames.
+
+        When in chained exception this will go up in the lower exception in the
+        chain.
+
         """
         if self.curindex + 1 == len(self.stack):
-            self.error("Newest frame")
-            return
+            if self._exceptions[-1] and self._exceptions[-1].__context__:
+                new_ex = self._exceptions[-1].__context__
+
+                self.message(
+                    "Add newest frame of current traceback, looking for cause/context, and stepping into it."
+                )
+                self._exceptions.append(new_ex)
+                self.setup(None, new_ex.__traceback__)
+                self.curindex = -1
+                arg = 1
+            else:
+                self.error("Newest frame")
+                return
         try:
             count = int(arg or 1)
         except ValueError:

@@ -1245,7 +1245,7 @@ class VerboseTB(TBTools):
                 if etb and etb.tb_next:
                     etb = etb.tb_next
                 self.pdb.botframe = etb.tb_frame
-                self.pdb.interaction(None, etb)
+                self.pdb.interaction(None, sys.last_value)
 
         if hasattr(self, 'tb'):
             del self.tb
