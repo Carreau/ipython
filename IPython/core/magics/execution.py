@@ -8,7 +8,6 @@
 import ast
 import bdb
 import builtins as builtin_mod
-import copy
 import cProfile as profile
 import gc
 import itertools
@@ -20,27 +19,18 @@ import shlex
 import sys
 import time
 import timeit
-from typing import Dict, Any
+from typing import Dict, Any, List
 from ast import (
-    Assign,
-    Call,
-    Expr,
-    Load,
     Module,
-    Name,
-    NodeTransformer,
-    Store,
-    parse,
-    unparse,
 )
 from io import StringIO
 from logging import error
 from pathlib import Path
 from pdb import Restart
-from textwrap import dedent, indent
+from textwrap import indent
 from warnings import warn
 
-from IPython.core import magic_arguments, oinspect, page
+from IPython.core import magic_arguments, page
 from IPython.core.displayhook import DisplayHook
 from IPython.core.error import UsageError
 from IPython.core.macro import Macro
@@ -526,8 +516,7 @@ class ExecutionMagics(Magics):
 
     @skip_doctest
     @line_magic
-    def run(self, parameter_s='', runner=None,
-                  file_finder=get_py_filename):
+    def run(self, parameter_s: str = "", runner=None, file_finder=get_py_filename):
         """Run the named file inside IPython as a program.
 
         Usage::
@@ -700,6 +689,8 @@ class ExecutionMagics(Magics):
             parameter_s = ' '.join(shlex.quote(arg) for arg in argv)
 
         # get arguments and set sys.argv for program to be run.
+        opts: Struct
+        arg_lst: List[str]
         opts, arg_lst = self.parse_options(parameter_s,
                                            'nidtN:b:pD:l:rs:T:em:G',
                                            mode='list', list_all=1)
@@ -709,9 +700,10 @@ class ExecutionMagics(Magics):
             if modpath is None:
                 msg = '%r is not a valid modulename on sys.path'%modulename
                 raise Exception(msg)
+            assert isinstance(modpath, str)
             arg_lst = [modpath] + arg_lst
+        fpath = ""  # initialize to make sure fpath is in scope later
         try:
-            fpath = None # initialize to make sure fpath is in scope later
             fpath = arg_lst[0]
             filename = file_finder(fpath)
         except IndexError as e:
@@ -721,9 +713,11 @@ class ExecutionMagics(Magics):
             try:
                 msg = str(e)
             except UnicodeError:
-                msg = e.message
-            if os.name == 'nt' and re.match(r"^'.*'$",fpath):
-                warn('For Windows, use double quotes to wrap a filename: %run "mypath\\myfile.py"')
+                msg = e.message  # type: ignore
+            if os.name == "nt" and re.match(r"^'.*'$", fpath):
+                warn(
+                    'For Windows, use double quotes to wrap a filename: %run "mypath\\myfile.py"'
+                )
             raise Exception(msg) from e
         except TypeError:
             if fpath in sys.meta_path:
@@ -742,13 +736,13 @@ class ExecutionMagics(Magics):
 
         # Make sure that the running script gets a proper sys.argv as if it
         # were run from a system shell.
-        save_argv = sys.argv # save it for later restoring
+        save_argv = sys.argv  # save it for later restoring
 
         if 'G' in opts:
             args = arg_lst[1:]
         else:
             # tilde and glob expansion
-            args = shellglob(map(os.path.expanduser,  arg_lst[1:]))
+            args = shellglob(map(os.path.expanduser, arg_lst[1:]))
 
         sys.argv = [filename] + args  # put in the proper filename
 
@@ -974,7 +968,6 @@ class ExecutionMagics(Magics):
                 finally:
                     sys.settrace(trace)
             
-
         except:
             etype, value, tb = sys.exc_info()
             # Skip three frames in the traceback: the %run one,
@@ -1120,7 +1113,7 @@ class ExecutionMagics(Magics):
         # this code has tight coupling to the inner workings of timeit.Timer,
         # but is there a better way to achieve that the code stmt has access
         # to the shell namespace?
-        transform  = self.shell.transform_cell
+        transform = self.shell.transform_cell
 
         if cell is None:
             # called as line magic
@@ -1193,7 +1186,7 @@ class ExecutionMagics(Magics):
 
         # Restore global vars from conflict_globs
         if conflict_globs:
-           glob.update(conflict_globs)
+            glob.update(conflict_globs)
                 
         if not quiet :
             # Check best timing is greater than zero to avoid a
@@ -1206,7 +1199,7 @@ class ExecutionMagics(Magics):
                       "fastest. This could mean that an intermediate result "
                       "is being cached." % (worst / best))
            
-            print( timeit_result )
+            print(timeit_result)
 
             if tc > tc_min:
                 print("Compiler time: %.2f s" % tc)
@@ -1592,14 +1585,13 @@ def _format_time(timespan, precision=3):
                 break
         return " ".join(time)
 
-    
     # Unfortunately the unicode 'micro' symbol can cause problems in
     # certain terminals.  
     # See bug: https://bugs.launchpad.net/ipython/+bug/348466
     # Try to prevent crashes by being more secure than it needs to
     # E.g. eclipse is able to print a µ, but has no sys.stdout.encoding set.
-    units = [u"s", u"ms",u'us',"ns"] # the save value   
-    if hasattr(sys.stdout, 'encoding') and sys.stdout.encoding:
+    units = ["s", "ms", "us", "ns"]  # the save value
+    if hasattr(sys.stdout, "encoding") and sys.stdout.encoding:
         try:
             u'\xb5'.encode(sys.stdout.encoding)
             units = [u"s", u"ms",u'\xb5s',"ns"]

@@ -11,20 +11,28 @@
 #  the file COPYING, distributed as part of this software.
 #-----------------------------------------------------------------------------
 
+from __future__ import annotations
+
 import os
 import re
 import sys
-from getopt import getopt, GetoptError
+from typing import TYPE_CHECKING
+import typing as t
+from getopt import GetoptError, getopt
+from logging import error
 
+from traitlets import Bool, Dict, Instance, observe
 from traitlets.config.configurable import Configurable
-from . import oinspect
-from .error import UsageError
-from .inputtransformer2 import ESC_MAGIC, ESC_MAGIC2
+
 from ..utils.ipstruct import Struct
 from ..utils.process import arg_split
 from ..utils.text import dedent
-from traitlets import Bool, Dict, Instance, observe
-from logging import error
+from . import oinspect
+from .error import UsageError
+from .inputtransformer2 import ESC_MAGIC, ESC_MAGIC2
+
+if TYPE_CHECKING:
+    from .. import InteractiveShell
 
 #-----------------------------------------------------------------------------
 # Globals
@@ -543,13 +551,13 @@ class Magics(Configurable):
     See :mod:`magic_functions` for examples of actual implementation classes.
     """
     # Dict holding all command-line options for each magic.
-    options_table = None
+    options_table: t.Dict[str, str]
     # Dict for the mapping of magic names to methods, set by class decorator
     magics = None
     # Flag to check that the class decorator was properly applied
     registered = False
     # Instance of IPython shell
-    shell = None
+    shell: InteractiveShell
 
     def __init__(self, shell=None, **kwargs):
         if not(self.__class__.registered):
@@ -617,7 +625,9 @@ class Magics(Configurable):
         strng = newline_re.sub(r'\\textbackslash{}n',strng)
         return strng
 
-    def parse_options(self, arg_str, opt_str, *long_opts, **kw):
+    def parse_options(
+        self, arg_str: str, opt_str: str, *long_opts: t.List[str], **kw
+    ) -> t.Tuple[Struct, t.List[str]]:
         """Parse options passed to an argument string.
 
         The interface is similar to that of :func:`getopt.getopt`, but it
@@ -648,7 +658,7 @@ class Magics(Configurable):
 
         # inject default options at the beginning of the input line
         caller = sys._getframe(1).f_code.co_name
-        arg_str = '%s %s' % (self.options_table.get(caller,''),arg_str)
+        arg_str = "%s %s" % (self.options_table.get(caller, ""), arg_str)
 
         mode = kw.get('mode','string')
         if mode not in ['string','list']:
@@ -662,15 +672,15 @@ class Magics(Configurable):
         remainder_arg_str = arg_str
 
         # Check if we have more than one argument to warrant extra processing:
-        odict = {}  # Dictionary with options
-        args = arg_str.split()
+        odict: t.Dict[None, None] = {}  # Dictionary with options
+        args: t.List[str] = arg_str.split()
         if len(args) >= 1:
             # If the list of inputs only has 0 or 1 thing in it, there's no
             # need to look for options
             argv = arg_split(arg_str, posix, strict)
             # Do regular option processing
             try:
-                opts,args = getopt(argv, opt_str, long_opts)
+                opts, args = getopt(argv, opt_str, long_opts)
             except GetoptError as e:
                 raise UsageError(
                     '%s ( allowed: "%s" %s)' % (e.msg, opt_str, " ".join(long_opts))
@@ -705,7 +715,7 @@ class Magics(Configurable):
             else:
                 args = " ".join(args)
 
-        return opts,args
+        return opts, args
 
     def default_option(self, fn, optstr):
         """Make an entry in the options_table for fn, with value optstr"""
