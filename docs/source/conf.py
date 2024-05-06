@@ -15,11 +15,16 @@
 # All configuration values have a default value; values that are commented out
 # serve to show the default value.
 
-import toml
+
 import sys, os
 from pathlib import Path
 
-config = toml.load("./sphinx.toml")
+if sys.version_info > (3, 11):
+    import toml as tomllib
+else:
+    import toml as tomllib
+
+config = tomllib.load("./sphinx.toml")
 
 # https://read-the-docs.readthedocs.io/en/latest/faq.html
 ON_RTD = os.environ.get("READTHEDOCS", None) == "True"
