@@ -332,15 +332,15 @@ class SystemAssign(TokenTransformBase):
 # for all intents and purposes they constitute the 'IPython syntax', so they
 # should be considered fixed.
 
-ESC_SHELL  = '!'     # Send line to underlying system shell
-ESC_SH_CAP = '!!'    # Send line to system shell and capture output
-ESC_HELP   = '?'     # Find information about object
-ESC_HELP2  = '??'    # Find extra-detailed information about object
-ESC_MAGIC  = '%'     # Call magic function
-ESC_MAGIC2 = '%%'    # Call cell-magic function
-ESC_QUOTE  = ','     # Split args on whitespace, quote each as string and call
-ESC_QUOTE2 = ';'     # Quote all args as a single string, call
-ESC_PAREN  = '/'     # Call first argument with rest of line as arguments
+ESC_SHELL = "!"  # Send line to underlying system shell
+ESC_SH_CAP = "!!"  # Send line to system shell and capture output
+ESC_HELP = "?"  # Find information about object
+ESC_HELP2 = "??"  # Find extra-detailed information about object
+ESC_MAGIC = "%"  # Call magic function
+ESC_MAGIC2 = "%%"  # Call cell-magic function
+# ESC_QUOTE  = ','     # Split args on whitespace, quote each as string and call
+# ESC_QUOTE2 = ';'     # Quote all args as a single string, call
+# ESC_PAREN  = '/'     # Call first argument with rest of line as arguments
 
 ESCAPE_SINGLES = {'!', '?', '%', ',', ';', '/'}
 ESCAPE_DOUBLES = {'!!', '??'}  # %% (cell magic) is handled separately
@@ -383,29 +383,33 @@ def _tr_magic(content):
     name, _, args = content.partition(' ')
     return 'get_ipython().run_line_magic(%r, %r)' % (name, args)
 
-def _tr_quote(content):
-    "Translate lines escaped with a comma: ,"
-    name, _, args = content.partition(' ')
-    return '%s("%s")' % (name, '", "'.join(args.split()) )
+# def _tr_quote(content):
+#     "Translate lines escaped with a comma: ,"
+#     name, _, args = content.partition(' ')
+#     return '%s("%s")' % (name, '", "'.join(args.split()) )
+#
+# def _tr_quote2(content):
+#     "Translate lines escaped with a semicolon: ;"
+#     name, _, args = content.partition(' ')
+#     return '%s("%s")' % (name, args)
+#
+# def _tr_paren(content):
+#     "Translate lines escaped with a slash: /"
+#     name, _, args = content.partition(' ')
+#     return '%s(%s)' % (name, ", ".join(args.split()))
 
-def _tr_quote2(content):
-    "Translate lines escaped with a semicolon: ;"
-    name, _, args = content.partition(' ')
-    return '%s("%s")' % (name, args)
 
-def _tr_paren(content):
-    "Translate lines escaped with a slash: /"
-    name, _, args = content.partition(' ')
-    return '%s(%s)' % (name, ", ".join(args.split()))
+tr = {
+    ESC_SHELL: "get_ipython().system({!r})".format,
+    ESC_SH_CAP: "get_ipython().getoutput({!r})".format,
+    ESC_HELP: _tr_help,
+    ESC_HELP2: _tr_help2,
+    ESC_MAGIC: _tr_magic,
+    # ESC_QUOTE  : _tr_quote,
+    # ESC_QUOTE2 : _tr_quote2,
+    # ESC_PAREN  : _tr_paren
+}
 
-tr = { ESC_SHELL  : 'get_ipython().system({!r})'.format,
-       ESC_SH_CAP : 'get_ipython().getoutput({!r})'.format,
-       ESC_HELP   : _tr_help,
-       ESC_HELP2  : _tr_help2,
-       ESC_MAGIC  : _tr_magic,
-       ESC_QUOTE  : _tr_quote,
-       ESC_QUOTE2 : _tr_quote2,
-       ESC_PAREN  : _tr_paren }
 
 class EscapedCommand(TokenTransformBase):
     """Transformer for escaped commands like %foo, !foo, or /foo"""

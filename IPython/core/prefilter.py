@@ -16,9 +16,9 @@ from .autocall import IPyAutocall
 from traitlets.config.configurable import Configurable
 from .inputtransformer2 import (
     ESC_MAGIC,
-    ESC_QUOTE,
-    ESC_QUOTE2,
-    ESC_PAREN,
+    # ESC_QUOTE,
+    # ESC_QUOTE2,
+    # ESC_PAREN,
 )
 from .macro import Macro
 from .splitinput import LineInfo
@@ -242,6 +242,7 @@ class PrefilterManager(Configurable):
         """
         # print("prefilter_line_info: ", line_info)
         handler = self.find_handler(line_info)
+        assert handler is not None
         return handler.handle(line_info)
 
     def find_handler(self, line_info):
@@ -255,9 +256,12 @@ class PrefilterManager(Configurable):
 
     def transform_line(self, line, continue_prompt):
         """Calls the enabled transformers in order of increasing priority."""
+        assert False
+        print("Will transform?")
         for transformer in self.transformers:
             if transformer.enabled:
                 line = transformer.transform(line, continue_prompt)
+        print("transformed to", line)
         return line
 
     def prefilter_line(self, line, continue_prompt=False):
@@ -266,6 +270,8 @@ class PrefilterManager(Configurable):
         This method prefilters a single line of text by calling the
         transformers and then the checkers/handlers.
         """
+        print("will prefilter_line", line)
+        breakpoint()
 
         # print("prefilter_line: ", line, continue_prompt)
         # All handlers *must* return a value, even if it's blank ('').
@@ -279,7 +285,8 @@ class PrefilterManager(Configurable):
             # previously typed some whitespace that started a continuation
             # prompt, he can break out of that loop with just an empty line.
             # This is how the default python prompt works.
-            return ''
+            print("> not line")
+            return ""
 
         # At this point, we invoke our transformers.
         if not continue_prompt or (continue_prompt and self.multi_line_specials):
@@ -293,14 +300,17 @@ class PrefilterManager(Configurable):
 
         normal_handler = self.get_handler_by_name('normal')
         if not stripped:
+            print("> notmal")
             return normal_handler.handle(line_info)
 
         # special handlers are only allowed for single line statements
         if continue_prompt and not self.multi_line_specials:
+            print("> special")
             return normal_handler.handle(line_info)
 
         prefiltered = self.prefilter_line_info(line_info)
         # print("prefiltered line: %r" % prefiltered)
+        print("> pf")
         return prefiltered
 
     def prefilter_lines(self, lines, continue_prompt=False):
@@ -596,74 +606,74 @@ class MagicHandler(PrefilterHandler):
         return cmd
 
 
-class AutoHandler(PrefilterHandler):
-
-    handler_name = Unicode('auto')
-    esc_strings = List([ESC_PAREN, ESC_QUOTE, ESC_QUOTE2])
-
-    def handle(self, line_info):
-        """Handle lines which can be auto-executed, quoting if requested."""
-        line    = line_info.line
-        ifun    = line_info.ifun
-        the_rest = line_info.the_rest
-        esc     = line_info.esc
-        continue_prompt = line_info.continue_prompt
-        obj = line_info.ofind(self.shell).obj
-
-        # This should only be active for single-line input!
-        if continue_prompt:
-            return line
-
-        force_auto = isinstance(obj, IPyAutocall)
-
-        # User objects sometimes raise exceptions on attribute access other
-        # than AttributeError (we've seen it in the past), so it's safest to be
-        # ultra-conservative here and catch all.
-        try:
-            auto_rewrite = obj.rewrite
-        except Exception:
-            auto_rewrite = True
-
-        if esc == ESC_QUOTE:
-            # Auto-quote splitting on whitespace
-            newcmd = '%s("%s")' % (ifun,'", "'.join(the_rest.split()) )
-        elif esc == ESC_QUOTE2:
-            # Auto-quote whole string
-            newcmd = '%s("%s")' % (ifun,the_rest)
-        elif esc == ESC_PAREN:
-            newcmd = '%s(%s)' % (ifun,",".join(the_rest.split()))
-        else:
-            # Auto-paren.
-            if force_auto:
-                # Don't rewrite if it is already a call.
-                do_rewrite = not the_rest.startswith('(')
-            else:
-                if not the_rest:
-                    # We only apply it to argument-less calls if the autocall
-                    # parameter is set to 2.
-                    do_rewrite = (self.shell.autocall >= 2)
-                elif the_rest.startswith('[') and hasattr(obj, '__getitem__'):
-                    # Don't autocall in this case: item access for an object
-                    # which is BOTH callable and implements __getitem__.
-                    do_rewrite = False
-                else:
-                    do_rewrite = True
-
-            # Figure out the rewritten command
-            if do_rewrite:
-                if the_rest.endswith(';'):
-                    newcmd = '%s(%s);' % (ifun.rstrip(),the_rest[:-1])
-                else:
-                    newcmd = '%s(%s)' % (ifun.rstrip(), the_rest)
-            else:
-                normal_handler = self.prefilter_manager.get_handler_by_name('normal')
-                return normal_handler.handle(line_info)
-
-        # Display the rewritten call
-        if auto_rewrite:
-            self.shell.auto_rewrite_input(newcmd)
-
-        return newcmd
+# class AutoHandler(PrefilterHandler):
+#
+#     handler_name = Unicode('auto')
+#     esc_strings = List([ESC_PAREN, ESC_QUOTE, ESC_QUOTE2])
+#
+#     def handle(self, line_info):
+#         """Handle lines which can be auto-executed, quoting if requested."""
+#         line    = line_info.line
+#         ifun    = line_info.ifun
+#         the_rest = line_info.the_rest
+#         esc     = line_info.esc
+#         continue_prompt = line_info.continue_prompt
+#         obj = line_info.ofind(self.shell).obj
+#
+#         # This should only be active for single-line input!
+#         if continue_prompt:
+#             return line
+#
+#         force_auto = isinstance(obj, IPyAutocall)
+#
+#         # User objects sometimes raise exceptions on attribute access other
+#         # than AttributeError (we've seen it in the past), so it's safest to be
+#         # ultra-conservative here and catch all.
+#         try:
+#             auto_rewrite = obj.rewrite
+#         except Exception:
+#             auto_rewrite = True
+#
+#         if esc == ESC_QUOTE:
+#             # Auto-quote splitting on whitespace
+#             newcmd = '%s("%s")' % (ifun,'", "'.join(the_rest.split()) )
+#         elif esc == ESC_QUOTE2:
+#             # Auto-quote whole string
+#             newcmd = '%s("%s")' % (ifun,the_rest)
+#         elif esc == ESC_PAREN:
+#             newcmd = '%s(%s)' % (ifun,",".join(the_rest.split()))
+#         else:
+#             # Auto-paren.
+#             if force_auto:
+#                 # Don't rewrite if it is already a call.
+#                 do_rewrite = not the_rest.startswith('(')
+#             else:
+#                 if not the_rest:
+#                     # We only apply it to argument-less calls if the autocall
+#                     # parameter is set to 2.
+#                     do_rewrite = (self.shell.autocall >= 2)
+#                 elif the_rest.startswith('[') and hasattr(obj, '__getitem__'):
+#                     # Don't autocall in this case: item access for an object
+#                     # which is BOTH callable and implements __getitem__.
+#                     do_rewrite = False
+#                 else:
+#                     do_rewrite = True
+#
+#             # Figure out the rewritten command
+#             if do_rewrite:
+#                 if the_rest.endswith(';'):
+#                     newcmd = '%s(%s);' % (ifun.rstrip(),the_rest[:-1])
+#                 else:
+#                     newcmd = '%s(%s)' % (ifun.rstrip(), the_rest)
+#             else:
+#                 normal_handler = self.prefilter_manager.get_handler_by_name('normal')
+#                 return normal_handler.handle(line_info)
+#
+#         # Display the rewritten call
+#         if auto_rewrite:
+#             self.shell.auto_rewrite_input(newcmd)
+#
+#         return newcmd
 
 
 class EmacsHandler(PrefilterHandler):
@@ -689,7 +699,7 @@ class EmacsHandler(PrefilterHandler):
 _default_checkers = [
     EmacsChecker,
     MacroChecker,
-    IPyAutocallChecker,
+    # IPyAutocallChecker,
     AssignmentChecker,
     AutoMagicChecker,
     PythonOpsChecker,
@@ -700,6 +710,6 @@ _default_handlers = [
     PrefilterHandler,
     MacroHandler,
     MagicHandler,
-    AutoHandler,
-    EmacsHandler
+    # AutoHandler,
+    EmacsHandler,
 ]
