@@ -484,19 +484,6 @@ class InteractiveShell(SingletonConfigurable):
              "own input transformations."
     )
 
-    @property
-    def input_splitter(self):
-        """Make this available for backward compatibility (pre-7.0 release) with existing code.
-
-        For example, ipykernel ipykernel currently uses
-        `shell.input_splitter.check_complete`
-        """
-        from warnings import warn
-        warn("`input_splitter` is deprecated since IPython 7.0, prefer `input_transformer_manager`.",
-             DeprecationWarning, stacklevel=2
-        )
-        return self.input_transformer_manager
-
     logstart = Bool(False, help=
         """
         Start logging to the default log file in overwrite mode.
@@ -1037,14 +1024,6 @@ class InteractiveShell(SingletonConfigurable):
             print("Warning! Hook '%s' is not one of %s" % \
                   (name, IPython.core.hooks.__all__ ))
 
-        if name in IPython.core.hooks.deprecated:
-            alternative = IPython.core.hooks.deprecated[name]
-            raise ValueError(
-                "Hook {} has been deprecated since IPython 5.0. Use {} instead.".format(
-                    name, alternative
-                )
-            )
-
         if not dp:
             dp = IPython.core.hooks.CommandChainDispatcher()
 
@@ -1064,16 +1043,6 @@ class InteractiveShell(SingletonConfigurable):
         self.events = EventManager(self, available_events)
 
         self.events.register("pre_execute", self._clear_warning_registry)
-
-    def register_post_execute(self, func):
-        """DEPRECATED: Use ip.events.register('post_run_cell', func)
-
-        Register a function for calling after code execution.
-        """
-        raise ValueError(
-            "ip.register_post_execute is deprecated since IPython 1.0, use "
-            "ip.events.register('post_run_cell', func) instead."
-        )
 
     def _clear_warning_registry(self):
         # clear the warning registry, so that different code blocks with
@@ -2590,7 +2559,6 @@ class InteractiveShell(SingletonConfigurable):
         valid Python code you can type at the interpreter, including loops and
         compound statements.
         """
-        assert False
         warnings.warn(
             "`magic(...)` is deprecated since IPython 0.13 (warning added in "
             "8.1), use run_line_magic(magic_name, parameter_s).",
@@ -3689,7 +3657,7 @@ class InteractiveShell(SingletonConfigurable):
 
         return gui, backend
 
-    def enable_pylab(self, gui=None, import_all=True, welcome_message=False):
+    def enable_pylab(self, gui=None, import_all=True):
         """Activate pylab support at runtime.
 
         This turns on support for matplotlib, preloads into the interactive
@@ -3712,8 +3680,6 @@ class InteractiveShell(SingletonConfigurable):
         import_all : optional, bool, default: True
             Whether to do `from numpy import *` and `from pylab import *`
             in addition to module imports.
-        welcome_message : deprecated
-            This argument is ignored, no welcome message will be displayed.
         """
         from IPython.core.pylabtools import import_pylab
 
