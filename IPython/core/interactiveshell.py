@@ -2590,6 +2590,7 @@ class InteractiveShell(SingletonConfigurable):
         valid Python code you can type at the interpreter, including loops and
         compound statements.
         """
+        assert False
         warnings.warn(
             "`magic(...)` is deprecated since IPython 0.13 (warning added in "
             "8.1), use run_line_magic(magic_name, parameter_s).",
