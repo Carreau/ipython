@@ -24,9 +24,9 @@ if sys.version_info > (3, 11):
 else:
     import tomli as tomllib
 
-with open("./sphinx.toml", "rb") as f:
-    config = tomllib.load(f)
+from sphinx_toml import load_into_locals
 
+load_into_locals(locals())
 # https://read-the-docs.readthedocs.io/en/latest/faq.html
 ON_RTD = os.environ.get("READTHEDOCS", None) == "True"
 
@@ -90,44 +90,41 @@ exec(
 # - default_role
 # - modindex_common_prefix
 
-locals().update(config["sphinx"])
+assert extensions == [
+    "sphinx.ext.autodoc",
+    "sphinx.ext.autosummary",
+    "sphinx.ext.doctest",
+    "sphinx.ext.inheritance_diagram",
+    "sphinx.ext.intersphinx",
+    "sphinx.ext.graphviz",
+    "sphinxcontrib.jquery",
+    "IPython.sphinxext.ipython_console_highlighting",
+    "IPython.sphinxext.ipython_directive",
+    "sphinx.ext.napoleon",  # to preprocess docstrings
+    "github",  # for easy GitHub links
+    "magics",
+    "configtraits",
+]
 
-try:
-    from intersphinx_registry import get_intersphinx_mapping
+from intersphinx_registry import get_intersphinx_mapping
 
-    intersphinx_mapping = get_intersphinx_mapping(
-        packages={
-            "python",
-            "rpy2",
-            "jupyterclient",
-            "jupyter",
-            "jedi",
-            "traitlets",
-            "ipykernel",
-            "prompt_toolkit",
-            "ipywidgets",
-            "ipyparallel",
-            "pip",
-        }
-    )
-
-except ModuleNotFoundError:
-    # In case intersphinx_registry is not yet packages on current platform
-    # as it is quite recent.
-    print("/!\\ intersphinx_registry not installed, relying on local mapping.")
-    intersphinx_mapping = config["intersphinx_mapping"]
-    for k, v in intersphinx_mapping.items():
-        intersphinx_mapping[k] = tuple(
-            [intersphinx_mapping[k]["url"], intersphinx_mapping[k]["fallback"]]
-        )
+intersphinx_mapping = get_intersphinx_mapping(
+    packages={
+        "python",
+        "rpy2",
+        "jupyterclient",
+        "jupyter",
+        "jedi",
+        "traitlets",
+        "ipykernel",
+        "prompt_toolkit",
+        "ipywidgets",
+        "ipyparallel",
+        "pip",
+    }
+)
 
 
-# numpydoc config
-numpydoc_show_class_members = config["numpydoc"][
-    "numpydoc_show_class_members"
-]  # Otherwise Sphinx emits thousands of warnings
-numpydoc_class_members_toctree = config["numpydoc"]["numpydoc_class_members_toctree"]
-warning_is_error = config["numpydoc"]["warning_is_error"]
 
 # Options for HTML output
 # -----------------------
@@ -143,13 +140,9 @@ warning_is_error = config["numpydoc"]["warning_is_error"]
 #     using the given strftime format.
 #     Output file base name for HTML help builder.
 # - htmlhelp_basename
-locals().update(config["html"])
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.
-html_additional_pages = {}
-for item in config["html"]["html_additional_pages"]:
-    html_additional_pages[item[0]] = item[1]
 
 # Options for LaTeX output
 # ------------------------
@@ -157,12 +150,7 @@ for item in config["html"]["html_additional_pages"]:
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, document class [howto/manual]).
 latex_documents = []
-for item in config["latex"]["latex_documents"]:
-    latex_documents.append(tuple(item))
-# If false, no module index is generated.
-latex_use_modindex = config["latex"]["latex_use_modindex"]
-# The font size ('10pt', '11pt' or '12pt').
-latex_font_size = config["latex"]["latex_font_size"]
+
 
 # Options for texinfo output
 # --------------------------
