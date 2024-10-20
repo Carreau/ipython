@@ -13,9 +13,7 @@
 
 # Our own packages
 from IPython.display import display, Javascript, Latex, SVG, HTML, Markdown
-from IPython.core.magic import  (
-    Magics, magics_class, cell_magic
-)
+from IPython.core.magic import Magics, magics_class, cell_magic, line_magic
 from IPython.core import magic_arguments
 
 #-----------------------------------------------------------------------------
@@ -91,3 +89,51 @@ Isolated cells are rendered inside their own <iframe> tag"""
     def markdown(self, line, cell):
         """Render the cell as Markdown text block"""
         display(Markdown(cell))
+
+    @line_magic
+    def vote(self, line):
+        from textwrap import dedent
+
+        print(
+            dedent(
+                """
+                Voting is not just a right; it’s a responsibility. Many fought
+                for the ability to vote, and if you’re eligible, your
+                participation is essential—do it for those who can’t.
+
+                For US election see https://www.vote.org/
+
+
+                IPython is a free, open-source tool built and maintained by over
+                a 1000+ volunteers across the world. We come from diverse
+                backgrounds and experiences, and many of us face the realities
+                of policies that impact us personally every day.
+
+                - Many of us have been or are immigrants to the US.
+                - We represent underrepresented minorities, LGBTQIA+
+                  communities, and those affected by policies on reproductive
+                  rights.
+                - Some have needed abortions, while others have chosen them.
+                - We’ve seen lives saved and lost due to access—or lack
+                  thereof—to good healthcare
+                - We come from places where education was free, while others
+                  still struggle under the weight of student debt
+
+                We cannot support parties or candidates that promote hate, strip
+                away women’s rights to govern their own bodies, refuse to
+                address gun violence in schools, or embrace convicted felons as
+                leaders
+
+                Your vote shapes the future. If you believe in inclusivity,
+                equality, and fairness, consider supporting candidates who share
+                these values. We stand against divisive movements and urge you
+                to vote for progress and unity—this means voting Democrat. Your
+                voice counts!
+
+                https://www.vote.org/
+                https://kamalaharris.com/
+                https://universalsuffragechurch.org/
+
+            """
+            )
+        )
