@@ -1,30 +1,17 @@
-# -*- coding: utf-8 -*-
-#
 # IPython documentation build configuration file.
 
 # NOTE: This file has been edited manually from the auto-generated one from
 # sphinx.  Do NOT delete and re-generate.  If any changes from sphinx are
 # needed, generate a scratch one and merge by hand any new fields needed.
 
-#
-# This file is execfile()d with the current directory set to its containing dir.
-#
-# The contents of this file are pickled, so don't put values in the namespace
-# that aren't pickleable (module imports are okay, they're removed automatically).
-#
-# All configuration values have a default value; values that are commented out
-# serve to show the default value.
-
-
 import sys, os
 from pathlib import Path
 
-if sys.version_info > (3, 11):
-    import tomllib
-else:
-    import tomli as tomllib
-
 from sphinx_toml import load_into_locals
+from intersphinx_registry import get_intersphinx_mapping
+import sphinx_rtd_theme
+import sphinx.util
+import logging
 
 load_into_locals(locals())
 # https://read-the-docs.readthedocs.io/en/latest/faq.html
@@ -45,7 +32,6 @@ if ON_RTD:
                     "__name__": "__main__",
                 },
             )
-import sphinx_rtd_theme
 
 # Allow Python scripts to change behaviour during sphinx run
 os.environ["IN_SPHINX_RUN"] = "True"
@@ -84,29 +70,9 @@ exec(
 #       Exclude these glob-style patterns when looking for source files.
 #       They are relative to the source/ directory.
 # - pygments_style: The name of the Pygments (syntax highlighting) style to use.
-# - extensions:
-#        Add any Sphinx extension module names here, as strings. They can be extensions
-#        coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 # - default_role
 # - modindex_common_prefix
 
-assert extensions == [
-    "sphinx.ext.autodoc",
-    "sphinx.ext.autosummary",
-    "sphinx.ext.doctest",
-    "sphinx.ext.inheritance_diagram",
-    "sphinx.ext.intersphinx",
-    "sphinx.ext.graphviz",
-    "sphinxcontrib.jquery",
-    "IPython.sphinxext.ipython_console_highlighting",
-    "IPython.sphinxext.ipython_directive",
-    "sphinx.ext.napoleon",  # to preprocess docstrings
-    "github",  # for easy GitHub links
-    "magics",
-    "configtraits",
-]
-
-from intersphinx_registry import get_intersphinx_mapping
 
 intersphinx_mapping = get_intersphinx_mapping(
     packages={
@@ -123,7 +89,6 @@ intersphinx_mapping = get_intersphinx_mapping(
         "pip",
     }
 )
-
 
 
 # Options for HTML output
@@ -219,7 +184,6 @@ rst_prolog += """
 
 """
 
-import logging
 
 
 class ConfigtraitFilter(logging.Filter):
@@ -243,7 +207,6 @@ class ConfigtraitFilter(logging.Filter):
 
 ct_filter = ConfigtraitFilter()
 
-import sphinx.util
 
 logger = sphinx.util.logging.getLogger("sphinx.domains.std").logger
 logger.addFilter(ct_filter)
