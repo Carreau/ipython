@@ -1,49 +1,66 @@
-import torch
-from transformers import GPT2LMHeadModel, GPT2Tokenizer
+from openai import OpenAI
+import os
 
-# Load the GPT-2 model and tokenizer
-model_name = "gpt2"  # You can also use "gpt2-medium", "gpt2-large", etc.
-tokenizer = GPT2Tokenizer.from_pretrained(model_name)
-model = GPT2LMHeadModel.from_pretrained(model_name)
+# Initialize the OpenAI API client
+
+client = OpenAI(
+    api_key=os.environ.get("OPENAI_API_KEY"),  # This is the default and can be omitted
+)
+
+import openai
+
+client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+openai.api_key = os.environ.get("OPENAI_API_KEY")
 
 
-def suggest_completion(partial_code):
+HEAD = """```python\n"""
+
+TAIL = "\n```"
+
+
+def strip_head_and_tail(code):
+    if code.startswith(HEAD):
+        code = code[len(HEAD) :]
+    if code.endswith(TAIL):
+        code = code[: -len(TAIL)]
+    return code
+
+
+def complete_python_code_chat(prompt, model="gpt-3.5", max_tokens=150):
     """
-    Suggests code completions for the given partial Python code.
+    Calls the OpenAI API chat endpoint to complete Python code.
 
     Args:
-        partial_code (str): The partial Python code to complete.
+        prompt (str): The starting Python code or description to complete.
+        model (str): The OpenAI model to use (e.g., gpt-3.5-turbo or gpt-4).
+        max_tokens (int): The maximum number of tokens to generate.
 
     Returns:
-        str: Suggested code completion.
+        str: The completed Python code.
     """
-    # Encode the input code
-    inputs = tokenizer.encode(partial_code, return_tensors="pt")
-
-    # Generate code completion
-    with torch.no_grad():
-        outputs = model.generate(
-            inputs,
-            max_length=len(inputs[0]) + 50,  # Adjust length as needed
-            num_return_sequences=1,
-            do_sample=True,
-            temperature=0.7,
-            top_k=50,
-            top_p=0.95,
-            pad_token_id=tokenizer.eos_token_id,
+    try:
+        # Call the OpenAI chat API
+        chat_completion = client.chat.completions.create(
+            messages=[
+                {
+                    "role": "user",
+                    "content": f"Please send me a python code that complete the followinf=g snippet:, only return the code, no other text, not even a comment,or backticks `{prompt}`",
+                }
+            ],
+            model="gpt-4o",
         )
+        part = strip_head_and_tail(chat_completion.choices[0].message.content.strip())
+        if part.startswith(prompt):
+            part = part[len(prompt) :]
+        return part
+    except Exception as e:
+        return f"An error occurred: {e}"
 
-    # Decode the generated output
-    completion = tokenizer.decode(outputs[0], skip_special_tokens=True)
 
-    # Return the completion, trimming the original input
-    return completion[len(partial_code) :].strip()
-
-
-# Example usage
 if __name__ == "__main__":
-    import rich
+    # Example: Prompt to complete Python code
+    while code_prompt := input(">>> "):
+        completed_code = complete_python_code_chat(code_prompt)
 
-    while partial_code := input():
-        completion = suggest_completion(partial_code)
-        rich.print(f"{partial_code}[gray]{completion}[/gray]")
+        print(completed_code)
+        print("-----")

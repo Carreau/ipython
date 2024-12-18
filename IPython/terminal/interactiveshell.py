@@ -62,6 +62,7 @@ from .shortcuts.filters import KEYBINDING_FILTERS, filter_from_string
 from .shortcuts.auto_suggest import (
     NavigableAutoSuggestFromHistory,
     AppendAutoSuggestionInAnyLine,
+    AiAutoSuggest,
 )
 
 PTK3 = ptk_version.startswith('3.')
@@ -431,10 +432,12 @@ class TerminalInteractiveShell(InteractiveShell):
             self.auto_suggest = None
         elif provider == "AutoSuggestFromHistory":
             self.auto_suggest = AutoSuggestFromHistory()
+        elif provider == "Ai":
+            self.auto_suggest = AiAutoSuggest()
         elif provider == "NavigableAutoSuggestFromHistory":
             self.auto_suggest = NavigableAutoSuggestFromHistory()
         else:
-            raise ValueError("No valid provider.")
+            raise ValueError("No valid provider; {provider} given", provider)
         if self.pt_app:
             self.pt_app.auto_suggest = self.auto_suggest
 

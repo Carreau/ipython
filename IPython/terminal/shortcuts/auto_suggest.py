@@ -7,7 +7,7 @@ import warnings
 from prompt_toolkit.buffer import Buffer
 from prompt_toolkit.key_binding import KeyPressEvent
 from prompt_toolkit.key_binding.bindings import named_commands as nc
-from prompt_toolkit.auto_suggest import AutoSuggestFromHistory, Suggestion
+from prompt_toolkit.auto_suggest import AutoSuggestFromHistory, Suggestion, AutoSuggest
 from prompt_toolkit.document import Document
 from prompt_toolkit.history import History
 from prompt_toolkit.shortcuts import PromptSession
@@ -22,9 +22,84 @@ from IPython.utils.tokenutil import generate_tokens
 
 from .filters import pass_through
 
+import os
+from openai import OpenAI
+
+client = OpenAI(
+    api_key=os.environ.get("OPENAI_API_KEY"),  # This is the default and can be omitted
+)
 
 def _get_query(document: Document):
     return document.lines[document.cursor_position_row]
+
+
+HEAD = """```python\n"""
+
+TAIL = "\n```"
+
+
+def strip_head_and_tail(code):
+    if code.startswith(HEAD):
+        code = code[len(HEAD) :]
+    if code.endswith(TAIL):
+        code = code[: -len(TAIL)]
+    return code
+
+
+def complete_python_code_chat(prompt, model="gpt-3.5", max_tokens=150):
+    """
+    Calls the OpenAI API chat endpoint to complete Python code.
+
+    Args:
+        prompt (str): The starting Python code or description to complete.
+        model (str): The OpenAI model to use (e.g., gpt-3.5-turbo or gpt-4).
+        max_tokens (int): The maximum number of tokens to generate.
+
+    Returns:
+        str: The completed Python code.
+    """
+    if len(prompt) < 10:
+        return
+    try:
+        # Call the OpenAI chat API
+        chat_completion = client.chat.completions.create(
+            messages=[
+                {
+                    "role": "user",
+                    "content": f"Please send me a python code that complete the followinf=g snippet:, only return the code, no other text, not even a comment,or backticks `{prompt}`",
+                }
+            ],
+            model="gpt-4o",
+        )
+        part = strip_head_and_tail(chat_completion.choices[0].message.content.strip())
+        if part.startswith(prompt):
+            part = part[len(prompt) :]
+        return part
+    except Exception as e:
+        return f"An error occurred: {e}"
+
+
+class AiAutoSuggest(AutoSuggest):
+    def get_suggestion(
+        self, buffer: Buffer, document: Document
+    ) -> Optional[Suggestion]:
+        from pathlib import Path
+
+        import random
+
+        text = _get_query(document)
+        comp = complete_python_code_chat(text)
+
+        if comp is not None:
+            return Suggestion(comp)
+        return None
+
+        if curword:
+            data = Path("/usr/share/dict/words").read_text().splitlines()
+            data = [w for w in data if w.startswith(curword)]
+            if data:
+                return Suggestion(text=random.choice(data)[len(curword) :])
+        return None
 
 
 class AppendAutoSuggestionInAnyLine(Processor):
