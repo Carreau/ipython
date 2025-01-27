@@ -104,6 +104,8 @@ from typing import Any, List, Optional, Tuple
 import stack_data
 from pygments.formatters.terminal256 import Terminal256Formatter
 from pygments.styles import get_style_by_name
+from pygments.token import Token
+import pygments
 
 import IPython.utils.colorable as colorable
 # IPython's own modules
@@ -231,6 +233,20 @@ def _format_traceback_lines(lines, Colors, has_colors: bool, lvals):
     return res
 
 
+def _format_with_style(
+    stream: List[Tuple[type, str]], color: PyColorize.ColorScheme
+) -> str:
+    assert hasattr(color, "_pygments_equiv")
+    from pygments.style import Style
+
+    assert isinstance(color._pygments_equiv, dict)
+
+    class MyStyle(Style):
+        styles = color._pygments_equiv
+
+    return pygments.format(stream, Terminal256Formatter(style=MyStyle))
+
+
 def _simple_format_traceback_lines(
     lnum: int,
     index: int,
@@ -254,6 +270,7 @@ def _simple_format_traceback_lines(
     lvals: bytes
         Values of local variables, already colored, to inject just after the error line.
     """
+
     numbers_width = INDENT_SIZE - 1
     res = []
     for i, (line, (new_line, err)) in enumerate(lines, lnum - index):
@@ -265,12 +282,9 @@ def _simple_format_traceback_lines(
             # This is the line with the error
             pad = numbers_width - len(str(i))
             num = "%s%s" % (debugger.make_arrow(pad), str(lnum))
-            line = "%s%s%s %s%s" % (
-                Colors.linenoEm,
-                num,
-                Colors.line,
-                line,
-                Colors.Normal,
+            colored_line = line
+            line = _format_with_style(
+                [(Token.LinenoEm, num), (Token, " "), (Token, colored_line)], Colors
             )
         else:
             num = "%*s" % (numbers_width, i)
@@ -421,6 +435,7 @@ class TBTools(colorable.Colorable):
         self.color_scheme_table.set_active_scheme(*args, **kw)
         # for convenience, set Colors to the active scheme
         self.Colors = self.color_scheme_table.active_colors
+        assert hasattr(self.Colors, "_pygments_equiv"), self.Colors
         # Also set colors of debugger
         if hasattr(self, 'pdb') and self.pdb is not None:
             self.pdb.set_colors(*args, **kw)
@@ -431,10 +446,16 @@ class TBTools(colorable.Colorable):
         if self.color_scheme_table.active_scheme_name == 'NoColor':
             self.color_scheme_table.set_active_scheme(self.old_scheme)
             self.Colors = self.color_scheme_table.active_colors
+            assert hasattr(
+                self.Colors, "_pygments_equiv"
+            ), self.color_scheme_table.active_colors
         else:
             self.old_scheme = self.color_scheme_table.active_scheme_name
             self.color_scheme_table.set_active_scheme('NoColor')
             self.Colors = self.color_scheme_table.active_colors
+            assert hasattr(
+                self.Colors, "_pygments_equiv"
+            ), self.color_scheme_table.active_colors
 
     def stb2text(self, stb):
         """Convert a structured traceback (a list) to a string."""
@@ -879,6 +900,7 @@ class VerboseTB(TBTools):
         """Format a single stack frame"""
         assert isinstance(frame_info, FrameInfo)
         Colors = self.Colors  # just a shorthand + quicker name lookup
+        assert hasattr(Colors, "_pygments_equiv")
         ColorsNormal = Colors.Normal  # used a lot
 
         if isinstance(frame_info._sd, stack_data.RepeatedFrames):

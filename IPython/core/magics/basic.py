@@ -355,6 +355,7 @@ Currently the magic system has the following functions:""",
             shell.SyntaxTB.set_colors(scheme = new_scheme)
         except:
             color_switch_err('exception')
+            raise
 
         # Set info (for 'object?') colors
         if shell.color_info:

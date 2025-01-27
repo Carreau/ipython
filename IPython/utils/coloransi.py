@@ -141,6 +141,9 @@ class ColorScheme:
 
     name: str
     colors: Struct
+    # 2025: migration helper
+    # temporary carry equivalent pygments token to style
+    _pygments_equiv: dict[type, str]
 
     def __init__(self, __scheme_name_, colordict=None):
         self.name = __scheme_name_
@@ -151,6 +154,7 @@ class ColorScheme:
         if name is None:
             name = self.name
         return ColorScheme(name, self.colors.dict())
+
 
 class ColorSchemeTable(dict):
     """General class to handle tables of color schemes.
