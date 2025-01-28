@@ -5,14 +5,15 @@ Color schemes for exception handling code in IPython.
 
 import os
 
-#*****************************************************************************
+# *****************************************************************************
 #       Copyright (C) 2005-2006 Fernando Perez <fperez@colorado.edu>
 #
 #  Distributed under the terms of the BSD License.  The full license is in
 #  the file COPYING, distributed as part of this software.
-#*****************************************************************************
+# *****************************************************************************
 
 from IPython.utils.coloransi import ColorSchemeTable, TermColors, ColorScheme
+
 
 def exception_colors():
     """Return a color table with fields for exception reporting.
@@ -74,7 +75,7 @@ def exception_colors():
             "breakpoint_disabled": C.NoColor,
         },
     )
-    nc.colors._pygments_equiv = {Token.LinenoEm: ""}
+    nc.colors._pygments_equiv = {Token.LinenoEm: "", Token.Lineno: ""}
     ex_colors.add_scheme(nc)
 
     # make some schemes as instances so we can copy them for modification easily
@@ -109,7 +110,10 @@ def exception_colors():
     )
     # 2025: migration helper
     # temporary carry equivalent pygments token to style
-    linux.colors._pygments_equiv = {Token.LinenoEm: "ansibrightgreen"}
+    linux.colors._pygments_equiv = {
+        Token.LinenoEm: "ansibrightgreen",
+        Token.Lineno: "ansigreen",
+    }
     ex_colors.add_scheme(linux)
 
     # For light backgrounds, swap dark/light colors
@@ -143,7 +147,10 @@ def exception_colors():
             "breakpoint_disabled": C.Red,
         },
     )
-    lightbg.colors._pygments_equiv = {Token.LinenoEm: "ansigreen"}
+    lightbg.colors._pygments_equiv = {
+        Token.LinenoEm: "ansigreen",
+        Token.Lineno: "ansibrightgreen",
+    }
     ex_colors.add_scheme(lightbg)
 
     neut = ColorScheme(
@@ -176,7 +183,10 @@ def exception_colors():
             "breakpoint_disabled": C.Red,
         },
     )
-    neut.colors._pygments_equiv = {Token.LinenoEm: "ansigreen"}
+    neut.colors._pygments_equiv = {
+        Token.LinenoEm: "ansigreen",
+        Token.Lineno: "ansibrightgreen",
+    }
     ex_colors.add_scheme(neut)
 
     # Hack: the 'neutral' colours are not very visible on a dark background on
@@ -184,6 +194,6 @@ def exception_colors():
     # relatively few users are likely to alter that, we will use the 'Linux' colours,
     # designed for a dark background, as the default on Windows.
     if os.name == "nt":
-        ex_colors.add_scheme(ex_colors['Linux'].copy('Neutral'))
+        ex_colors.add_scheme(ex_colors["Linux"].copy("Neutral"))
 
     return ex_colors

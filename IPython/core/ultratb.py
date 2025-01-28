@@ -196,7 +196,9 @@ def _safe_string(value, what, func=str):
 
 def _format_traceback_lines(lines, Colors, has_colors: bool, lvals):
     """
-    Format tracebacks lines with pointing arrow, leading numbers...
+    Format tracebacks lines with pointing arrow, leading numbers,
+    this assumes the stack have been extracted using stackdata.
+
 
     Parameters
     ----------
@@ -211,7 +213,7 @@ def _format_traceback_lines(lines, Colors, has_colors: bool, lvals):
 
     for stack_line in lines:
         if stack_line is stack_data.LINE_GAP:
-            res.append("%s   (...)%s\n" % (Colors.linenoEm, Colors.Normal))
+            res.append(_format_with_style([(Token.LinenoEm, "   (...)")], Colors))
             continue
 
         line = stack_line.render(pygmented=has_colors).rstrip("\n") + "\n"
@@ -221,11 +223,25 @@ def _format_traceback_lines(lines, Colors, has_colors: bool, lvals):
             pad = numbers_width - len(str(lineno))
             num = "%s%s" % (debugger.make_arrow(pad), str(lineno))
             start_color = Colors.linenoEm
+            line = _format_with_style(
+                [
+                    (Token.LinenoEm, debugger.make_arrow(pad)),
+                    (Token.LinenoEm, str(lineno)),
+                    (Token, " "),
+                    (Token, line),
+                ],
+                Colors,
+            )
         else:
             num = "%*s" % (numbers_width, lineno)
-            start_color = Colors.lineno
-
-        line = "%s%s%s %s" % (start_color, num, Colors.Normal, line)
+            line = _format_with_style(
+                [
+                    (Token.LinenoEm, str(num)),
+                    (Token, " "),
+                    (Token, line),
+                ],
+                Colors,
+            )
 
         res.append(line)
         if lvals and stack_line.is_current:
@@ -255,7 +271,12 @@ def _simple_format_traceback_lines(
     lvals: str,
 ) -> list[str]:
     """
-    Format tracebacks lines with pointing arrow, leading numbers...
+    Format tracebacks lines with pointing arrow, leading numbers
+
+    This should be equivalent to _format_traceback_lines, but does not rely on stackdata
+    to format the lines
+
+    This is due to the fact that stackdata may be slow on super long and complex files.
 
     Parameters
     ==========
