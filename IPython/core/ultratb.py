@@ -953,11 +953,6 @@ class VerboseTB(TBTools):
             )
 
         indent = " " * INDENT_SIZE
-        tpl_call_fail = "in %s%%s%s(***failed resolving arguments***)%s" % (
-            Colors.vName,
-            Colors.valEm,
-            ColorsNormal,
-        )
 
         link = _format_filename(
             frame_info.filename,
@@ -979,7 +974,10 @@ class VerboseTB(TBTools):
                 scope = inspect.formatargvalues(
                     args, varargs, varkw, locals_, formatvalue=var_repr
                 )
-                call = f"in {Colors.vName}{func}{Colors.valEm}{scope}{ColorsNormal}"
+                assert isinstance(scope, str)
+                call = _format_with_style(
+                    [(Token.VName, func), (Token.ValEm, scope)], Colors
+                )
             except KeyError:
                 # This happens in situations like errors inside generator
                 # expressions, where local variables are listed in the
@@ -997,7 +995,13 @@ class VerboseTB(TBTools):
                 #  dict( (k,v.strip()) for (k,v) in range(10) )
                 # will illustrate the error, if this exception catch is
                 # disabled.
-                call = tpl_call_fail % func
+                call = _format_with_style(
+                    [
+                        (Token.VName, func),
+                        (Token.ValEm, "(***failed resolving arguments***)"),
+                    ],
+                    Colors,
+                )
 
         lvals = ""
         lvals_toks = []
