@@ -35,9 +35,7 @@ def exception_colors():
     >>> ec.active_scheme_name
     'NoColor'
     >>> sorted(ec.active_colors.keys())
-    ['Normal', 'breakpoint_disabled', 'breakpoint_enabled', 'em',
-    'excName', 'filename', 'filenameEm', 'line', 'lineno', 'linenoEm', 'name',
-    'nameEm', 'normalEm', 'prompt', 'topline', 'val']
+    ['Normal', '_pygments_equiv', 'breakpoint_disabled', 'breakpoint_enabled', 'em', 'excName', 'filename', 'filenameEm', 'line', 'lineno', 'linenoEm', 'name', 'nameEm', 'normalEm', 'topline', 'val']
 
     """
     from pygments.token import Token
@@ -67,7 +65,6 @@ def exception_colors():
             "line": C.NoColor,
             "Normal": C.NoColor,
             # debugger
-            "prompt": C.NoColor,
             "breakpoint_enabled": C.NoColor,
             "breakpoint_disabled": C.NoColor,
         },
@@ -103,7 +100,6 @@ def exception_colors():
             "line": C.Yellow,
             "Normal": C.Normal,
             # debugger
-            "prompt": C.Green,
             "breakpoint_enabled": C.LightRed,
             "breakpoint_disabled": C.Red,
         },
@@ -142,7 +138,6 @@ def exception_colors():
             "line": C.Red,
             "Normal": C.Normal,
             # debugger
-            "prompt": C.Blue,
             "breakpoint_enabled": C.LightRed,
             "breakpoint_disabled": C.Red,
         },
@@ -178,7 +173,6 @@ def exception_colors():
             "line": C.Red,
             "Normal": C.Normal,
             # debugger
-            "prompt": C.Blue,
             "breakpoint_enabled": C.LightRed,
             "breakpoint_disabled": C.Red,
         },
