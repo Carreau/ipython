@@ -617,8 +617,6 @@ class Pdb(OldPdb):
                 args = reprlib.repr(loc_frame["__args__"])
             else:
                 args = "()"
-            tpl_call = "%s%%s%s%%s%s" % (Colors.vName, Colors.valEm, ColorsNormal)
-            call = tpl_call % (func, args)
             call = _format_with_style(
                 [(Token.VName, func), (Token.ValEm, args)], Colors
             )

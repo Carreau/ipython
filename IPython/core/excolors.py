@@ -37,7 +37,7 @@ def exception_colors():
     >>> sorted(ec.active_colors.keys())
     ['Normal', 'breakpoint_disabled', 'breakpoint_enabled', 'caret', 'em',
     'excName', 'filename', 'filenameEm', 'line', 'lineno', 'linenoEm', 'name',
-    'nameEm', 'normalEm', 'prompt', 'topline', 'vName', 'val', 'valEm']
+    'nameEm', 'normalEm', 'prompt', 'topline', 'val']
 
     """
     from pygments.token import Token
@@ -55,7 +55,6 @@ def exception_colors():
             "filename": C.NoColor,
             "lineno": C.NoColor,
             "name": C.NoColor,
-            "vName": C.NoColor,
             "val": C.NoColor,
             "em": C.NoColor,
             # Emphasized colors for the last frame of the traceback
@@ -63,7 +62,6 @@ def exception_colors():
             "filenameEm": C.NoColor,
             "linenoEm": C.NoColor,
             "nameEm": C.NoColor,
-            "valEm": C.NoColor,
             # Colors for printing the exception
             "excName": C.NoColor,
             "line": C.NoColor,
@@ -93,7 +91,6 @@ def exception_colors():
             "filename": C.Green,
             "lineno": C.Green,
             "name": C.Purple,
-            "vName": C.Cyan,
             "val": C.Green,
             "em": C.LightCyan,
             # Emphasized colors for the last frame of the traceback
@@ -101,7 +98,6 @@ def exception_colors():
             "filenameEm": C.LightGreen,
             "linenoEm": C.LightGreen,
             "nameEm": C.LightPurple,
-            "valEm": C.LightBlue,
             # Colors for printing the exception
             "excName": C.LightRed,
             "line": C.Yellow,
@@ -133,7 +129,6 @@ def exception_colors():
             "filename": C.LightGreen,
             "lineno": C.LightGreen,
             "name": C.LightPurple,
-            "vName": C.Cyan,
             "val": C.LightGreen,
             "em": C.Cyan,
             # Emphasized colors for the last frame of the traceback
@@ -141,7 +136,6 @@ def exception_colors():
             "filenameEm": C.Green,
             "linenoEm": C.Green,
             "nameEm": C.Purple,
-            "valEm": C.Blue,
             # Colors for printing the exception
             "excName": C.Red,
             # "line": C.Brown,  # brown often is displayed as yellow
@@ -171,7 +165,6 @@ def exception_colors():
             "filename": C.LightGreen,
             "lineno": C.LightGreen,
             "name": C.LightPurple,
-            "vName": C.Cyan,
             "val": C.LightGreen,
             "em": C.Cyan,
             # Emphasized colors for the last frame of the traceback
@@ -179,7 +172,6 @@ def exception_colors():
             "filenameEm": C.Green,
             "linenoEm": C.Green,
             "nameEm": C.Purple,
-            "valEm": C.Blue,
             # Colors for printing the exception
             "excName": C.Red,
             # line = C.Brown,  # brown often is displayed as yellow
