@@ -729,7 +729,9 @@ class ListTB(TBTools):
                             else:
                                 s += " "
                         output_list.append(
-                            "%s%s^%s\n" % (Colors.caret, s, Colors.Normal)
+                            _format_with_style(
+                                [(Token.Caret, s + "^"), (Token, "\n")], Colors
+                            )
                         )
 
             try:

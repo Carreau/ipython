@@ -35,7 +35,7 @@ def exception_colors():
     >>> ec.active_scheme_name
     'NoColor'
     >>> sorted(ec.active_colors.keys())
-    ['Normal', 'breakpoint_disabled', 'breakpoint_enabled', 'caret', 'em',
+    ['Normal', 'breakpoint_disabled', 'breakpoint_enabled', 'em',
     'excName', 'filename', 'filenameEm', 'line', 'lineno', 'linenoEm', 'name',
     'nameEm', 'normalEm', 'prompt', 'topline', 'val']
 
@@ -65,7 +65,6 @@ def exception_colors():
             # Colors for printing the exception
             "excName": C.NoColor,
             "line": C.NoColor,
-            "caret": C.NoColor,
             "Normal": C.NoColor,
             # debugger
             "prompt": C.NoColor,
@@ -78,6 +77,7 @@ def exception_colors():
         Token.Lineno: "",
         Token.ValEm: "",
         Token.VName: "",
+        Token.Caret: "",
     }
     ex_colors.add_scheme(nc)
 
@@ -101,7 +101,6 @@ def exception_colors():
             # Colors for printing the exception
             "excName": C.LightRed,
             "line": C.Yellow,
-            "caret": C.White,
             "Normal": C.Normal,
             # debugger
             "prompt": C.Green,
@@ -116,6 +115,7 @@ def exception_colors():
         Token.Lineno: "ansigreen",
         Token.ValEm: "ansibrightblue",
         Token.VName: "ansicyan",
+        Token.Caret: "",
     }
     ex_colors.add_scheme(linux)
 
@@ -140,7 +140,6 @@ def exception_colors():
             "excName": C.Red,
             # "line": C.Brown,  # brown often is displayed as yellow
             "line": C.Red,
-            "caret": C.Normal,
             "Normal": C.Normal,
             # debugger
             "prompt": C.Blue,
@@ -153,6 +152,7 @@ def exception_colors():
         Token.Lineno: "ansibrightgreen",
         Token.ValEm: "ansiblue",
         Token.VName: "ansicyan",
+        Token.Caret: "",
     }
     ex_colors.add_scheme(lightbg)
 
@@ -176,7 +176,6 @@ def exception_colors():
             "excName": C.Red,
             # line = C.Brown,  # brown often is displayed as yellow
             "line": C.Red,
-            "caret": C.Normal,
             "Normal": C.Normal,
             # debugger
             "prompt": C.Blue,
@@ -189,6 +188,7 @@ def exception_colors():
         Token.Lineno: "ansibrightgreen",
         Token.ValEm: "ansiblue",
         Token.VName: "ansicyan",
+        Token.Caret: "",
     }
     ex_colors.add_scheme(neut)
 
