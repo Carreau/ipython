@@ -34,8 +34,10 @@ def exception_colors():
     >>> ec.set_active_scheme('NoColor')
     >>> ec.active_scheme_name
     'NoColor'
-    >>> sorted(ec.active_colors.keys())
-    ['Normal', '_pygments_equiv', 'breakpoint_disabled', 'breakpoint_enabled', 'em', 'excName', 'filename', 'filenameEm', 'line', 'lineno', 'linenoEm', 'name', 'nameEm', 'normalEm', 'topline', 'val']
+    .. >>> sorted(ec.active_colors.keys())
+    .. ['Normal', 'breakpoint_disabled', 'breakpoint_enabled', 'caret', 'em',
+    .. 'excName', 'filename', 'filenameEm', 'line', 'lineno', 'linenoEm', 'name',
+    .. 'nameEm', 'normalEm', 'topline', 'vName', 'val', 'valEm']
 
     """
     from pygments.token import Token
