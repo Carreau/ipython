@@ -953,7 +953,6 @@ class VerboseTB(TBTools):
             )
 
         indent = " " * INDENT_SIZE
-        tpl_call = f"in {Colors.vName}{{file}}{Colors.valEm}{{scope}}{ColorsNormal}"
         tpl_call_fail = "in %s%%s%s(***failed resolving arguments***)%s" % (
             Colors.vName,
             Colors.valEm,
@@ -980,7 +979,7 @@ class VerboseTB(TBTools):
                 scope = inspect.formatargvalues(
                     args, varargs, varkw, locals_, formatvalue=var_repr
                 )
-                call = tpl_call.format(file=func, scope=scope)
+                call = f"in {Colors.vName}{func}{Colors.valEm}{scope}{ColorsNormal}"
             except KeyError:
                 # This happens in situations like errors inside generator
                 # expressions, where local variables are listed in the
