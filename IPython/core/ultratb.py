@@ -1001,37 +1001,34 @@ class VerboseTB(TBTools):
                 call = tpl_call_fail % func
 
         lvals = ""
-        lvals_list = []
-        lval_toks = []
+        lvals_toks = []
         if self.include_vars:
             try:
                 # we likely want to fix stackdata at some point, but
                 # still need a workaround.
                 fibp = frame_info.variables_in_executing_piece
                 for var in fibp:
-                    lval_tok = [
-                        (Token, var.name),
-                        (Token, " "),
-                        (Token.ValEm, "= "),
-                        (Token.ValEm, repr(var.value)),
-                    ]
-                    lval_formatted = _format_with_style(
-                        lval_tok,
-                        Colors,
+                    lvals_toks.append(
+                        [
+                            (Token, var.name),
+                            (Token, " "),
+                            (Token.ValEm, "= "),
+                            (Token.ValEm, repr(var.value)),
+                        ]
                     )
-                    lval_toks.append(lval_tok)
-                    lvals_list.append(lval_formatted)
             except Exception:
-                lvals_list.append(
-                    "Exception trying to inspect frame. No more locals available."
+                lvals_toks.append(
+                    [
+                        (
+                            Token,
+                            "Exception trying to inspect frame. No more locals available.",
+                        ),
+                    ]
                 )
-        if lvals_list:
+        if lvals_toks:
             lvals = _format_with_style(
                 sum(
-                    (
-                        [(Token, indent), (Token, val), (Token, "\n")]
-                        for val in lvals_list
-                    ),
+                    ([(Token, indent)] + toks + [(Token, "\n")] for toks in lvals_toks),
                     start=[],
                     # strip the last newline
                 )[:-1],
