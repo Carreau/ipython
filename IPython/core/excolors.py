@@ -75,7 +75,7 @@ def exception_colors():
             "breakpoint_disabled": C.NoColor,
         },
     )
-    nc.colors._pygments_equiv = {Token.LinenoEm: "", Token.Lineno: ""}
+    nc.colors._pygments_equiv = {Token.LinenoEm: "", Token.Lineno: "", Token.ValEm: ""}
     ex_colors.add_scheme(nc)
 
     # make some schemes as instances so we can copy them for modification easily
@@ -113,6 +113,7 @@ def exception_colors():
     linux.colors._pygments_equiv = {
         Token.LinenoEm: "ansibrightgreen",
         Token.Lineno: "ansigreen",
+        Token.ValEm: "ansibrightblue",
     }
     ex_colors.add_scheme(linux)
 
@@ -150,6 +151,7 @@ def exception_colors():
     lightbg.colors._pygments_equiv = {
         Token.LinenoEm: "ansigreen",
         Token.Lineno: "ansibrightgreen",
+        Token.ValEm: "ansiblue",
     }
     ex_colors.add_scheme(lightbg)
 
@@ -186,6 +188,7 @@ def exception_colors():
     neut.colors._pygments_equiv = {
         Token.LinenoEm: "ansigreen",
         Token.Lineno: "ansibrightgreen",
+        Token.ValEm: "ansiblue",
     }
     ex_colors.add_scheme(neut)
 

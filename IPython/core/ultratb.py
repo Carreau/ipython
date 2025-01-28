@@ -222,7 +222,6 @@ def _format_traceback_lines(lines, Colors, has_colors: bool, lvals):
             # This is the line with the error
             pad = numbers_width - len(str(lineno))
             num = "%s%s" % (debugger.make_arrow(pad), str(lineno))
-            start_color = Colors.linenoEm
             line = _format_with_style(
                 [
                     (Token.LinenoEm, debugger.make_arrow(pad)),
@@ -954,14 +953,12 @@ class VerboseTB(TBTools):
             )
 
         indent = " " * INDENT_SIZE
-        em_normal = "%s\n%s%s" % (Colors.valEm, indent, ColorsNormal)
         tpl_call = f"in {Colors.vName}{{file}}{Colors.valEm}{{scope}}{ColorsNormal}"
         tpl_call_fail = "in %s%%s%s(***failed resolving arguments***)%s" % (
             Colors.vName,
             Colors.valEm,
             ColorsNormal,
         )
-        tpl_name_val = "%%s %s= %%s%s" % (Colors.valEm, ColorsNormal)
 
         link = _format_filename(
             frame_info.filename,
@@ -1005,19 +1002,41 @@ class VerboseTB(TBTools):
 
         lvals = ""
         lvals_list = []
+        lval_toks = []
         if self.include_vars:
             try:
                 # we likely want to fix stackdata at some point, but
                 # still need a workaround.
                 fibp = frame_info.variables_in_executing_piece
                 for var in fibp:
-                    lvals_list.append(tpl_name_val % (var.name, repr(var.value)))
+                    lval_tok = [
+                        (Token, var.name),
+                        (Token, " "),
+                        (Token.ValEm, "= "),
+                        (Token.ValEm, repr(var.value)),
+                    ]
+                    lval_formatted = _format_with_style(
+                        lval_tok,
+                        Colors,
+                    )
+                    lval_toks.append(lval_tok)
+                    lvals_list.append(lval_formatted)
             except Exception:
                 lvals_list.append(
                     "Exception trying to inspect frame. No more locals available."
                 )
         if lvals_list:
-            lvals = "%s%s" % (indent, em_normal.join(lvals_list))
+            lvals = _format_with_style(
+                sum(
+                    (
+                        [(Token, indent), (Token, val), (Token, "\n")]
+                        for val in lvals_list
+                    ),
+                    start=[],
+                    # strip the last newline
+                )[:-1],
+                Colors,
+            )
 
         result = f"{link}{', ' if call else ''}{call}\n"
         if frame_info._sd is None:
