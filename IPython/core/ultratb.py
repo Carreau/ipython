@@ -111,6 +111,7 @@ import IPython.utils.colorable as colorable
 # IPython's own modules
 from IPython import get_ipython
 from IPython.core import debugger
+from IPython.core.debugger import _format_with_style
 from IPython.core.display_trap import DisplayTrap
 from IPython.core.excolors import exception_colors
 from IPython.utils import PyColorize
@@ -246,20 +247,6 @@ def _format_traceback_lines(lines, Colors, has_colors: bool, lvals):
         if lvals and stack_line.is_current:
             res.append(lvals + "\n")
     return res
-
-
-def _format_with_style(
-    stream: List[Tuple[type, str]], color: PyColorize.ColorScheme
-) -> str:
-    assert hasattr(color, "_pygments_equiv")
-    from pygments.style import Style
-
-    assert isinstance(color._pygments_equiv, dict)
-
-    class MyStyle(Style):
-        styles = color._pygments_equiv
-
-    return pygments.format(stream, Terminal256Formatter(style=MyStyle))
 
 
 def _simple_format_traceback_lines(
