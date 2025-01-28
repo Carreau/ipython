@@ -965,7 +965,7 @@ class VerboseTB(TBTools):
                 )
                 assert isinstance(scope, str)
                 call = _format_with_style(
-                    [(Token.VName, func), (Token.ValEm, scope)], Colors
+                    [(Token, "in "), (Token.VName, func), (Token.ValEm, scope)], Colors
                 )
             except KeyError:
                 # This happens in situations like errors inside generator
@@ -986,6 +986,7 @@ class VerboseTB(TBTools):
                 # disabled.
                 call = _format_with_style(
                     [
+                        (Token, "in "),
                         (Token.VName, func),
                         (Token.ValEm, "(***failed resolving arguments***)"),
                     ],
