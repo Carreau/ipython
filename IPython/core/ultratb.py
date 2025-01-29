@@ -187,7 +187,7 @@ def get_line_number_of_frame(frame: types.FrameType) -> int:
     return count_lines_in_py_file(filename)
 
 
-def _safe_string(value, what, func=str):
+def _safe_string(value: Any, what: Any, func: Any = str) -> str:
     # Copied from cpython/Lib/traceback.py
     try:
         return func(value)
@@ -195,7 +195,7 @@ def _safe_string(value, what, func=str):
         return f"<{what} {func.__name__}() failed>"
 
 
-def _format_traceback_lines(lines, Colors, has_colors: bool, lvals):
+def _format_traceback_lines(lines: list[Line], Colors, has_colors: bool, lvals):
     """
     Format tracebacks lines with pointing arrow, leading numbers,
     this assumes the stack have been extracted using stackdata.
@@ -252,7 +252,7 @@ def _format_traceback_lines(lines, Colors, has_colors: bool, lvals):
 def _simple_format_traceback_lines(
     lnum: int,
     index: int,
-    lines: list[str, tuple[str, bool]],
+    lines: list[tuple[str, tuple[str, bool]]],
     Colors,
     lvals: str,
 ) -> list[str]:
@@ -397,7 +397,7 @@ class TBTools(colorable.Colorable):
         else:
             self.pdb = None
 
-    def _get_ostream(self):
+    def _get_ostream(self) -> Any:
         """Output stream that exceptions are written to.
 
         Valid values are:
@@ -468,7 +468,7 @@ class TBTools(colorable.Colorable):
         if hasattr(self, "pdb") and self.pdb is not None:
             self.pdb.set_colors(*args, **kw)
 
-    def color_toggle(self):
+    def color_toggle(self) -> None:
         """Toggle between the currently active color scheme and NoColor."""
 
         if self.color_scheme_table.active_scheme_name == "NoColor":
@@ -485,11 +485,11 @@ class TBTools(colorable.Colorable):
                 self.color_scheme_table.active_colors
             )
 
-    def stb2text(self, stb):
+    def stb2text(self, stb) -> str:
         """Convert a structured traceback (a list) to a string."""
         return "\n".join(stb)
 
-    def text(self, etype, value, tb, tb_offset: Optional[int] = None, context=5):
+    def text(self, etype, value, tb, tb_offset: Optional[int] = None, context=5) -> str:
         """Return formatted traceback.
 
         Subclasses may override this if they add extra arguments.
@@ -504,7 +504,7 @@ class TBTools(colorable.Colorable):
         etb: Optional[TracebackType] = None,
         tb_offset: Optional[int] = None,
         number_of_lines_of_context: int = 5,
-    ):
+    ) -> list[str]:
         """Return a list of traceback frames.
 
         Must be implemented by each class.
@@ -550,7 +550,7 @@ class ListTB(TBTools):
         etb: Optional[TracebackType] = None,
         tb_offset: Optional[int] = None,
         context=5,
-    ):
+    ) -> list[str]:
         """Return a color formatted string with the traceback info.
 
         Parameters
@@ -845,14 +845,14 @@ class FrameInfo:
                 ]
 
     @property
-    def variables_in_executing_piece(self):
+    def variables_in_executing_piece(self) -> list[Any]:
         if self._sd:
             return self._sd.variables_in_executing_piece
         else:
             return []
 
     @property
-    def lines(self):
+    def lines(self) -> list[Any]:
         from executing.executing import NotOneValueFound
 
         try:
@@ -869,7 +869,7 @@ class FrameInfo:
             return [Dummy()]
 
     @property
-    def executing(self):
+    def executing(self) -> Any:
         if self._sd:
             return self._sd.executing
         else:
@@ -928,7 +928,7 @@ class VerboseTB(TBTools):
 
         self.skip_hidden = True
 
-    def format_record(self, frame_info: FrameInfo):
+    def format_record(self, frame_info: FrameInfo) -> str:
         """Format a single stack frame"""
         assert isinstance(frame_info, FrameInfo)
         Colors = self.Colors  # just a shorthand + quicker name lookup
@@ -1081,7 +1081,7 @@ class VerboseTB(TBTools):
             )
         return result
 
-    def prepare_header(self, etype: str, long_version: bool = False):
+    def prepare_header(self, etype: str, long_version: bool = False) -> str:
         width = min(75, get_terminal_size()[0])
         if long_version:
             # Header with the exception type, python version, and date
@@ -1285,9 +1285,9 @@ class VerboseTB(TBTools):
         etb: Optional[TracebackType] = None,
         tb_offset: Optional[int] = None,
         number_of_lines_of_context: int = 5,
-    ) -> list[list[str]]:
+    ) -> list[str]:
         """Return a nice text document describing the traceback."""
-        formatted_exception: list[list[str]] = self.format_exception_as_a_whole(
+        formatted_exceptions: list[list[str]] = self.format_exception_as_a_whole(
             etype, evalue, etb, number_of_lines_of_context, tb_offset
         )
 
@@ -1304,7 +1304,6 @@ class VerboseTB(TBTools):
         structured_traceback_parts: list[str] = [head]
         chained_exceptions_tb_offset = 0
         lines_of_context = 3
-        formatted_exceptions: list[list[str]] = formatted_exception
         exception = self.get_parts_of_chained_exception(evalue)
         if exception:
             assert evalue is not None
@@ -1334,12 +1333,12 @@ class VerboseTB(TBTools):
 
         # we want to see exceptions in a reversed order:
         # the first exception should be on top
-        for formatted_exception in reversed(formatted_exceptions):
-            structured_traceback_parts += formatted_exception
+        for fx in reversed(formatted_exceptions):
+            structured_traceback_parts += fx
 
         return structured_traceback_parts
 
-    def debugger(self, force: bool = False):
+    def debugger(self, force: bool = False) -> None:
         """Call up the pdb debugger if desired, always clean up the tb
         reference.
 
@@ -1494,7 +1493,7 @@ class FormattedTB(VerboseTB, ListTB):
         """Convert a structured traceback (a list) to a string."""
         return self.tb_join_char.join(stb)
 
-    def set_mode(self, mode: Optional[str] = None):
+    def set_mode(self, mode: Optional[str] = None) -> None:
         """Switch to the desired mode.
 
         If mode is not specified, cycles through the available modes."""
@@ -1516,16 +1515,16 @@ class FormattedTB(VerboseTB, ListTB):
         self.tb_join_char = self._join_chars[self.mode]
 
     # some convenient shortcuts
-    def plain(self):
+    def plain(self) -> None:
         self.set_mode(self.valid_modes[0])
 
-    def context(self):
+    def context(self) -> None:
         self.set_mode(self.valid_modes[1])
 
-    def verbose(self):
+    def verbose(self) -> None:
         self.set_mode(self.valid_modes[2])
 
-    def minimal(self):
+    def minimal(self) -> None:
         self.set_mode(self.valid_modes[3])
 
 
@@ -1574,7 +1573,7 @@ class AutoFormattedTB(FormattedTB):
         etb: Optional[TracebackType] = None,
         tb_offset: Optional[int] = None,
         number_of_lines_of_context: int = 5,
-    ):
+    ) -> list[str]:
         # tb: TracebackType or tupleof tb types ?
         if etype is None:
             etype, evalue, etb = sys.exc_info()
@@ -1631,7 +1630,7 @@ class SyntaxTB(ListTB):
             etype, value, elist, tb_offset=tb_offset, context=context
         )
 
-    def clear_err_state(self):
+    def clear_err_state(self) -> Exception:
         """Return the current error state and clear it"""
         e = self.last_syntax_error
         self.last_syntax_error = None

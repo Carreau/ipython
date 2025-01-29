@@ -155,7 +155,7 @@ from pygments.token import Token
 
 
 def _format_with_style(
-    stream: list[tuple[type, str]], color: PyColorize.ColorScheme
+    stream: list[tuple[type(Token), str]], color: PyColorize.ColorScheme
 ) -> str:
     assert hasattr(color, "_pygments_equiv")
 
