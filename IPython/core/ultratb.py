@@ -1053,7 +1053,7 @@ class VerboseTB(TBTools):
             current_line: int = frame_info.lineno[0]
             raw_lines = frame_info.raw_lines
             index: int = current_line - first_line
-
+            assert frame_info.context is not None
             if index >= frame_info.context:
                 start = max(index - frame_info.context, 0)
                 stop = index + frame_info.context
