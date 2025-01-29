@@ -589,8 +589,6 @@ class Pdb(OldPdb):
         Colors = self.color_scheme_table.active_colors
         ColorsNormal = Colors.Normal
         tpl_link = "%s%%s%s" % (Colors.filenameEm, ColorsNormal)
-        tpl_line = "%%s%s%%s %s%%s" % (Colors.lineno, ColorsNormal)
-        tpl_line_em = "%%s%s%%s %s%%s%s" % (Colors.linenoEm, Colors.line, ColorsNormal)
 
         frame, lineno = frame_lineno
 
@@ -637,7 +635,16 @@ class Pdb(OldPdb):
 
         for i, line in enumerate(lines):
             show_arrow = start + 1 + i == lineno
-            linetpl = (frame is self.curframe or show_arrow) and tpl_line_em or tpl_line
+            tpl_line_em = "%%s%s%%s %s%%s%s" % (
+                Colors.linenoEm,
+                Colors.line,
+                ColorsNormal,
+            )
+            tpl_line_em = f"%s{Colors.linenoEm}%s {Colors.line}%s{Colors.Normal}"
+            tpl_line = f"%s{Colors.lineno}%s {Colors.Normal}%s{Colors.Normal}"
+            linetpl = (
+                tpl_line_em if (frame is self.curframe or show_arrow) else tpl_line
+            )
             ret.append(
                 self.__format_line(
                     linetpl, filename, start + 1 + i, line, arrow=show_arrow
@@ -680,13 +687,8 @@ class Pdb(OldPdb):
         command."""
         try:
             Colors = self.color_scheme_table.active_colors
-            ColorsNormal = Colors.Normal
-            tpl_line = "%%s%s%%s %s%%s" % (Colors.lineno, ColorsNormal)
-            tpl_line_em = "%%s%s%%s %s%%s%s" % (
-                Colors.linenoEm,
-                Colors.line,
-                ColorsNormal,
-            )
+            tpl_line = f"%s{Colors.lineno}%s {Colors.Normal}%s{Colors.normal}"
+            tpl_line_em = f"%s{Colors.linenoEm}%s {Colors.line}%s{Colors.normal}"
             src = []
             if filename == "<string>" and hasattr(self, "_exec_filename"):
                 filename = self._exec_filename
