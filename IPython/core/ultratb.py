@@ -438,7 +438,7 @@ class TBTools(colorable.Colorable):
             )
         return None
 
-    def prepare_chained_exception_message(self, cause) -> List[Any]:
+    def prepare_chained_exception_message(self, cause) -> list[list[str]]:
         direct_cause = (
             "\nThe above exception was the direct cause of the following exception:\n"
         )
@@ -1158,7 +1158,7 @@ class VerboseTB(TBTools):
         etb: Optional[TracebackType],
         number_of_lines_of_context,
         tb_offset: Optional[int],
-    ):
+    ) -> list[list[str]]:
         """Formats the header, traceback and exception message for a single exception.
 
         This may be called multiple times by Python 3 exception chaining
@@ -1285,15 +1285,14 @@ class VerboseTB(TBTools):
         etb: Optional[TracebackType] = None,
         tb_offset: Optional[int] = None,
         number_of_lines_of_context: int = 5,
-    ):
+    ) -> list[list[str]]:
         """Return a nice text document describing the traceback."""
-        formatted_exception = self.format_exception_as_a_whole(
+        formatted_exception: list[list[str]] = self.format_exception_as_a_whole(
             etype, evalue, etb, number_of_lines_of_context, tb_offset
         )
 
-        colors = self.Colors  # just a shorthand + quicker name lookup
         termsize = min(75, get_terminal_size()[0])
-        head = _format_with_style(
+        head: str = _format_with_style(
             [
                 (
                     Token.Topline,
@@ -1302,10 +1301,10 @@ class VerboseTB(TBTools):
             ],
             self.Colors,
         )
-        structured_traceback_parts = [head]
+        structured_traceback_parts: list[str] = [head]
         chained_exceptions_tb_offset = 0
         lines_of_context = 3
-        formatted_exceptions = formatted_exception
+        formatted_exceptions: list[list[str]] = formatted_exception
         exception = self.get_parts_of_chained_exception(evalue)
         if exception:
             assert evalue is not None
