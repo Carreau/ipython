@@ -522,13 +522,31 @@ class Pdb(OldPdb):
                     continue
                 if skipped:
                     print(
-                        f"{Colors.excName}    [... skipping {skipped} hidden frame(s)]{ColorsNormal}\n"
+                        _format_with_style(
+                            [
+                                (
+                                    Token.ExcName,
+                                    f"    [... skipping {skipped} hidden frame(s)]",
+                                ),
+                                (Token, "\n"),
+                            ],
+                            Colors,
+                        )
                     )
                     skipped = 0
                 self.print_stack_entry(frame_lineno, context=context)
             if skipped:
                 print(
-                    f"{Colors.excName}    [... skipping {skipped} hidden frame(s)]{ColorsNormal}\n"
+                    _format_with_style(
+                        [
+                            (
+                                Token.ExcName,
+                                f"    [... skipping {skipped} hidden frame(s)]",
+                            ),
+                            (Token, "\n"),
+                        ],
+                        Colors,
+                    )
                 )
         except KeyboardInterrupt:
             pass

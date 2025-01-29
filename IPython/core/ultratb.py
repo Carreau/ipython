@@ -749,7 +749,8 @@ class ListTB(TBTools):
                             (Token, " "),
                             (Token, s),
                             (Token, "\n"),
-                        ]
+                        ],
+                        Colors,
                     )
                 )
             else:
@@ -1152,11 +1153,9 @@ class VerboseTB(TBTools):
 
         # ... and format it
         return [
-            "{}{}{}: {}".format(
-                colors.excName,
-                etype_str,
-                colorsnormal,
-                py3compat.cast_unicode(evalue_str),
+            _format_with_style(
+                [(Token.ExcName, etype_str), (Token, ": "), (Token, evalue_str)],
+                self.Colors,
             ),
             *(
                 "{}{}".format(
