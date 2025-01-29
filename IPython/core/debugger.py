@@ -687,8 +687,8 @@ class Pdb(OldPdb):
         command."""
         try:
             Colors = self.color_scheme_table.active_colors
-            tpl_line = f"%s{Colors.lineno}%s {Colors.Normal}%s{Colors.normal}"
-            tpl_line_em = f"%s{Colors.linenoEm}%s {Colors.line}%s{Colors.normal}"
+            tpl_line = f"%s{Colors.lineno}%s {Colors.Normal}%s{Colors.Normal}"
+            tpl_line_em = f"%s{Colors.linenoEm}%s {Colors.line}%s{Colors.Normal}"
             src = []
             if filename == "<string>" and hasattr(self, "_exec_filename"):
                 filename = self._exec_filename
