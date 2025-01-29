@@ -151,12 +151,14 @@ from pdb import Pdb as OldPdb
 import pygments
 from pygments.formatters.terminal256 import Terminal256Formatter
 from pygments.style import Style
-from pygments.token import Token
+from pygments.token import Token, _TokenType
+
+from typing import TypeAlias
+
+TokenStream: TypeAlias = list[tuple[_TokenType, str]]
 
 
-def _format_with_style(
-    stream: list[tuple[type(Token), str]], color: PyColorize.ColorScheme
-) -> str:
+def _format_with_style(stream: TokenStream, color: PyColorize.ColorScheme) -> str:
     assert hasattr(color, "_pygments_equiv")
 
     assert isinstance(color._pygments_equiv, dict)

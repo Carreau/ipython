@@ -315,18 +315,17 @@ def _simple_format_traceback_lines(
     return res
 
 
-def _format_filename(startColor, file, ColorFilename, Colors, *, lineno=None):
+def _format_filename(em: bool, file: str, Colors, *, lineno=None) -> str:
     """
     Format filename lines with custom formatting from caching compiler or `File *.py` by default
 
     Parameters
     ----------
+    em: wether bold or not
     file : str
-    ColorFilename
-        ColorScheme's filename coloring to be used.
-    ColorNormal
-        ColorScheme's normal coloring to be used.
     """
+    Normal = Token.NormalEm if em else Token.Normal
+    Filename = Token.FilenameEm if em else Token.Filename
     ipinst = get_ipython()
     if (
         ipinst is not None
@@ -334,17 +333,44 @@ def _format_filename(startColor, file, ColorFilename, Colors, *, lineno=None):
     ):
         label, name = data
         if lineno is None:
-            return f"{startColor}{label} {ColorFilename}{name}{Colors.Normal}"
+            return _format_with_style(
+                [
+                    (Normal, label),
+                    (Normal, " "),
+                    (Filename, name),
+                ],
+                Colors,
+            )
         else:
-            return f"{startColor}{label} {ColorFilename}{name}, line {lineno}{Colors.Normal}"
+            return _format_with_style(
+                [
+                    (Normal, label),
+                    (Normal, " "),
+                    (Filename, name),
+                    (Filename, f", line {lineno}"),
+                ],
+                Colors,
+            )
     else:
         name = util_path.compress_user(
             py3compat.cast_unicode(file, util_path.fs_encoding)
         )
         if lineno is None:
-            return f"{startColor}File {ColorFilename}{name}{Colors.Normal}"
+            return _format_with_style(
+                [
+                    (Normal, "File "),
+                    (Filename, name),
+                ],
+                Colors,
+            )
         else:
-            return f"{startColor}File {ColorFilename}{name}:{lineno}{Colors.Normal}"
+            return _format_with_style(
+                [
+                    (Normal, "File "),
+                    (Filename, f"{name}:{lineno}"),
+                ],
+                Colors,
+            )
 
 
 # ---------------------------------------------------------------------------
@@ -642,20 +668,19 @@ class ListTB(TBTools):
         Colors = self.Colors
         output_list = []
         for ind, (filename, lineno, name, line) in enumerate(extracted_list):
-            normalCol, nameCol, fileCol, lineCol = (
+            em, normalCol, nameCol, lineCol = (
                 # Emphasize the last entry
-                (Colors.normalEm, Colors.nameEm, Colors.filenameEm, Colors.line)
+                (True, Colors.normalEm, Colors.nameEm, Colors.line)
                 if ind == len(extracted_list) - 1
-                else (Colors.Normal, Colors.name, Colors.filename, "")
+                else (False, Colors.Normal, Colors.name, Colors.Normal)
             )
 
-            fns = _format_filename(normalCol, filename, fileCol, Colors, lineno=lineno)
+            fns = _format_filename(em, filename, Colors, lineno=lineno)
             item = f"{normalCol}  {fns}{normalCol}"
 
             if name != "<module>":
-                item += f" in {nameCol}{name}{normalCol}\n"
-            else:
-                item += "\n"
+                item += f" in {nameCol}{name}{normalCol}"
+            item += "\n"
             if line:
                 item += f"{lineCol}    {line.strip()}{normalCol}\n"
             output_list.append(item)
@@ -699,9 +724,8 @@ class ListTB(TBTools):
                     % (
                         Colors.normalEm,
                         _format_filename(
-                            Colors.normalEm,
+                            True,
                             value.filename,
-                            Colors.filenameEm,
                             Colors,
                             lineno=(None if lineno == "unknown" else lineno),
                         ),
@@ -955,9 +979,8 @@ class VerboseTB(TBTools):
         indent: str = " " * INDENT_SIZE
 
         link = _format_filename(
-            Colors.Normal,
+            True,
             frame_info.filename,
-            Colors.filenameEm,
             Colors,
             lineno=frame_info.lineno,
         )
