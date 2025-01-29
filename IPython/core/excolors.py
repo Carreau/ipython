@@ -56,7 +56,6 @@ def exception_colors():
             "lineno": C.NoColor,
             "name": C.NoColor,
             "val": C.NoColor,
-            "em": C.NoColor,
             # Emphasized colors for the last frame of the traceback
             "normalEm": C.NoColor,
             "filenameEm": C.NoColor,
@@ -91,7 +90,6 @@ def exception_colors():
             "lineno": C.Green,
             "name": C.Purple,
             "val": C.Green,
-            "em": C.LightCyan,
             # Emphasized colors for the last frame of the traceback
             "normalEm": C.LightCyan,
             "filenameEm": C.LightGreen,
@@ -128,7 +126,6 @@ def exception_colors():
             "lineno": C.LightGreen,
             "name": C.LightPurple,
             "val": C.LightGreen,
-            "em": C.Cyan,
             # Emphasized colors for the last frame of the traceback
             "normalEm": C.Cyan,
             "filenameEm": C.Green,
@@ -162,7 +159,6 @@ def exception_colors():
             "lineno": C.LightGreen,
             "name": C.LightPurple,
             "val": C.LightGreen,
-            "em": C.Cyan,
             # Emphasized colors for the last frame of the traceback
             "normalEm": C.Cyan,
             "filenameEm": C.Green,
