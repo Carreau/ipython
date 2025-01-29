@@ -684,7 +684,8 @@ class ListTB(TBTools):
         have_filedata = False
         Colors = self.Colors
         output_list = []
-        stype: str = _format_with_style([(Token.ExcName, etype.__name__)], Colors)
+        stype_tokens = [(Token.ExcName, etype.__name__)]
+        stype: str = _format_with_style(stype_tokens, Colors)
         if value is None:
             # Not sure if this can still happen in Python 2.6 and above
             output_list.append(stype + "\n")
@@ -740,7 +741,17 @@ class ListTB(TBTools):
             except Exception:
                 s = self._some_str(value)
             if s:
-                output_list.append(f"{stype}{Colors.excName}:{Colors.Normal} {s}\n")
+                output_list.append(
+                    _format_with_style(
+                        stype_tokens
+                        + [
+                            (Token.ExcName, ":"),
+                            (Token, " "),
+                            (Token, s),
+                            (Token, "\n"),
+                        ]
+                    )
+                )
             else:
                 output_list.append("%s\n" % stype)
 
