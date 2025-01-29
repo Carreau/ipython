@@ -315,7 +315,7 @@ def _simple_format_traceback_lines(
     return res
 
 
-def _format_filename(file, ColorFilename, Colors, *, lineno=None):
+def _format_filename(startColor, file, ColorFilename, Colors, *, lineno=None):
     """
     Format filename lines with custom formatting from caching compiler or `File *.py` by default
 
@@ -334,23 +334,17 @@ def _format_filename(file, ColorFilename, Colors, *, lineno=None):
     ):
         label, name = data
         if lineno is None:
-            tpl_link = f"{{label}} {ColorFilename}{{name}}{Colors.Normal}"
+            return f"{startColor}{label} {ColorFilename}{name}{Colors.Normal}"
         else:
-            tpl_link = (
-                f"{{label}} {ColorFilename}{{name}}, line {{lineno}}{Colors.Normal}"
-            )
+            return f"{startColor}{label} {ColorFilename}{name}, line {lineno}{Colors.Normal}"
     else:
-        label = "File"
         name = util_path.compress_user(
             py3compat.cast_unicode(file, util_path.fs_encoding)
         )
         if lineno is None:
-            tpl_link = f"{{label}} {ColorFilename}{{name}}{Colors.Normal}"
+            return f"{startColor}File {ColorFilename}{name}{Colors.Normal}"
         else:
-            # can we make this the more friendly ", line {{lineno}}", or do we need to preserve the formatting with the colon?
-            tpl_link = f"{{label}} {ColorFilename}{{name}}:{{lineno}}{Colors.Normal}"
-
-    return tpl_link.format(label=label, name=name, lineno=lineno)
+            return f"{startColor}File {ColorFilename}{name}:{lineno}{Colors.Normal}"
 
 
 # ---------------------------------------------------------------------------
@@ -655,7 +649,7 @@ class ListTB(TBTools):
                 else (Colors.Normal, Colors.name, Colors.filename, "")
             )
 
-            fns = _format_filename(filename, fileCol, Colors, lineno=lineno)
+            fns = _format_filename(normalCol, filename, fileCol, Colors, lineno=lineno)
             item = f"{normalCol}  {fns}{normalCol}"
 
             if name != "<module>":
@@ -705,6 +699,7 @@ class ListTB(TBTools):
                     % (
                         Colors.normalEm,
                         _format_filename(
+                            Colors.normalEm,
                             value.filename,
                             Colors.filenameEm,
                             Colors,
@@ -960,6 +955,7 @@ class VerboseTB(TBTools):
         indent: str = " " * INDENT_SIZE
 
         link = _format_filename(
+            Colors.Normal,
             frame_info.filename,
             Colors.filenameEm,
             Colors,
