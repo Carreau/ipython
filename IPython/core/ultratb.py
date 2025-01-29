@@ -568,7 +568,7 @@ class ListTB(TBTools):
         self.ostream.write(self.text(etype, value, elist))
         self.ostream.write("\n")
 
-    def _extract_tb(self, tb):
+    def _extract_tb(self, tb) -> traceback.StackSummary | None:
         if tb:
             return traceback.extract_tb(tb)
         else:
@@ -1597,7 +1597,14 @@ class AutoFormattedTB(FormattedTB):
           AutoTB()  # or AutoTB(out=logfile) where logfile is an open file object
     """
 
-    def __call__(self, etype=None, evalue=None, etb=None, out=None, tb_offset=None):
+    def __call__(
+        self,
+        etype: type | None = None,
+        evalue: BaseException | None = None,
+        etb: TracebackType | None = None,
+        out: Any = None,
+        tb_offset: int | None = None,
+    ) -> None:
         """Print out a formatted exception traceback.
 
         Optional arguments:
@@ -1648,7 +1655,7 @@ class AutoFormattedTB(FormattedTB):
 class ColorTB(FormattedTB):
     """Shorthand to initialize a FormattedTB in Linux colors mode."""
 
-    def __init__(self, color_scheme="Linux", call_pdb=0, **kwargs):
+    def __init__(self, color_scheme: str = "Linux", call_pdb: bool = False, **kwargs):
         FormattedTB.__init__(
             self, color_scheme=color_scheme, call_pdb=call_pdb, **kwargs
         )
@@ -1690,7 +1697,7 @@ class SyntaxTB(ListTB):
         self.last_syntax_error = None
         return e
 
-    def stb2text(self, stb):
+    def stb2text(self, stb: list[str]) -> str:
         """Convert a structured traceback (a list) to a string."""
         return "".join(stb)
 
@@ -1719,6 +1726,7 @@ def text_repr(value: Any) -> str:
                 klass = getattr(value, "__class__", None)
                 if klass:
                     return "%s instance" % text_repr(klass)
+                return "UNRECOVERABLE REPR FAILURE"
             except KeyboardInterrupt:
                 raise
             except:
