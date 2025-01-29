@@ -605,7 +605,6 @@ class Pdb(OldPdb):
 
         Colors = self.color_scheme_table.active_colors
         ColorsNormal = Colors.Normal
-        tpl_link = "%s%%s%s" % (Colors.filenameEm, ColorsNormal)
 
         frame, lineno = frame_lineno
 
@@ -619,7 +618,8 @@ class Pdb(OldPdb):
 
         # s = filename + '(' + `lineno` + ')'
         filename = self.canonic(frame.f_code.co_filename)
-        link = tpl_link % py3compat.cast_unicode(filename)
+
+        link = _format_with_style([(Token.FilenameEm, filename)], Colors)
 
         if frame.f_code.co_name:
             func = frame.f_code.co_name

@@ -77,6 +77,7 @@ def exception_colors():
         Token.FilenameEm: "",
         Token.ExcName: "",
         Token.Topline: "",
+        Token.FilenameEm: "",
     }
     ex_colors.add_scheme(nc)
 
@@ -112,6 +113,7 @@ def exception_colors():
         Token.FilenameEm: "ansibrightgreen",
         Token.ExcName: "ansibrightred",
         Token.Topline: "ansibrightred",
+        Token.FilenameEm: "ansibrightgreen",
     }
     ex_colors.add_scheme(linux)
 
@@ -145,6 +147,7 @@ def exception_colors():
         Token.FilenameEm: "ansigreen",
         Token.ExcName: "ansired",
         Token.Topline: "ansired",
+        Token.FilenameEm: "ansigreen",
     }
     ex_colors.add_scheme(lightbg)
 
@@ -177,6 +180,7 @@ def exception_colors():
         Token.FilenameEm: "ansigreen",
         Token.ExcName: "ansired",
         Token.Topline: "ansired",
+        Token.FilenameEm: "ansigreen",
     }
     ex_colors.add_scheme(neut)
 
