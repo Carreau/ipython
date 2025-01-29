@@ -39,7 +39,7 @@ def exception_colors():
     .. >>> sorted(ec.active_colors.keys())
     .. ['Normal', 'breakpoint_disabled', 'breakpoint_enabled', 'caret', 'em',
     .. 'excName', 'filename', 'filenameEm', 'line', 'lineno', 'linenoEm', 'name',
-    .. 'nameEm', 'normalEm', 'topline', 'vName', 'val', 'valEm']
+    .. 'nameEm', 'normalEm', 'vName', 'val', 'valEm']
 
     """
     from pygments.token import Token
@@ -51,8 +51,6 @@ def exception_colors():
     nc = ColorScheme(
         "NoColor",
         {
-            # The color to be used for the top line
-            "topline": C.NoColor,
             # The colors to be used in the traceback
             "filename": C.NoColor,
             "lineno": C.NoColor,
@@ -80,6 +78,8 @@ def exception_colors():
         Token.VName: "",
         Token.Caret: "",
         Token.FilenameEm: "",
+        Token.ExcName: "",
+        Token.Topline: "",
     }
     ex_colors.add_scheme(nc)
 
@@ -87,8 +87,6 @@ def exception_colors():
     linux = ColorScheme(
         "Linux",
         {
-            # The color to be used for the top line
-            "topline": C.LightRed,
             # The colors to be used in the traceback
             "filename": C.Green,
             "lineno": C.Green,
@@ -118,6 +116,8 @@ def exception_colors():
         Token.VName: "ansicyan",
         Token.Caret: "",
         Token.FilenameEm: "ansibrightgreen",
+        Token.ExcName: "ansibrightred",
+        Token.Topline: "ansibrightred",
     }
     ex_colors.add_scheme(linux)
 
@@ -125,8 +125,6 @@ def exception_colors():
     lightbg = ColorScheme(
         "LightBG",
         {
-            # The color to be used for the top line
-            "topline": C.Red,
             # The colors to be used in the traceback
             "filename": C.LightGreen,
             "lineno": C.LightGreen,
@@ -155,14 +153,14 @@ def exception_colors():
         Token.VName: "ansicyan",
         Token.Caret: "",
         Token.FilenameEm: "ansigreen",
+        Token.ExcName: "ansibrightred",
+        Token.Topline: "ansired",
     }
     ex_colors.add_scheme(lightbg)
 
     neut = ColorScheme(
         "Neutral",
         {
-            # The color to be used for the top line
-            "topline": C.Red,
             # The colors to be used in the traceback
             "filename": C.LightGreen,
             "lineno": C.LightGreen,
@@ -191,6 +189,8 @@ def exception_colors():
         Token.VName: "ansicyan",
         Token.Caret: "",
         Token.FilenameEm: "ansigreen",
+        Token.ExcName: "ansibrightred",
+        Token.Topline: "ansired",
     }
     ex_colors.add_scheme(neut)
 

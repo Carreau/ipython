@@ -474,16 +474,16 @@ class TBTools(colorable.Colorable):
         if self.color_scheme_table.active_scheme_name == "NoColor":
             self.color_scheme_table.set_active_scheme(self.old_scheme)
             self.Colors = self.color_scheme_table.active_colors
-            assert hasattr(
-                self.Colors, "_pygments_equiv"
-            ), self.color_scheme_table.active_colors
+            assert hasattr(self.Colors, "_pygments_equiv"), (
+                self.color_scheme_table.active_colors
+            )
         else:
             self.old_scheme = self.color_scheme_table.active_scheme_name
             self.color_scheme_table.set_active_scheme("NoColor")
             self.Colors = self.color_scheme_table.active_colors
-            assert hasattr(
-                self.Colors, "_pygments_equiv"
-            ), self.color_scheme_table.active_colors
+            assert hasattr(self.Colors, "_pygments_equiv"), (
+                self.color_scheme_table.active_colors
+            )
 
     def stb2text(self, stb):
         """Convert a structured traceback (a list) to a string."""
@@ -1082,23 +1082,23 @@ class VerboseTB(TBTools):
         return result
 
     def prepare_header(self, etype: str, long_version: bool = False):
-        colors = self.Colors  # just a shorthand + quicker name lookup
-        colorsnormal = colors.Normal  # used a lot
-        exc = "%s%s%s" % (colors.excName, etype, colorsnormal)
         width = min(75, get_terminal_size()[0])
         if long_version:
             # Header with the exception type, python version, and date
             pyver = "Python " + sys.version.split()[0] + ": " + sys.executable
             date = time.ctime(time.time())
 
-            head = "%s%s%s\n%s%s%s\n%s" % (
-                colors.topline,
-                "-" * width,
-                colorsnormal,
-                exc,
-                " " * (width - len(etype) - len(pyver)),
-                pyver,
-                date.rjust(width),
+            head = _format_with_style(
+                [
+                    (Token.Topline, "-" * width),
+                    (Token, "\n"),
+                    (Token.ExcName, etype),
+                    (Token, " " * (width - len(etype) - len(pyver))),
+                    (Token, pyver),
+                    (Token, "\n"),
+                    (Token, date.rjust(width)),
+                ],
+                self.Colors,
             )
             head += (
                 "\nA problem occurred executing Python code.  Here is the sequence of function"
@@ -1106,9 +1106,15 @@ class VerboseTB(TBTools):
             )
         else:
             # Simplified header
-            head = "%s%s" % (
-                exc,
-                "Traceback (most recent call last)".rjust(width - len(etype)),
+            head = _format_with_style(
+                [
+                    (Token.ExcName, etype),
+                    (
+                        Token,
+                        "Traceback (most recent call last)".rjust(width - len(etype)),
+                    ),
+                ],
+                self.Colors,
             )
 
         return head
@@ -1286,11 +1292,15 @@ class VerboseTB(TBTools):
         )
 
         colors = self.Colors  # just a shorthand + quicker name lookup
-        colorsnormal = colors.Normal  # used a lot
-        head = "%s%s%s" % (
-            colors.topline,
-            "-" * min(75, get_terminal_size()[0]),
-            colorsnormal,
+        termsize = min(75, get_terminal_size()[0])
+        head = _format_with_style(
+            [
+                (
+                    Token.Topline,
+                    "-" * termsize,
+                ),
+            ],
+            self.Colors,
         )
         structured_traceback_parts = [head]
         chained_exceptions_tb_offset = 0
