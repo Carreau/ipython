@@ -153,7 +153,7 @@ def exception_colors():
         Token.VName: "ansicyan",
         Token.Caret: "",
         Token.FilenameEm: "ansigreen",
-        Token.ExcName: "ansibrightred",
+        Token.ExcName: "ansired",
         Token.Topline: "ansired",
     }
     ex_colors.add_scheme(lightbg)
@@ -189,7 +189,7 @@ def exception_colors():
         Token.VName: "ansicyan",
         Token.Caret: "",
         Token.FilenameEm: "ansigreen",
-        Token.ExcName: "ansibrightred",
+        Token.ExcName: "ansired",
         Token.Topline: "ansired",
     }
     ex_colors.add_scheme(neut)
