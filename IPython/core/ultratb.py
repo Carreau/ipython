@@ -195,7 +195,7 @@ def _safe_string(value: Any, what: Any, func: Any = str) -> str:
         return f"<{what} {func.__name__}() failed>"
 
 
-def _format_traceback_lines(lines: list[Line], Colors, has_colors: bool, lvals):
+def _format_traceback_lines(lines, Colors, has_colors: bool, lvals):
     """
     Format tracebacks lines with pointing arrow, leading numbers,
     this assumes the stack have been extracted using stackdata.
@@ -935,13 +935,19 @@ class VerboseTB(TBTools):
         assert hasattr(Colors, "_pygments_equiv")
 
         if isinstance(frame_info._sd, stack_data.RepeatedFrames):
-            return "    %s[... skipping similar frames: %s]%s\n" % (
-                Colors.excName,
-                frame_info.description,
-                Colors.Normal,
+            return _format_with_style(
+                [
+                    (Token, "    "),
+                    (
+                        Token.ExcName,
+                        "[... skipping similar frames: %s]" % frame_info.description,
+                    ),
+                    (Token, "\n"),
+                ],
+                Colors,
             )
 
-        indent = " " * INDENT_SIZE
+        indent: str = " " * INDENT_SIZE
 
         link = _format_filename(
             frame_info.filename,
@@ -1043,10 +1049,10 @@ class VerboseTB(TBTools):
             _line_format = PyColorize.Parser(
                 style=self.color_scheme_table.active_scheme_name, parent=self
             ).format2
-            first_line = frame_info.code.co_firstlineno
-            current_line = frame_info.lineno[0]
+            first_line: int = frame_info.code.co_firstlineno
+            current_line: int = frame_info.lineno[0]
             raw_lines = frame_info.raw_lines
-            index = current_line - first_line
+            index: int = current_line - first_line
 
             if index >= frame_info.context:
                 start = max(index - frame_info.context, 0)
