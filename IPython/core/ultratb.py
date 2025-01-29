@@ -1031,9 +1031,15 @@ class VerboseTB(TBTools):
         result = f"{link}{', ' if call else ''}{call}\n"
         if frame_info._sd is None:
             # fast fallback if file is too long
-            tpl_link = "%s%%s%s" % (Colors.filenameEm, ColorsNormal)
-            link = tpl_link % util_path.compress_user(frame_info.filename)
-            level = "%s %s\n" % (link, call)
+            level = _format_with_style(
+                [
+                    (Token.FilenameEm, util_path.compress_user(frame_info.filename)),
+                    (Token, " "),
+                    (Token, call),
+                    (Token, "\n"),
+                ],
+                Colors,
+            )
             _line_format = PyColorize.Parser(
                 style=self.color_scheme_table.active_scheme_name, parent=self
             ).format2
