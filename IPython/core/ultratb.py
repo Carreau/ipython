@@ -315,7 +315,7 @@ def _simple_format_traceback_lines(
     return res
 
 
-def _format_filename(file, ColorFilename, ColorNormal, *, lineno=None):
+def _format_filename(file, ColorFilename, Colors, *, lineno=None):
     """
     Format filename lines with custom formatting from caching compiler or `File *.py` by default
 
@@ -334,10 +334,10 @@ def _format_filename(file, ColorFilename, ColorNormal, *, lineno=None):
     ):
         label, name = data
         if lineno is None:
-            tpl_link = f"{{label}} {ColorFilename}{{name}}{ColorNormal}"
+            tpl_link = f"{{label}} {ColorFilename}{{name}}{Colors.Normal}"
         else:
             tpl_link = (
-                f"{{label}} {ColorFilename}{{name}}, line {{lineno}}{ColorNormal}"
+                f"{{label}} {ColorFilename}{{name}}, line {{lineno}}{Colors.Normal}"
             )
     else:
         label = "File"
@@ -348,7 +348,7 @@ def _format_filename(file, ColorFilename, ColorNormal, *, lineno=None):
             tpl_link = f"{{label}} {ColorFilename}{{name}}{ColorNormal}"
         else:
             # can we make this the more friendly ", line {{lineno}}", or do we need to preserve the formatting with the colon?
-            tpl_link = f"{{label}} {ColorFilename}{{name}}:{{lineno}}{ColorNormal}"
+            tpl_link = f"{{label}} {ColorFilename}{{name}}:{{lineno}}{Colors.Normal}"
 
     return tpl_link.format(label=label, name=name, lineno=lineno)
 
@@ -655,7 +655,7 @@ class ListTB(TBTools):
                 else (Colors.Normal, Colors.name, Colors.filename, "")
             )
 
-            fns = _format_filename(filename, fileCol, normalCol, lineno=lineno)
+            fns = _format_filename(filename, fileCol, Colors, lineno=lineno)
             item = f"{normalCol}  {fns}{normalCol}"
 
             if name != "<module>":
@@ -706,7 +706,7 @@ class ListTB(TBTools):
                         _format_filename(
                             value.filename,
                             Colors.filenameEm,
-                            Colors.normalEm,
+                            Colors,
                             lineno=(None if lineno == "unknown" else lineno),
                         ),
                         Colors.Normal,
@@ -933,13 +933,12 @@ class VerboseTB(TBTools):
         assert isinstance(frame_info, FrameInfo)
         Colors = self.Colors  # just a shorthand + quicker name lookup
         assert hasattr(Colors, "_pygments_equiv")
-        ColorsNormal = Colors.Normal  # used a lot
 
         if isinstance(frame_info._sd, stack_data.RepeatedFrames):
             return "    %s[... skipping similar frames: %s]%s\n" % (
                 Colors.excName,
                 frame_info.description,
-                ColorsNormal,
+                Colors.Normal,
             )
 
         indent = " " * INDENT_SIZE
@@ -947,7 +946,7 @@ class VerboseTB(TBTools):
         link = _format_filename(
             frame_info.filename,
             Colors.filenameEm,
-            ColorsNormal,
+            Colors,
             lineno=frame_info.lineno,
         )
         args, varargs, varkw, locals_ = inspect.getargvalues(frame_info.frame)
