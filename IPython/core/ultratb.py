@@ -590,6 +590,7 @@ class ListTB(TBTools):
         Colors = self.Colors
         out_list = []
         if elist:
+            # assert False
             if tb_offset and len(elist) > tb_offset:
                 elist = elist[tb_offset:]
 
@@ -655,7 +656,7 @@ class ListTB(TBTools):
             )
 
             fns = _format_filename(filename, fileCol, normalCol, lineno=lineno)
-            item = f"{normalCol}  {fns}"
+            item = f"{normalCol}  {fns}{normalCol}"
 
             if name != "<module>":
                 item += f" in {nameCol}{name}{normalCol}\n"

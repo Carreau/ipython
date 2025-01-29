@@ -228,10 +228,11 @@ class AsyncTest(TestCase):
                         if should_fail:
                             msg = ("SyntaxError not raised for %s" %
                                     str(test_id))
+
                             with self.assertRaises(SyntaxError, msg=msg):
+                                print(cell)
                                 iprc(cell)
 
-                                print(cell)
                         else:
                             iprc(cell)
 

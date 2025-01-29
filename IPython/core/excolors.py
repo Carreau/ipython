@@ -34,6 +34,8 @@ def exception_colors():
     >>> ec.set_active_scheme('NoColor')
     >>> ec.active_scheme_name
     'NoColor'
+
+
     .. >>> sorted(ec.active_colors.keys())
     .. ['Normal', 'breakpoint_disabled', 'breakpoint_enabled', 'caret', 'em',
     .. 'excName', 'filename', 'filenameEm', 'line', 'lineno', 'linenoEm', 'name',
