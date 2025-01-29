@@ -345,7 +345,7 @@ def _format_filename(file, ColorFilename, Colors, *, lineno=None):
             py3compat.cast_unicode(file, util_path.fs_encoding)
         )
         if lineno is None:
-            tpl_link = f"{{label}} {ColorFilename}{{name}}{ColorNormal}"
+            tpl_link = f"{{label}} {ColorFilename}{{name}}{Colors.Normal}"
         else:
             # can we make this the more friendly ", line {{lineno}}", or do we need to preserve the formatting with the colon?
             tpl_link = f"{{label}} {ColorFilename}{{name}}:{{lineno}}{Colors.Normal}"
