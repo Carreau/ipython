@@ -505,7 +505,6 @@ class Pdb(OldPdb):
 
     def print_stack_trace(self, context=None):
         Colors = self.color_scheme_table.active_colors
-        ColorsNormal = Colors.Normal
         if context is None:
             context = self.context
         try:
@@ -1024,9 +1023,17 @@ class Pdb(OldPdb):
         if hidden:
             if self.report_skipped:
                 Colors = self.color_scheme_table.active_colors
-                ColorsNormal = Colors.Normal
                 print(
-                    f"{Colors.excName}    [... skipped 1 hidden frame]{ColorsNormal}\n"
+                    _format_with_style(
+                        [
+                            (
+                                Token.ExcName,
+                                "    [... skipped 1 hidden frame(s)]",
+                            ),
+                            (Token, "\n"),
+                        ],
+                        Colors,
+                    )
                 )
         return super().stop_here(frame)
 
@@ -1068,12 +1075,20 @@ class Pdb(OldPdb):
                 return
 
             Colors = self.color_scheme_table.active_colors
-            ColorsNormal = Colors.Normal
             _newframe = i
         self._select_frame(_newframe)
         if skipped:
             print(
-                f"{Colors.excName}    [... skipped {skipped} hidden frame(s)]{ColorsNormal}\n"
+                _format_with_style(
+                    [
+                        (
+                            Token.ExcName,
+                            f"    [... skipped {skipped} hidden frame(s)]",
+                        ),
+                        (Token, "\n"),
+                    ],
+                    Colors,
+                )
             )
 
     def do_down(self, arg):
@@ -1114,7 +1129,16 @@ class Pdb(OldPdb):
             ColorsNormal = Colors.Normal
             if skipped:
                 print(
-                    f"{Colors.excName}    [... skipped {skipped} hidden frame(s)]{ColorsNormal}\n"
+                    _format_with_style(
+                        [
+                            (
+                                Token.ExcName,
+                                f"    [... skipped {skipped} hidden frame(s)]",
+                            ),
+                            (Token, "\n"),
+                        ],
+                        Colors,
+                    )
                 )
             _newframe = i
 

@@ -38,7 +38,7 @@ def exception_colors():
 
     .. >>> sorted(ec.active_colors.keys())
     .. ['Normal', 'breakpoint_disabled', 'breakpoint_enabled', 'caret', 'em',
-    .. 'excName', 'filename', 'filenameEm', 'line', 'lineno', 'linenoEm', 'name',
+    .. 'filename', 'filenameEm', 'line', 'lineno', 'linenoEm', 'name',
     .. 'nameEm', 'normalEm', 'vName', 'val', 'valEm']
 
     """
@@ -63,7 +63,6 @@ def exception_colors():
             "linenoEm": C.NoColor,
             "nameEm": C.NoColor,
             # Colors for printing the exception
-            "excName": C.NoColor,
             "line": C.NoColor,
             "Normal": C.NoColor,
             # debugger
@@ -99,7 +98,6 @@ def exception_colors():
             "linenoEm": C.LightGreen,
             "nameEm": C.LightPurple,
             # Colors for printing the exception
-            "excName": C.LightRed,
             "line": C.Yellow,
             "Normal": C.Normal,
             # debugger
@@ -137,8 +135,6 @@ def exception_colors():
             "linenoEm": C.Green,
             "nameEm": C.Purple,
             # Colors for printing the exception
-            "excName": C.Red,
-            # "line": C.Brown,  # brown often is displayed as yellow
             "line": C.Red,
             "Normal": C.Normal,
             # debugger
@@ -173,8 +169,6 @@ def exception_colors():
             "linenoEm": C.Green,
             "nameEm": C.Purple,
             # Colors for printing the exception
-            "excName": C.Red,
-            # line = C.Brown,  # brown often is displayed as yellow
             "line": C.Red,
             "Normal": C.Normal,
             # debugger
