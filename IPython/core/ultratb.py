@@ -98,7 +98,7 @@ import time
 import traceback
 import types
 from types import TracebackType
-from typing import Any, List, Optional, Tuple
+from typing import Any, Callable, List, Optional, Tuple
 
 import stack_data
 from pygments.formatters.terminal256 import Terminal256Formatter
@@ -195,7 +195,12 @@ def _safe_string(value: Any, what: Any, func: Any = str) -> str:
         return f"<{what} {func.__name__}() failed>"
 
 
-def _format_traceback_lines(lines, Colors, has_colors: bool, lvals):
+def _format_traceback_lines(
+    lines: list[stack_data.Line],
+    Colors: PyColorize.ColorScheme,
+    has_colors: bool,
+    lvals: str,
+) -> list[str]:
     """
     Format tracebacks lines with pointing arrow, leading numbers,
     this assumes the stack have been extracted using stackdata.
@@ -253,7 +258,7 @@ def _simple_format_traceback_lines(
     lnum: int,
     index: int,
     lines: list[tuple[str, tuple[str, bool]]],
-    Colors,
+    Colors: PyColorize.ColorScheme,
     lvals: str,
 ) -> list[str]:
     """
@@ -272,7 +277,7 @@ def _simple_format_traceback_lines(
     index: int
         which line in the list should be highlighted.
     lines: list[string]
-    Colors:
+    Colors: PyColorize.ColorScheme
         ColorScheme used.
     lvals: bytes
         Values of local variables, already colored, to inject just after the error line.
@@ -315,7 +320,13 @@ def _simple_format_traceback_lines(
     return res
 
 
-def _format_filename(em: bool, file: str, Colors, *, lineno=None) -> str:
+def _format_filename(
+    em: bool,
+    file: str | None,
+    Colors: PyColorize.ColorScheme,
+    *,
+    lineno: int | None = None,
+) -> str:
     """
     Format filename lines with custom formatting from caching compiler or `File *.py` by default
 
@@ -383,8 +394,8 @@ class TBTools(colorable.Colorable):
 
     def __init__(
         self,
-        color_scheme="NoColor",
-        call_pdb=False,
+        color_scheme: str = "NoColor",
+        call_pdb: bool = False,
         ostream=None,
         parent=None,
         config=None,
@@ -827,7 +838,7 @@ class FrameInfo:
 
     description: Optional[str]
     filename: Optional[str]
-    lineno: Tuple[int]
+    lineno: int
     # number of context lines to use
     context: Optional[int]
     raw_lines: List[str]
@@ -848,13 +859,14 @@ class FrameInfo:
         self,
         description: Optional[str],
         filename: str,
-        lineno: Tuple[int],
+        lineno: int,
         frame,
         code,
         *,
         sd=None,
         context=None,
     ):
+        assert isinstance(lineno, (int, type(None))), lineno
         self.description = description
         self.filename = filename
         self.lineno = lineno
@@ -978,6 +990,7 @@ class VerboseTB(TBTools):
 
         indent: str = " " * INDENT_SIZE
 
+        assert isinstance(frame_info.lineno, int)
         link = _format_filename(
             True,
             frame_info.filename,
@@ -1079,8 +1092,8 @@ class VerboseTB(TBTools):
                 style=self.color_scheme_table.active_scheme_name, parent=self
             ).format2
             first_line: int = frame_info.code.co_firstlineno
-            current_line: int = frame_info.lineno[0]
-            raw_lines = frame_info.raw_lines
+            current_line: int = frame_info.lineno
+            raw_lines: list[str] = frame_info.raw_lines
             index: int = current_line - first_line
             assert frame_info.context is not None
             if index >= frame_info.context:
@@ -1305,7 +1318,7 @@ class VerboseTB(TBTools):
             FIs = []
             for tb in tbs:
                 frame = tb.tb_frame  # type: ignore
-                lineno = (frame.f_lineno,)
+                lineno = frame.f_lineno
                 code = frame.f_code
                 filename = code.co_filename
                 # TODO: Here we need to use before/after/
@@ -1671,7 +1684,7 @@ class SyntaxTB(ListTB):
             etype, value, elist, tb_offset=tb_offset, context=context
         )
 
-    def clear_err_state(self) -> Exception:
+    def clear_err_state(self) -> Any | None:
         """Return the current error state and clear it"""
         e = self.last_syntax_error
         self.last_syntax_error = None
@@ -1683,7 +1696,7 @@ class SyntaxTB(ListTB):
 
 
 # some internal-use functions
-def text_repr(value):
+def text_repr(value: Any) -> str:
     """Hopefully pretty robust repr equivalent."""
     # this is pretty horrible but should always return *something*
     try:
@@ -1712,9 +1725,9 @@ def text_repr(value):
                 return "UNRECOVERABLE REPR FAILURE"
 
 
-def eqrepr(value, repr=text_repr):
+def eqrepr(value: Any, repr: Callable[[Any], str] = text_repr) -> str:
     return "=%s" % repr(value)
 
 
-def nullrepr(value, repr=text_repr):
+def nullrepr(value: Any, repr: Callable[[Any], str] = text_repr) -> str:
     return ""
