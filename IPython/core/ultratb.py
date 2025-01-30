@@ -686,15 +686,14 @@ class ListTB(TBTools):
         Colors = self.Colors
         output_list = []
         for ind, (filename, lineno, name, line) in enumerate(extracted_list):
-            em, normalCol = (
-                # Emphasize the last entry
-                (True, Colors.normalEm)
-                if ind == len(extracted_list) - 1
-                else (False, Colors.Normal)
-            )
+            # Will emphasize the last entry
+            em = True if ind == len(extracted_list) - 1 else False
 
             fns = _format_filename(em, filename, Colors, lineno=lineno)
-            item = f"{normalCol}  {fns}{normalCol}"
+            item = _format_with_style(
+                [(Token.NormalEm if em else Token.Normal, "  ")], Colors
+            )
+            item += fns
 
             # This seem to be only in xmode plain (%run sinpleer), investigate why not share with verbose.
             # look at _format_filename in forma_record.
@@ -706,7 +705,9 @@ class ListTB(TBTools):
                     ],
                     Colors,
                 )
-            item += "\n"
+            item += _format_with_style(
+                [(Token.NormalEm if em else Token, "\n")], Colors
+            )
             if line:
                 item += _format_with_style(
                     [
