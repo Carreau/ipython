@@ -12,7 +12,7 @@ import os
 #  the file COPYING, distributed as part of this software.
 # *****************************************************************************
 
-from IPython.utils.coloransi import ColorSchemeTable, TermColors, ColorScheme
+from IPython.utils.coloransi import ColorSchemeTable, ColorScheme
 
 
 def exception_colors():
@@ -35,25 +35,15 @@ def exception_colors():
     >>> ec.active_scheme_name
     'NoColor'
 
-
-    .. >>> sorted(ec.active_colors.keys())
-    .. ['Normal', 'caret', 'em',
-    .. 'filename', 'line', 'name',
-    .. 'vName', 'val', 'valEm']
-
     """
     from pygments.token import Token
 
     ex_colors = ColorSchemeTable()
 
     # Populate it with color schemes
-    C = TermColors  # shorthand and local lookup
     nc = ColorScheme(
         "NoColor",
-        {
-            # Colors for printing the exception
-            "Normal": C.NoColor,
-        },
+        {},
     )
     nc.colors._pygments_equiv = {
         Token.LinenoEm: "",
@@ -79,10 +69,7 @@ def exception_colors():
     # make some schemes as instances so we can copy them for modification easily
     linux = ColorScheme(
         "Linux",
-        {
-            # Colors for printing the exception
-            "Normal": C.Normal,
-        },
+        {},
     )
     # 2025: migration helper
     # temporary carry equivalent pygments token to style
@@ -110,10 +97,7 @@ def exception_colors():
     # For light backgrounds, swap dark/light colors
     lightbg = ColorScheme(
         "LightBG",
-        {
-            # Colors for printing the exception
-            "Normal": C.Normal,
-        },
+        {},
     )
     lightbg.colors._pygments_equiv = {
         Token.LinenoEm: "ansigreen",
@@ -138,10 +122,7 @@ def exception_colors():
 
     neut = ColorScheme(
         "Neutral",
-        {
-            # Colors for printing the exception
-            "Normal": C.Normal,
-        },
+        {},
     )
     neut.colors._pygments_equiv = {
         Token.LinenoEm: "ansigreen",
