@@ -654,26 +654,35 @@ class Pdb(OldPdb):
 
         for i, line in enumerate(lines):
             show_arrow = start + 1 + i == lineno
-            tpl_line_em = "%%s%s%%s %s%%s%s" % (
-                Colors.linenoEm,
-                Colors.line,
-                ColorsNormal,
+
+            bp_str, num, colored_line = self.__line_content(
+                filename,
+                start + 1 + i,
+                line,
+                arrow=show_arrow,
+                Colors=Colors,
             )
-            tpl_line_em = f"%s{Colors.linenoEm}%s {Colors.line}%s{Colors.Normal}"
-            tpl_line = f"%s{Colors.lineno}%s {Colors.Normal}%s{Colors.Normal}"
-            linetpl = (
-                tpl_line_em if (frame is self.curframe or show_arrow) else tpl_line
-            )
-            ret.append(
-                linetpl
-                % self.__line_content(
-                    filename,
-                    start + 1 + i,
-                    line,
-                    arrow=show_arrow,
-                    Colors=Colors,
+            if frame is self.curframe or show_arrow:
+                retline = _format_with_style(
+                    [
+                        (Token, bp_str),
+                        (Token.LinenoEm, num),
+                        (Token, " "),
+                        (Token.Line, colored_line),
+                    ],
+                    Colors,
                 )
-            )
+            else:
+                retline = _format_with_style(
+                    [
+                        (Token, bp_str),
+                        (Token.Lineno, num),
+                        (Token, " "),
+                        (Token, colored_line),
+                    ],
+                    Colors,
+                )
+            ret.append(retline)
         return "".join(ret)
 
     def __line_content(
@@ -721,19 +730,31 @@ class Pdb(OldPdb):
                     break
 
                 if lineno == self.curframe.f_lineno:
-                    tpl_line_em = (
-                        f"%s{Colors.linenoEm}%s {Colors.line}%s{Colors.Normal}"
-                    )
                     bp, num, colored_line = self.__line_content(
                         filename, lineno, line, arrow=True, Colors=Colors
                     )
-                    line = tpl_line_em % (bp, num, colored_line)
+                    line = _format_with_style(
+                        [
+                            (Token, bp),
+                            (Token.LinenoEm, num),
+                            (Token, " "),
+                            (Token.Line, colored_line),
+                        ],
+                        Colors,
+                    )
                 else:
-                    tpl_line = f"%s{Colors.lineno}%s {Colors.Normal}%s{Colors.Normal}"
                     bp, num, colored_line = self.__line_content(
                         filename, lineno, line, arrow=False, Colors=Colors
                     )
-                    line = tpl_line % (bp, num, colored_line)
+                    line = _format_with_style(
+                        [
+                            (Token, bp),
+                            (Token.Lineno, num),
+                            (Token, " "),
+                            (Token, colored_line),
+                        ],
+                        Colors,
+                    )
 
                 src.append(line)
                 self.lineno = lineno
