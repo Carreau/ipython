@@ -665,8 +665,8 @@ class Pdb(OldPdb):
                 tpl_line_em if (frame is self.curframe or show_arrow) else tpl_line
             )
             ret.append(
-                self.__format_line(
-                    linetpl,
+                linetpl
+                % self.__line_content(
                     filename,
                     start + 1 + i,
                     line,
@@ -676,8 +676,9 @@ class Pdb(OldPdb):
             )
         return "".join(ret)
 
-    def __format_line(self, tpl_line, filename, lineno, line, arrow=False, Colors=None):
-        assert Colors is not None
+    def __line_content(
+        self, filename: str, lineno: int, line: str, arrow: bool = False, Colors=None
+    ):
         bp_mark = ""
         BreakpointToken = Token.Breakpoint
 
@@ -691,7 +692,6 @@ class Pdb(OldPdb):
             bp = bps[-1]
 
         if bp:
-            Colors = self.color_scheme_table.active_colors
             bp_mark = str(bp.number)
             BreakpointToken = Token.Breakpoint.Enabled
             if not bp.enabled:
@@ -704,7 +704,7 @@ class Pdb(OldPdb):
         else:
             num = "%*s" % (numbers_width - len(bp_mark), str(lineno))
         bp_str = _format_with_style([(BreakpointToken, bp_mark)], Colors)
-        return tpl_line % (bp_str, num, line)
+        return (bp_str, num, line)
 
     def print_list_lines(self, filename, first, last):
         """The printing (as opposed to the parsing part of a 'list'
@@ -724,14 +724,16 @@ class Pdb(OldPdb):
                     tpl_line_em = (
                         f"%s{Colors.linenoEm}%s {Colors.line}%s{Colors.Normal}"
                     )
-                    line = self.__format_line(
-                        tpl_line_em, filename, lineno, line, arrow=True, Colors=Colors
+                    bp, num, colored_line = self.__line_content(
+                        filename, lineno, line, arrow=True, Colors=Colors
                     )
+                    line = tpl_line_em % (bp, num, colored_line)
                 else:
                     tpl_line = f"%s{Colors.lineno}%s {Colors.Normal}%s{Colors.Normal}"
-                    line = self.__format_line(
-                        tpl_line, filename, lineno, line, arrow=False, Colors=Colors
+                    bp, num, colored_line = self.__line_content(
+                        filename, lineno, line, arrow=False, Colors=Colors
                     )
+                    line = tpl_line % (bp, num, colored_line)
 
                 src.append(line)
                 self.lineno = lineno
