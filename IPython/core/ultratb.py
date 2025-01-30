@@ -626,9 +626,16 @@ class ListTB(TBTools):
                 elist = elist[tb_offset:]
 
             out_list.append(
-                "Traceback %s(most recent call last)%s:"
-                % (Colors.normalEm, Colors.Normal)
-                + "\n"
+                _format_with_style(
+                    [
+                        (Token, "Traceback"),
+                        (Token, " "),
+                        (Token.NormalEm, "(most recent call last)"),
+                        (Token, ":"),
+                        (Token, "\n"),
+                    ],
+                    Colors,
+                ),
             )
             out_list.extend(self._format_list(elist))
         # The exception info should be a single entry in the list.
@@ -679,21 +686,36 @@ class ListTB(TBTools):
         Colors = self.Colors
         output_list = []
         for ind, (filename, lineno, name, line) in enumerate(extracted_list):
-            em, normalCol, nameCol, lineCol = (
+            em, normalCol = (
                 # Emphasize the last entry
-                (True, Colors.normalEm, Colors.nameEm, Colors.line)
+                (True, Colors.normalEm)
                 if ind == len(extracted_list) - 1
-                else (False, Colors.Normal, Colors.name, Colors.Normal)
+                else (False, Colors.Normal)
             )
 
             fns = _format_filename(em, filename, Colors, lineno=lineno)
             item = f"{normalCol}  {fns}{normalCol}"
 
+            # This seem to be only in xmode plain (%run sinpleer), investigate why not share with verbose.
+            # look at _format_filename in forma_record.
             if name != "<module>":
-                item += f" in {nameCol}{name}{normalCol}"
+                item += _format_with_style(
+                    [
+                        (Token.NormalEm if em else Token.Normal, " in "),
+                        (Token.NameEm if em else Token.Name, name),
+                    ],
+                    Colors,
+                )
             item += "\n"
             if line:
-                item += f"{lineCol}    {line.strip()}{normalCol}\n"
+                item += _format_with_style(
+                    [
+                        (Token.Line if em else Token, "    "),
+                        (Token.Line if em else Token, line.strip()),
+                        (Token, "\n"),
+                    ],
+                    Colors,
+                )
             output_list.append(item)
 
         return output_list
@@ -751,7 +773,14 @@ class ListTB(TBTools):
                     while i < len(textline) and textline[i].isspace():
                         i += 1
                     output_list.append(
-                        "%s    %s%s\n" % (Colors.line, textline.strip(), Colors.Normal)
+                        _format_with_style(
+                            [
+                                (Token.Line, "    "),
+                                (Token.Line, textline.strip()),
+                                (Token, "\n"),
+                            ],
+                            Colors,
+                        )
                     )
                     if value.offset is not None:
                         s = "    "
