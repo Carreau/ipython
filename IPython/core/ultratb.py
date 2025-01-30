@@ -1195,8 +1195,6 @@ class VerboseTB(TBTools):
         return head
 
     def format_exception(self, etype, evalue):
-        colors = self.Colors  # just a shorthand + quicker name lookup
-        colorsnormal = colors.Normal  # used a lot
         # Get (safely) a string form of the exception info
         try:
             etype_str, evalue_str = map(str, (etype, evalue))
@@ -1217,8 +1215,9 @@ class VerboseTB(TBTools):
                 self.Colors,
             ),
             *(
-                "{}{}".format(
-                    colorsnormal, _safe_string(py3compat.cast_unicode(n), "note")
+                _format_with_style(
+                    [(Token, _safe_string(py3compat.cast_unicode(n), "note"))],
+                    self.Colors,
                 )
                 for n in notes
             ),
