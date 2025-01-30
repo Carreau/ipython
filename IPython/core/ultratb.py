@@ -441,7 +441,7 @@ class TBTools(colorable.Colorable):
         """
         return sys.stdout if self._ostream is None else self._ostream
 
-    def _set_ostream(self, val):
+    def _set_ostream(self, val) -> None:
         assert val is None or (hasattr(val, "write") and hasattr(val, "flush"))
         self._ostream = val
 
@@ -487,7 +487,7 @@ class TBTools(colorable.Colorable):
     def has_colors(self) -> bool:
         return self.color_scheme_table.active_scheme_name.lower() != "nocolor"
 
-    def set_colors(self, *args, **kw):
+    def set_colors(self, *args: Any, **kw: Any) -> None:
         """Shorthand access to the color table scheme selector method."""
 
         # Set own color table
@@ -563,7 +563,7 @@ class ListTB(TBTools):
     Because they are meant to be called without a full traceback (only a
     list), instances of this class can't call the interactive pdb debugger."""
 
-    def __call__(self, etype, value, elist):
+    def __call__(self, etype, value, elist) -> None:
         self.ostream.flush()
         self.ostream.write(self.text(etype, value, elist))
         self.ostream.write("\n")
@@ -609,7 +609,7 @@ class ListTB(TBTools):
             etb, chained_exc_ids = etb
         else:
             chained_exc_ids = set()
-
+        elist: Any
         if isinstance(etb, list):
             elist = etb
         elif etb is not None:
@@ -807,7 +807,7 @@ class ListTB(TBTools):
         """
         return ListTB.structured_traceback(self, etype, value)
 
-    def show_exception_only(self, etype, evalue):
+    def show_exception_only(self, etype, evalue) -> None:
         """Only print the exception type and message, without a traceback.
 
         Parameters
@@ -822,7 +822,7 @@ class ListTB(TBTools):
         ostream.write("\n".join(self.get_exception_only(etype, evalue)))
         ostream.flush()
 
-    def _some_str(self, value):
+    def _some_str(self, value: Any) -> str:
         # Lifted from traceback.py
         try:
             return py3compat.cast_unicode(str(value))
@@ -861,7 +861,7 @@ class FrameInfo:
         filename: str,
         lineno: int,
         frame,
-        code,
+        code: Optional[types.CodeType],
         *,
         sd=None,
         context=None,
@@ -1091,6 +1091,7 @@ class VerboseTB(TBTools):
             _line_format = PyColorize.Parser(
                 style=self.color_scheme_table.active_scheme_name, parent=self
             ).format2
+            assert isinstance(frame_info.code, types.CodeType)
             first_line: int = frame_info.code.co_firstlineno
             current_line: int = frame_info.lineno
             raw_lines: list[str] = frame_info.raw_lines
