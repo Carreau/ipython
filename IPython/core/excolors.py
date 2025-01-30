@@ -37,7 +37,7 @@ def exception_colors():
 
 
     .. >>> sorted(ec.active_colors.keys())
-    .. ['Normal', 'breakpoint_disabled', 'breakpoint_enabled', 'caret', 'em',
+    .. ['Normal', 'caret', 'em',
     .. 'filename', 'line', 'lineno', 'linenoEm', 'name',
     .. 'normalEm', 'vName', 'val', 'valEm']
 
@@ -59,9 +59,6 @@ def exception_colors():
             # Colors for printing the exception
             "line": C.NoColor,
             "Normal": C.NoColor,
-            # debugger
-            "breakpoint_enabled": C.NoColor,
-            "breakpoint_disabled": C.NoColor,
         },
     )
     nc.colors._pygments_equiv = {
@@ -79,6 +76,9 @@ def exception_colors():
         Token.Line: "",
         Token.Name: "",
         Token.NameEm: "",
+        Token.Breakpoint: "",
+        Token.Breakpoint.Enabled: "",
+        Token.Breakpoint.Disabled: "",
     }
     ex_colors.add_scheme(nc)
 
@@ -94,9 +94,6 @@ def exception_colors():
             # Colors for printing the exception
             "line": C.Yellow,
             "Normal": C.Normal,
-            # debugger
-            "breakpoint_enabled": C.LightRed,
-            "breakpoint_disabled": C.Red,
         },
     )
     # 2025: migration helper
@@ -116,6 +113,9 @@ def exception_colors():
         Token.Line: "ansiyellow",
         Token.Name: "ansimagenta",
         Token.NameEm: "ansibrightmagenta",
+        Token.Breakpoint: "",
+        Token.Breakpoint.Enabled: "ansibrightred",
+        Token.Breakpoint.Disabled: "ansired",
     }
     ex_colors.add_scheme(linux)
 
@@ -131,9 +131,6 @@ def exception_colors():
             # Colors for printing the exception
             "line": C.Red,
             "Normal": C.Normal,
-            # debugger
-            "breakpoint_enabled": C.LightRed,
-            "breakpoint_disabled": C.Red,
         },
     )
     lightbg.colors._pygments_equiv = {
@@ -151,6 +148,9 @@ def exception_colors():
         Token.Line: "ansired",
         Token.Name: "ansibrightmagenta",
         Token.NameEm: "ansimagenta",
+        Token.Breakpoint: "",
+        Token.Breakpoint.Enabled: "ansibrightred",
+        Token.Breakpoint.Disabled: "ansired",
     }
     ex_colors.add_scheme(lightbg)
 
@@ -165,9 +165,6 @@ def exception_colors():
             # Colors for printing the exception
             "line": C.Red,
             "Normal": C.Normal,
-            # debugger
-            "breakpoint_enabled": C.LightRed,
-            "breakpoint_disabled": C.Red,
         },
     )
     neut.colors._pygments_equiv = {
@@ -185,6 +182,9 @@ def exception_colors():
         Token.Line: "ansired",
         Token.Name: "ansibrightmagenta",
         Token.NameEm: "ansimagenta",
+        Token.Breakpoint: "",
+        Token.Breakpoint.Enabled: "ansibrightred",
+        Token.Breakpoint.Disabled: "ansired",
     }
     ex_colors.add_scheme(neut)
 

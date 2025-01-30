@@ -679,7 +679,7 @@ class Pdb(OldPdb):
     def __format_line(self, tpl_line, filename, lineno, line, arrow=False, Colors=None):
         assert Colors is not None
         bp_mark = ""
-        bp_mark_color = ""
+        BreakpointToken = Token.Breakpoint
 
         new_line, err = self.parser.format2(line, "str")
         if not err:
@@ -693,10 +693,9 @@ class Pdb(OldPdb):
         if bp:
             Colors = self.color_scheme_table.active_colors
             bp_mark = str(bp.number)
-            bp_mark_color = Colors.breakpoint_enabled
+            BreakpointToken = Token.Breakpoint.Enabled
             if not bp.enabled:
-                bp_mark_color = Colors.breakpoint_disabled
-
+                BreakpointToken = Token.Breakpoint.Disabled
         numbers_width = 7
         if arrow:
             # This is the line with the error
@@ -704,8 +703,8 @@ class Pdb(OldPdb):
             num = "%s%s" % (make_arrow(pad), str(lineno))
         else:
             num = "%*s" % (numbers_width - len(bp_mark), str(lineno))
-
-        return tpl_line % (bp_mark_color + bp_mark, num, line)
+        bp_str = _format_with_style([(BreakpointToken, bp_mark)], Colors)
+        return tpl_line % (bp_str, num, line)
 
     def print_list_lines(self, filename, first, last):
         """The printing (as opposed to the parsing part of a 'list'
