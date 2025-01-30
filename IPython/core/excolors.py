@@ -39,7 +39,7 @@ def exception_colors():
     .. >>> sorted(ec.active_colors.keys())
     .. ['Normal', 'breakpoint_disabled', 'breakpoint_enabled', 'caret', 'em',
     .. 'filename', 'line', 'lineno', 'linenoEm', 'name',
-    .. 'nameEm', 'normalEm', 'vName', 'val', 'valEm']
+    .. 'normalEm', 'vName', 'val', 'valEm']
 
     """
     from pygments.token import Token
@@ -56,7 +56,6 @@ def exception_colors():
             # Emphasized colors for the last frame of the traceback
             "normalEm": C.NoColor,
             "linenoEm": C.NoColor,
-            "nameEm": C.NoColor,
             # Colors for printing the exception
             "line": C.NoColor,
             "Normal": C.NoColor,
@@ -92,7 +91,6 @@ def exception_colors():
             # Emphasized colors for the last frame of the traceback
             "normalEm": C.LightCyan,
             "linenoEm": C.LightGreen,
-            "nameEm": C.LightPurple,
             # Colors for printing the exception
             "line": C.Yellow,
             "Normal": C.Normal,
@@ -130,7 +128,6 @@ def exception_colors():
             # Emphasized colors for the last frame of the traceback
             "normalEm": C.Cyan,
             "linenoEm": C.Green,
-            "nameEm": C.Purple,
             # Colors for printing the exception
             "line": C.Red,
             "Normal": C.Normal,
@@ -165,7 +162,6 @@ def exception_colors():
             # Emphasized colors for the last frame of the traceback
             "normalEm": C.Cyan,
             "linenoEm": C.Green,
-            "nameEm": C.Purple,
             # Colors for printing the exception
             "line": C.Red,
             "Normal": C.Normal,
