@@ -606,7 +606,6 @@ class Pdb(OldPdb):
         ret = []
 
         Colors = self.color_scheme_table.active_colors
-        ColorsNormal = Colors.Normal
 
         frame, lineno = frame_lineno
 
@@ -1158,7 +1157,6 @@ class Pdb(OldPdb):
                 return
 
             Colors = self.color_scheme_table.active_colors
-            ColorsNormal = Colors.Normal
             if skipped:
                 print(
                     _format_with_style(
