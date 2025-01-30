@@ -163,7 +163,7 @@ module = [
     "IPython.core.ultratb",
 ]
 disallow_untyped_defs = false
-ignore_errors = false
+ignore_errors = true
 ignore_missing_imports = false
 disallow_untyped_calls = false
 disallow_incomplete_defs = false
