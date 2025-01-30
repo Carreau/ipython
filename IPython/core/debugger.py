@@ -666,12 +666,18 @@ class Pdb(OldPdb):
             )
             ret.append(
                 self.__format_line(
-                    linetpl, filename, start + 1 + i, line, arrow=show_arrow
+                    linetpl,
+                    filename,
+                    start + 1 + i,
+                    line,
+                    arrow=show_arrow,
+                    Colors=Colors,
                 )
             )
         return "".join(ret)
 
-    def __format_line(self, tpl_line, filename, lineno, line, arrow=False):
+    def __format_line(self, tpl_line, filename, lineno, line, arrow=False, Colors=None):
+        assert Colors is not None
         bp_mark = ""
         bp_mark_color = ""
 
@@ -706,8 +712,6 @@ class Pdb(OldPdb):
         command."""
         try:
             Colors = self.color_scheme_table.active_colors
-            tpl_line = f"%s{Colors.lineno}%s {Colors.Normal}%s{Colors.Normal}"
-            tpl_line_em = f"%s{Colors.linenoEm}%s {Colors.line}%s{Colors.Normal}"
             src = []
             if filename == "<string>" and hasattr(self, "_exec_filename"):
                 filename = self._exec_filename
@@ -718,12 +722,16 @@ class Pdb(OldPdb):
                     break
 
                 if lineno == self.curframe.f_lineno:
+                    tpl_line_em = (
+                        f"%s{Colors.linenoEm}%s {Colors.line}%s{Colors.Normal}"
+                    )
                     line = self.__format_line(
-                        tpl_line_em, filename, lineno, line, arrow=True
+                        tpl_line_em, filename, lineno, line, arrow=True, Colors=Colors
                     )
                 else:
+                    tpl_line = f"%s{Colors.lineno}%s {Colors.Normal}%s{Colors.Normal}"
                     line = self.__format_line(
-                        tpl_line, filename, lineno, line, arrow=False
+                        tpl_line, filename, lineno, line, arrow=False, Colors=Colors
                     )
 
                 src.append(line)
