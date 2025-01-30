@@ -327,6 +327,15 @@ def _format_filename(
     *,
     lineno: int | None = None,
 ) -> str:
+    return _format_with_style(_tokens_filename(em, file, lineno), Colors)
+
+
+def _tokens_filename(
+    em: bool,
+    file: str | None,
+    *,
+    lineno: int | None = None,
+) -> str:
     """
     Format filename lines with custom formatting from caching compiler or `File *.py` by default
 
@@ -344,44 +353,32 @@ def _format_filename(
     ):
         label, name = data
         if lineno is None:
-            return _format_with_style(
-                [
-                    (Normal, label),
-                    (Normal, " "),
-                    (Filename, name),
-                ],
-                Colors,
-            )
+            return [
+                (Normal, label),
+                (Normal, " "),
+                (Filename, name),
+            ]
         else:
-            return _format_with_style(
-                [
-                    (Normal, label),
-                    (Normal, " "),
-                    (Filename, name),
-                    (Filename, f", line {lineno}"),
-                ],
-                Colors,
-            )
+            return [
+                (Normal, label),
+                (Normal, " "),
+                (Filename, name),
+                (Filename, f", line {lineno}"),
+            ]
     else:
         name = util_path.compress_user(
             py3compat.cast_unicode(file, util_path.fs_encoding)
         )
         if lineno is None:
-            return _format_with_style(
-                [
-                    (Normal, "File "),
-                    (Filename, name),
-                ],
-                Colors,
-            )
+            return [
+                (Normal, "File "),
+                (Filename, name),
+            ]
         else:
-            return _format_with_style(
-                [
-                    (Normal, "File "),
-                    (Filename, f"{name}:{lineno}"),
-                ],
-                Colors,
-            )
+            return [
+                (Normal, "File "),
+                (Filename, f"{name}:{lineno}"),
+            ]
 
 
 # ---------------------------------------------------------------------------
@@ -505,16 +502,16 @@ class TBTools(colorable.Colorable):
         if self.color_scheme_table.active_scheme_name == "NoColor":
             self.color_scheme_table.set_active_scheme(self.old_scheme)
             self.Colors = self.color_scheme_table.active_colors
-            assert hasattr(
-                self.Colors, "_pygments_equiv"
-            ), self.color_scheme_table.active_colors
+            assert hasattr(self.Colors, "_pygments_equiv"), (
+                self.color_scheme_table.active_colors
+            )
         else:
             self.old_scheme = self.color_scheme_table.active_scheme_name
             self.color_scheme_table.set_active_scheme("NoColor")
             self.Colors = self.color_scheme_table.active_colors
-            assert hasattr(
-                self.Colors, "_pygments_equiv"
-            ), self.color_scheme_table.active_colors
+            assert hasattr(self.Colors, "_pygments_equiv"), (
+                self.color_scheme_table.active_colors
+            )
 
     def stb2text(self, stb) -> str:
         """Convert a structured traceback (a list) to a string."""
