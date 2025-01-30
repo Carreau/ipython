@@ -1017,12 +1017,6 @@ class VerboseTB(TBTools):
         indent: str = " " * INDENT_SIZE
 
         assert isinstance(frame_info.lineno, int)
-        link = _format_filename(
-            True,
-            frame_info.filename,
-            Colors,
-            lineno=frame_info.lineno,
-        )
         args, varargs, varkw, locals_ = inspect.getargvalues(frame_info.frame)
         if frame_info.executing is not None:
             func = frame_info.executing.code_qualname()
@@ -1102,7 +1096,14 @@ class VerboseTB(TBTools):
                 Colors,
             )
 
-        result = f"{link}{', ' if call else ''}{call}\n"
+        result = _format_filename(
+            True,
+            frame_info.filename,
+            Colors,
+            lineno=frame_info.lineno,
+        )
+        result += ", " if call else ""
+        result += f"{call}\n"
         if frame_info._sd is None:
             # fast fallback if file is too long
             level = _format_with_style(
