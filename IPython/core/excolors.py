@@ -53,7 +53,6 @@ def exception_colors():
         {
             # The colors to be used in the traceback
             "lineno": C.NoColor,
-            "name": C.NoColor,
             # Emphasized colors for the last frame of the traceback
             "normalEm": C.NoColor,
             "linenoEm": C.NoColor,
@@ -90,7 +89,6 @@ def exception_colors():
         {
             # The colors to be used in the traceback
             "lineno": C.Green,
-            "name": C.Purple,
             # Emphasized colors for the last frame of the traceback
             "normalEm": C.LightCyan,
             "linenoEm": C.LightGreen,
@@ -129,7 +127,6 @@ def exception_colors():
         {
             # The colors to be used in the traceback
             "lineno": C.LightGreen,
-            "name": C.LightPurple,
             # Emphasized colors for the last frame of the traceback
             "normalEm": C.Cyan,
             "linenoEm": C.Green,
@@ -165,7 +162,6 @@ def exception_colors():
         {
             # The colors to be used in the traceback
             "lineno": C.LightGreen,
-            "name": C.LightPurple,
             # Emphasized colors for the last frame of the traceback
             "normalEm": C.Cyan,
             "linenoEm": C.Green,
