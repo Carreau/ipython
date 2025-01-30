@@ -38,7 +38,7 @@ def exception_colors():
 
     .. >>> sorted(ec.active_colors.keys())
     .. ['Normal', 'breakpoint_disabled', 'breakpoint_enabled', 'caret', 'em',
-    .. 'filename', 'filenameEm', 'line', 'lineno', 'linenoEm', 'name',
+    .. 'filename', 'line', 'lineno', 'linenoEm', 'name',
     .. 'nameEm', 'normalEm', 'vName', 'val', 'valEm']
 
     """
@@ -57,7 +57,6 @@ def exception_colors():
             "name": C.NoColor,
             # Emphasized colors for the last frame of the traceback
             "normalEm": C.NoColor,
-            "filenameEm": C.NoColor,
             "linenoEm": C.NoColor,
             "nameEm": C.NoColor,
             # Colors for printing the exception
@@ -96,7 +95,6 @@ def exception_colors():
             "name": C.Purple,
             # Emphasized colors for the last frame of the traceback
             "normalEm": C.LightCyan,
-            "filenameEm": C.LightGreen,
             "linenoEm": C.LightGreen,
             "nameEm": C.LightPurple,
             # Colors for printing the exception
@@ -137,7 +135,6 @@ def exception_colors():
             "name": C.LightPurple,
             # Emphasized colors for the last frame of the traceback
             "normalEm": C.Cyan,
-            "filenameEm": C.Green,
             "linenoEm": C.Green,
             "nameEm": C.Purple,
             # Colors for printing the exception
@@ -175,7 +172,6 @@ def exception_colors():
             "name": C.LightPurple,
             # Emphasized colors for the last frame of the traceback
             "normalEm": C.Cyan,
-            "filenameEm": C.Green,
             "linenoEm": C.Green,
             "nameEm": C.Purple,
             # Colors for printing the exception
