@@ -327,7 +327,7 @@ def _format_filename(
     *,
     lineno: int | None = None,
 ) -> str:
-    return _format_with_style(_tokens_filename(em, file, lineno), Colors)
+    return _format_with_style(_tokens_filename(em, file, lineno=lineno), Colors)
 
 
 def _tokens_filename(
@@ -1096,14 +1096,6 @@ class VerboseTB(TBTools):
                 Colors,
             )
 
-        result = _format_filename(
-            True,
-            frame_info.filename,
-            Colors,
-            lineno=frame_info.lineno,
-        )
-        result += ", " if call else ""
-        result += f"{call}\n"
         if frame_info._sd is None:
             # fast fallback if file is too long
             level = _format_with_style(
@@ -1148,14 +1140,21 @@ class VerboseTB(TBTools):
                 level,
                 "".join(_tb_lines),
             )
-            # result += "\n".join(frame_info.raw_lines)
         else:
+            result = _format_filename(
+                True,
+                frame_info.filename,
+                Colors,
+                lineno=frame_info.lineno,
+            )
+            result += ", " if call else ""
+            result += f"{call}\n"
             result += "".join(
                 _format_traceback_lines(
                     frame_info.lines, Colors, self.has_colors, lvals
                 )
             )
-        return result
+            return result
 
     def prepare_header(self, etype: str, long_version: bool = False) -> str:
         width = min(75, get_terminal_size()[0])
