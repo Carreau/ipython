@@ -52,7 +52,6 @@ def exception_colors():
         "NoColor",
         {
             # The colors to be used in the traceback
-            "filename": C.NoColor,
             "lineno": C.NoColor,
             "name": C.NoColor,
             # Emphasized colors for the last frame of the traceback
@@ -73,7 +72,7 @@ def exception_colors():
         Token.ValEm: "",
         Token.VName: "",
         Token.Caret: "",
-        Token.FilenameEm: "",
+        Token.Filename: "",
         Token.ExcName: "",
         Token.Topline: "",
         Token.FilenameEm: "",
@@ -90,7 +89,6 @@ def exception_colors():
         "Linux",
         {
             # The colors to be used in the traceback
-            "filename": C.Green,
             "lineno": C.Green,
             "name": C.Purple,
             # Emphasized colors for the last frame of the traceback
@@ -113,10 +111,10 @@ def exception_colors():
         Token.ValEm: "ansibrightblue",
         Token.VName: "ansicyan",
         Token.Caret: "",
-        Token.FilenameEm: "ansibrightgreen",
+        Token.Filename: "ansibrightgreen",
         Token.ExcName: "ansibrightred",
         Token.Topline: "ansibrightred",
-        Token.FilenameEm: "ansibrightgreen",
+        Token.FilenameEm: "ansigreen",
         Token.Normal: "",
         Token.NormalEm: "ansibrightcyan",
         Token.Line: "ansiyellow",
@@ -130,7 +128,6 @@ def exception_colors():
         "LightBG",
         {
             # The colors to be used in the traceback
-            "filename": C.LightGreen,
             "lineno": C.LightGreen,
             "name": C.LightPurple,
             # Emphasized colors for the last frame of the traceback
@@ -151,10 +148,10 @@ def exception_colors():
         Token.ValEm: "ansiblue",
         Token.VName: "ansicyan",
         Token.Caret: "",
-        Token.FilenameEm: "ansigreen",
+        Token.Filename: "ansigreen",
+        Token.FilenameEm: "ansibrightgreen",
         Token.ExcName: "ansired",
         Token.Topline: "ansired",
-        Token.FilenameEm: "ansigreen",
         Token.Normal: "",
         Token.NormalEm: "ansicyan",
         Token.Line: "ansired",
@@ -167,7 +164,6 @@ def exception_colors():
         "Neutral",
         {
             # The colors to be used in the traceback
-            "filename": C.LightGreen,
             "lineno": C.LightGreen,
             "name": C.LightPurple,
             # Emphasized colors for the last frame of the traceback
@@ -188,10 +184,10 @@ def exception_colors():
         Token.ValEm: "ansiblue",
         Token.VName: "ansicyan",
         Token.Caret: "",
+        Token.Filename: "ansibrightgreen",
         Token.FilenameEm: "ansigreen",
         Token.ExcName: "ansired",
         Token.Topline: "ansired",
-        Token.FilenameEm: "ansigreen",
         Token.Normal: "",
         Token.NormalEm: "ansicyan",
         Token.Line: "ansired",
