@@ -38,7 +38,7 @@ def exception_colors():
 
     .. >>> sorted(ec.active_colors.keys())
     .. ['Normal', 'caret', 'em',
-    .. 'filename', 'line', 'lineno', 'linenoEm', 'name',
+    .. 'filename', 'line', 'name',
     .. 'normalEm', 'vName', 'val', 'valEm']
 
     """
@@ -51,13 +51,9 @@ def exception_colors():
     nc = ColorScheme(
         "NoColor",
         {
-            # The colors to be used in the traceback
-            "lineno": C.NoColor,
             # Emphasized colors for the last frame of the traceback
             "normalEm": C.NoColor,
-            "linenoEm": C.NoColor,
             # Colors for printing the exception
-            "line": C.NoColor,
             "Normal": C.NoColor,
         },
     )
@@ -86,13 +82,9 @@ def exception_colors():
     linux = ColorScheme(
         "Linux",
         {
-            # The colors to be used in the traceback
-            "lineno": C.Green,
             # Emphasized colors for the last frame of the traceback
             "normalEm": C.LightCyan,
-            "linenoEm": C.LightGreen,
             # Colors for printing the exception
-            "line": C.Yellow,
             "Normal": C.Normal,
         },
     )
@@ -123,13 +115,9 @@ def exception_colors():
     lightbg = ColorScheme(
         "LightBG",
         {
-            # The colors to be used in the traceback
-            "lineno": C.LightGreen,
             # Emphasized colors for the last frame of the traceback
             "normalEm": C.Cyan,
-            "linenoEm": C.Green,
             # Colors for printing the exception
-            "line": C.Red,
             "Normal": C.Normal,
         },
     )
@@ -157,13 +145,9 @@ def exception_colors():
     neut = ColorScheme(
         "Neutral",
         {
-            # The colors to be used in the traceback
-            "lineno": C.LightGreen,
             # Emphasized colors for the last frame of the traceback
             "normalEm": C.Cyan,
-            "linenoEm": C.Green,
             # Colors for printing the exception
-            "line": C.Red,
             "Normal": C.Normal,
         },
     )
