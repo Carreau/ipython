@@ -132,8 +132,8 @@ from contextlib import contextmanager
 from functools import lru_cache
 
 from IPython import get_ipython
-from IPython.core.excolors import exception_colors
 from IPython.utils import PyColorize, coloransi, py3compat
+from IPython.utils.PyColorize import ANSICodeColors
 
 from typing import TYPE_CHECKING
 
@@ -298,9 +298,8 @@ class Pdb(OldPdb):
 
         self.aliases = {}
 
-        # Create color table: we copy the default one from the traceback
-        # module and add a few attributes needed for debugging
-        self.color_scheme_table = exception_colors()
+        # 2025 warning this is now a shared instance.
+        self.color_scheme_table = ANSICodeColors
 
         # Add a python parser so we can syntax highlight source while
         # debugging.

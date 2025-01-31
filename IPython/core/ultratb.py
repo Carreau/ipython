@@ -113,8 +113,8 @@ from IPython import get_ipython
 from IPython.core import debugger
 from IPython.core.debugger import _format_with_style
 from IPython.core.display_trap import DisplayTrap
-from IPython.core.excolors import exception_colors
 from IPython.utils import PyColorize
+from IPython.utils.PyColorize import ANSICodeColors
 from IPython.utils import path as util_path
 from IPython.utils import py3compat
 from IPython.utils.terminal import get_terminal_size
@@ -414,7 +414,8 @@ class TBTools(colorable.Colorable):
         self._ostream = ostream
 
         # Create color table
-        self.color_scheme_table = exception_colors()
+        # 2025: warnings this is now a shared instance
+        self.color_scheme_table = ANSICodeColors
 
         self.set_colors(color_scheme)
         self.old_scheme = color_scheme  # save initial value for toggles

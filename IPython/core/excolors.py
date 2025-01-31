@@ -1,9 +1,6 @@
-# -*- coding: utf-8 -*-
 """
 Color schemes for exception handling code in IPython.
 """
-
-import os
 
 # *****************************************************************************
 #       Copyright (C) 2005-2006 Fernando Perez <fperez@colorado.edu>
@@ -12,144 +9,9 @@ import os
 #  the file COPYING, distributed as part of this software.
 # *****************************************************************************
 
-from IPython.utils.coloransi import ColorSchemeTable, ColorScheme
+from IPython.utils.PyColorize import ANSICodeColors
 
 
 def exception_colors():
-    """Return a color table with fields for exception reporting.
-
-    The table is an instance of ColorSchemeTable with schemes added for
-    'Neutral', 'Linux', 'LightBG' and 'NoColor' and fields for exception handling filled
-    in.
-
-    Examples:
-
-    >>> ec = exception_colors()
-    >>> ec.active_scheme_name
-    ''
-    >>> print(ec.active_colors)
-    None
-
-    Now we activate a color scheme:
-    >>> ec.set_active_scheme('NoColor')
-    >>> ec.active_scheme_name
-    'NoColor'
-
-    """
-    from pygments.token import Token
-
-    ex_colors = ColorSchemeTable()
-
-    # Populate it with color schemes
-    nc = ColorScheme(
-        "NoColor",
-        {},
-    )
-    nc.colors._pygments_equiv = {
-        Token.LinenoEm: "",
-        Token.Lineno: "",
-        Token.ValEm: "",
-        Token.VName: "",
-        Token.Caret: "",
-        Token.Filename: "",
-        Token.ExcName: "",
-        Token.Topline: "",
-        Token.FilenameEm: "",
-        Token.Normal: "",
-        Token.NormalEm: "",
-        Token.Line: "",
-        Token.Name: "",
-        Token.NameEm: "",
-        Token.Breakpoint: "",
-        Token.Breakpoint.Enabled: "",
-        Token.Breakpoint.Disabled: "",
-    }
-    ex_colors.add_scheme(nc)
-
-    # make some schemes as instances so we can copy them for modification easily
-    linux = ColorScheme(
-        "Linux",
-        {},
-    )
-    # 2025: migration helper
-    # temporary carry equivalent pygments token to style
-    linux.colors._pygments_equiv = {
-        Token.LinenoEm: "ansibrightgreen",
-        Token.Lineno: "ansigreen",
-        Token.ValEm: "ansibrightblue",
-        Token.VName: "ansicyan",
-        Token.Caret: "",
-        Token.Filename: "ansibrightgreen",
-        Token.ExcName: "ansibrightred",
-        Token.Topline: "ansibrightred",
-        Token.FilenameEm: "ansigreen",
-        Token.Normal: "",
-        Token.NormalEm: "ansibrightcyan",
-        Token.Line: "ansiyellow",
-        Token.Name: "ansimagenta",
-        Token.NameEm: "ansibrightmagenta",
-        Token.Breakpoint: "",
-        Token.Breakpoint.Enabled: "ansibrightred",
-        Token.Breakpoint.Disabled: "ansired",
-    }
-    ex_colors.add_scheme(linux)
-
-    # For light backgrounds, swap dark/light colors
-    lightbg = ColorScheme(
-        "LightBG",
-        {},
-    )
-    lightbg.colors._pygments_equiv = {
-        Token.LinenoEm: "ansigreen",
-        Token.Lineno: "ansibrightgreen",
-        Token.ValEm: "ansiblue",
-        Token.VName: "ansicyan",
-        Token.Caret: "",
-        Token.Filename: "ansigreen",
-        Token.FilenameEm: "ansibrightgreen",
-        Token.ExcName: "ansired",
-        Token.Topline: "ansired",
-        Token.Normal: "",
-        Token.NormalEm: "ansicyan",
-        Token.Line: "ansired",
-        Token.Name: "ansibrightmagenta",
-        Token.NameEm: "ansimagenta",
-        Token.Breakpoint: "",
-        Token.Breakpoint.Enabled: "ansibrightred",
-        Token.Breakpoint.Disabled: "ansired",
-    }
-    ex_colors.add_scheme(lightbg)
-
-    neut = ColorScheme(
-        "Neutral",
-        {},
-    )
-    neut.colors._pygments_equiv = {
-        Token.LinenoEm: "ansigreen",
-        Token.Lineno: "ansibrightgreen",
-        Token.ValEm: "ansiblue",
-        Token.VName: "ansicyan",
-        Token.Caret: "",
-        Token.Filename: "ansibrightgreen",
-        Token.FilenameEm: "ansigreen",
-        Token.ExcName: "ansired",
-        Token.Topline: "ansired",
-        Token.Normal: "",
-        Token.NormalEm: "ansicyan",
-        Token.Line: "ansired",
-        Token.Name: "ansibrightmagenta",
-        Token.NameEm: "ansimagenta",
-        Token.Breakpoint: "",
-        Token.Breakpoint.Enabled: "ansibrightred",
-        Token.Breakpoint.Disabled: "ansired",
-    }
-    ex_colors.add_scheme(neut)
-
-    # Hack: the 'neutral' colours are not very visible on a dark background on
-    # Windows. Since Windows command prompts have a dark background by default, and
-    # relatively few users are likely to alter that, we will use the 'Linux' colours,
-    # designed for a dark background, as the default on Windows.
-    if os.name == "nt":
-        ex_colors.add_scheme(ex_colors["Linux"].copy("Neutral"))
-
-    return ex_colors
+    """Return a color table with fields for exception reporting."""
+    return ANSICodeColors
