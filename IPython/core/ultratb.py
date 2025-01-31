@@ -415,7 +415,9 @@ class TBTools(colorable.Colorable):
 
         # Create color table
         # 2025: warnings this is now a shared instance
-        self.color_scheme_table = ANSICodeColors
+        from copy import copy
+
+        self.color_scheme_table = copy(ANSICodeColors)
 
         self.set_colors(color_scheme)
         self.old_scheme = color_scheme  # save initial value for toggles
