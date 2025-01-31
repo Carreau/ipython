@@ -16,37 +16,6 @@ from IPython.utils.ipstruct import Struct
 
 __all__ = ["TermColors", "InputTermColors", "ColorScheme", "ColorSchemeTable"]
 
-_sentinel = object()
-
-color_templates = (
-        # Dark colors
-        ("Black"       , "0;30"),
-        ("Red"         , "0;31"),
-        ("Green"       , "0;32"),
-        ("Brown"       , "0;33"),
-        ("Blue"        , "0;34"),
-        ("Purple"      , "0;35"),
-        ("Cyan"        , "0;36"),
-        ("LightGray"   , "0;37"),
-        # Light colors
-        ("DarkGray"    , "1;30"),
-        ("LightRed"    , "1;31"),
-        ("LightGreen"  , "1;32"),
-        ("Yellow"      , "1;33"),
-        ("LightBlue"   , "1;34"),
-        ("LightPurple" , "1;35"),
-        ("LightCyan"   , "1;36"),
-        ("White"       , "1;37"),
-        # Blinking colors.  Probably should not be used in anything serious.
-        ("BlinkBlack"  , "5;30"),
-        ("BlinkRed"    , "5;31"),
-        ("BlinkGreen"  , "5;32"),
-        ("BlinkYellow" , "5;33"),
-        ("BlinkBlue"   , "5;34"),
-        ("BlinkPurple" , "5;35"),
-        ("BlinkCyan"   , "5;36"),
-        ("BlinkLightGray", "5;37"),
-        )
 
 class TermColors:
     """Color escape sequences.
@@ -88,15 +57,6 @@ class TermColors:
     BlinkCyan = "\033[5;36m"
     BlinkLightGray = "\033[5;37m"
 
-
-class NoColors:
-    """This defines all the same names as the colour classes, but maps them to
-    empty strings, so it can easily be substituted to turn off colours."""
-    NoColor = ''
-    Normal  = ''
-
-for name, value in color_templates:
-    setattr(NoColors, name, '')
 
 class ColorScheme:
     """Generic color scheme class. Just a name and a Struct."""
