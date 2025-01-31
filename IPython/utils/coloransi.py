@@ -14,7 +14,7 @@ import warnings
 
 from IPython.utils.ipstruct import Struct
 
-__all__ = ["TermColors", "InputTermColors", "ColorScheme", "ColorSchemeTable"]
+__all__ = ["TermColors", "ColorScheme", "ColorSchemeTable"]
 
 
 class TermColors:
