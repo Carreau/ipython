@@ -104,7 +104,6 @@ import stack_data
 from pygments.formatters.terminal256 import Terminal256Formatter
 from pygments.styles import get_style_by_name
 from pygments.token import Token
-import pygments
 
 import IPython.utils.colorable as colorable
 
@@ -415,9 +414,7 @@ class TBTools(colorable.Colorable):
 
         # Create color table
         # 2025: warnings this is now a shared instance
-        from copy import copy
-
-        self.color_scheme_table = copy(ANSICodeColors)
+        self.color_scheme_table = ANSICodeColors
 
         self.set_colors(color_scheme)
         self.old_scheme = color_scheme  # save initial value for toggles
@@ -505,16 +502,16 @@ class TBTools(colorable.Colorable):
         if self.color_scheme_table.active_scheme_name == "NoColor":
             self.color_scheme_table.set_active_scheme(self.old_scheme)
             self.Colors = self.color_scheme_table.active_colors
-            assert hasattr(
-                self.Colors, "_pygments_equiv"
-            ), self.color_scheme_table.active_colors
+            assert hasattr(self.Colors, "_pygments_equiv"), (
+                self.color_scheme_table.active_colors
+            )
         else:
             self.old_scheme = self.color_scheme_table.active_scheme_name
             self.color_scheme_table.set_active_scheme("NoColor")
             self.Colors = self.color_scheme_table.active_colors
-            assert hasattr(
-                self.Colors, "_pygments_equiv"
-            ), self.color_scheme_table.active_colors
+            assert hasattr(self.Colors, "_pygments_equiv"), (
+                self.color_scheme_table.active_colors
+            )
 
     def stb2text(self, stb) -> str:
         """Convert a structured traceback (a list) to a string."""
