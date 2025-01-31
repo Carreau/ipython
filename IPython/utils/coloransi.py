@@ -48,15 +48,6 @@ color_templates = (
         ("BlinkLightGray", "5;37"),
         )
 
-def make_color_table(in_class):
-    """Build a set of color attributes in a class.
-
-    Helper function for building the :class:`TermColors` and
-    :class`InputTermColors`.
-    """
-    for name,value in color_templates:
-        setattr(in_class,name,in_class._base % value)
-
 class TermColors:
     """Color escape sequences.
 
@@ -97,35 +88,6 @@ class TermColors:
     BlinkCyan = "\033[5;36m"
     BlinkLightGray = "\033[5;37m"
 
-
-
-class InputTermColors:
-    """Color escape sequences for input prompts.
-
-    This class is similar to TermColors, but the escapes are wrapped in \\001
-    and \\002 so that readline can properly know the length of each line and
-    can wrap lines accordingly.  Use this class for any colored text which
-    needs to be used in input prompts, such as in calls to raw_input().
-
-    This class defines the escape sequences for all the standard (ANSI?)
-    colors in terminals. Also defines a NoColor escape which is just the null
-    string, suitable for defining 'dummy' color schemes in terminals which get
-    confused by color escapes.
-
-    This class should be used as a mixin for building color schemes."""
-
-    NoColor = ''  # for color schemes in color-less terminals.
-
-    if os.name == 'nt' and os.environ.get('TERM','dumb') == 'emacs':
-        # (X)emacs on W32 gets confused with \001 and \002 so we remove them
-        Normal = '\033[0m'   # Reset normal coloring
-        _base  = '\033[%sm'  # Template for all other colors
-    else:
-        Normal = '\001\033[0m\002'   # Reset normal coloring
-        _base  = '\001\033[%sm\002'  # Template for all other colors
-
-# Build the actual color table as a set of class attributes:
-make_color_table(InputTermColors)
 
 class NoColors:
     """This defines all the same names as the colour classes, but maps them to

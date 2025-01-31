@@ -45,7 +45,6 @@ generate_tokens = tokenize.generate_tokens
 
 from IPython.utils.coloransi import (
     TermColors,
-    InputTermColors,
     ColorScheme,
     ColorSchemeTable,
 )
