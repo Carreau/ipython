@@ -29,11 +29,6 @@ scan Python source code and re-emit it with no changes to its original
 formatting (which is the hard part).
 """
 
-__all__ = ["ANSICodeColors", "Parser"]
-
-_scheme_default = "Linux"
-
-
 # Imports
 import keyword
 import os
@@ -41,7 +36,6 @@ import sys
 import token
 import tokenize
 
-generate_tokens = tokenize.generate_tokens
 
 from IPython.utils.coloransi import (
     TermColors,
@@ -51,6 +45,12 @@ from IPython.utils.coloransi import (
 from .colorable import Colorable
 from io import StringIO
 from pygments.token import Token
+
+__all__ = ["ANSICodeColors", "Parser"]
+
+_scheme_default = "Linux"
+generate_tokens = tokenize.generate_tokens
+
 
 #############################################################################
 ### Python Source Parser (does Highlighting)
