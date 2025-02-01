@@ -49,7 +49,6 @@ from IPython.utils.dir2 import safe_hasattr
 from IPython.utils.path import compress_user
 from IPython.utils.text import indent
 from IPython.utils.wildcard import list_namespace, typestr2type
-from IPython.utils.coloransi import TermColors
 from IPython.utils.colorable import Colorable
 from IPython.utils.decorators import undoc
 
@@ -106,8 +105,6 @@ _builtin_func_type = type(all)
 _builtin_meth_type = type(str.upper)  # Bound methods have the same type as builtin functions
 #****************************************************************************
 # Builtin color schemes
-
-Colors = TermColors  # just a shorthand
 
 InspectColors = PyColorize.ANSICodeColors
 
