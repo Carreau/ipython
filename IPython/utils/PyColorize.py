@@ -38,7 +38,6 @@ import tokenize
 
 
 from IPython.utils.coloransi import (
-    TermColors,
     ColorScheme,
     ColorSchemeTable,
 )
@@ -61,8 +60,6 @@ _TEXT = token.NT_OFFSET + 2
 
 # ****************************************************************************
 # Builtin color schemes
-
-Colors = TermColors  # just a shorthand
 
 _pygment_token_mapping: dict[int, _TokenType] = {
     token.NUMBER: Token.Literal.Number,
