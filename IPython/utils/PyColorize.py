@@ -325,16 +325,26 @@ class Parser(Colorable):
             msg = ex.args[0]
             line = ex.args[1][0]
             self.out.write(
-                "%s\n\n*** ERROR: %s%s%s\n"
-                % (
-                    colors[token.ERRORTOKEN],
-                    msg,
-                    self.raw[self.lines[line] :],
-                    colors.normal,
+                colors._format_with_style(
+                    [
+                        (Token, "\n\n"),
+                        (
+                            Token.Error,
+                            f"*** ERROR: {msg}{self.raw[self.lines[line] :]}",
+                        ),
+                        (Token, "\n"),
+                    ]
                 )
             )
             error = True
-        self.out.write(colors.normal + "\n")
+        self.out.write(
+            colors._format_with_style(
+                [
+                    (Token, "\n"),
+                ]
+            )
+        )
+
         if string_output:
             output = self.out.getvalue()
             self.out = out_old
