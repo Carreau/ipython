@@ -68,7 +68,6 @@ Colors = TermColors  # just a shorthand
 NoColor = ColorScheme(
     "NoColor",
     {
-        "header": Colors.NoColor,
         token.NUMBER: Colors.NoColor,
         token.OP: Colors.NoColor,
         token.STRING: Colors.NoColor,
@@ -82,6 +81,7 @@ NoColor = ColorScheme(
 )
 
 NoColor.colors._pygments_equiv = {
+    Token.Header: "",
     Token.LinenoEm: "",
     Token.Lineno: "",
     Token.ValEm: "",
@@ -104,7 +104,6 @@ NoColor.colors._pygments_equiv = {
 LinuxColors = ColorScheme(
     "Linux",
     {
-        "header": Colors.LightRed,
         token.NUMBER: Colors.LightCyan,
         token.OP: Colors.Yellow,
         token.STRING: Colors.LightBlue,
@@ -117,6 +116,7 @@ LinuxColors = ColorScheme(
     },
 )
 LinuxColors.colors._pygments_equiv = {
+    Token.Header: "ansibrightred",
     Token.LinenoEm: "ansibrightgreen",
     Token.Lineno: "ansigreen",
     Token.ValEm: "ansibrightblue",
@@ -139,7 +139,6 @@ LinuxColors.colors._pygments_equiv = {
 NeutralColors = ColorScheme(
     "Neutral",
     {
-        "header": Colors.Red,
         token.NUMBER: Colors.Cyan,
         token.OP: Colors.Blue,
         token.STRING: Colors.Blue,
@@ -152,6 +151,7 @@ NeutralColors = ColorScheme(
     },
 )
 NeutralColors.colors._pygments_equiv = {
+    Token.Header: "ansired",
     Token.LinenoEm: "ansigreen",
     Token.Lineno: "ansibrightgreen",
     Token.ValEm: "ansiblue",
@@ -184,7 +184,6 @@ if os.name == "nt":
 LightBGColors = ColorScheme(
     "LightBG",
     {
-        "header": Colors.Red,
         token.NUMBER: Colors.Cyan,
         token.OP: Colors.Blue,
         token.STRING: Colors.Blue,
@@ -197,6 +196,7 @@ LightBGColors = ColorScheme(
     },
 )
 LightBGColors.colors._pygments_equiv = {
+    Token.Header: "ansired",
     Token.LinenoEm: "ansigreen",
     Token.Lineno: "ansibrightgreen",
     Token.ValEm: "ansiblue",
