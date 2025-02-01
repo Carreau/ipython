@@ -19,48 +19,7 @@ from pygments.formatters import Terminal256Formatter
 import pygments
 from typing import TypeAlias
 
-__all__ = ["TermColors", "ColorScheme", "ColorSchemeTable"]
-
-
-class TermColors:
-    """Color escape sequences.
-
-    This class defines the escape sequences for all the standard (ANSI?)
-    colors in terminals. Also defines a NoColor escape which is just the null
-    string, suitable for defining 'dummy' color schemes in terminals which get
-    confused by color escapes.
-
-    This class should be used as a mixin for building color schemes."""
-
-    NoColor = ''  # for color schemes in color-less terminals.
-    Normal = '\033[0m'   # Reset normal coloring
-
-    Black = "\033[0;30m"
-    Red = "\033[0;31m"
-    Green = "\033[0;32m"
-    Brown = "\033[0;33m"
-    Blue = "\033[0;34m"
-    Purple = "\033[0;35m"
-    Cyan = "\033[0;36m"
-    LightGray = "\033[0;37m"
-    # Light colors
-    DarkGray = "\033[1;30m"
-    LightRed = "\033[1;31m"
-    LightGreen = "\033[1;32m"
-    Yellow = "\033[1;33m"
-    LightBlue = "\033[1;34m"
-    LightPurple = "\033[1;35m"
-    LightCyan = "\033[1;36m"
-    White = "\033[1;37m"
-    # Blinking colors.  Probably should not be used in anything serious.
-    BlinkBlack = "\033[5;30m"
-    BlinkRed = "\033[5;31m"
-    BlinkGreen = "\033[5;32m"
-    BlinkYellow = "\033[5;33m"
-    BlinkBlue = "\033[5;34m"
-    BlinkPurple = "\033[5;35m"
-    BlinkCyan = "\033[5;36m"
-    BlinkLightGray = "\033[5;37m"
+__all__ = ["ColorScheme", "ColorSchemeTable"]
 
 
 TokenStream: TypeAlias = list[tuple[_TokenType, str]]
