@@ -78,17 +78,7 @@ _pygment_token_mapping: dict[int, _TokenType] = {
 # Build a few color schemes
 NoColor = ColorScheme(
     "NoColor",
-    {
-        token.NUMBER: Colors.NoColor,
-        token.OP: Colors.NoColor,
-        token.STRING: Colors.NoColor,
-        token.COMMENT: Colors.NoColor,
-        token.NAME: Colors.NoColor,
-        token.ERRORTOKEN: Colors.NoColor,
-        _KEYWORD: Colors.NoColor,
-        _TEXT: Colors.NoColor,
-        "normal": Colors.NoColor,  # color off (usu. Colors.Normal)
-    },
+    {},
     _pygment_token_mapping,
 )
 
@@ -115,17 +105,7 @@ NoColor.colors._pygments_equiv = {
 
 LinuxColors = ColorScheme(
     "Linux",
-    {
-        token.NUMBER: Colors.LightCyan,
-        token.OP: Colors.Yellow,
-        token.STRING: Colors.LightBlue,
-        token.COMMENT: Colors.LightRed,
-        token.NAME: Colors.Normal,
-        token.ERRORTOKEN: Colors.Red,
-        _KEYWORD: Colors.LightGreen,
-        _TEXT: Colors.Yellow,
-        "normal": Colors.Normal,  # color off (usu. Colors.Normal)
-    },
+    {},
     _pygment_token_mapping,
 )
 LinuxColors.colors._pygments_equiv = {
@@ -151,17 +131,7 @@ LinuxColors.colors._pygments_equiv = {
 
 NeutralColors = ColorScheme(
     "Neutral",
-    {
-        token.NUMBER: Colors.Cyan,
-        token.OP: Colors.Blue,
-        token.STRING: Colors.Blue,
-        token.COMMENT: Colors.Red,
-        token.NAME: Colors.Normal,
-        token.ERRORTOKEN: Colors.Red,
-        _KEYWORD: Colors.Green,
-        _TEXT: Colors.Blue,
-        "normal": Colors.Normal,  # color off (usu. Colors.Normal)
-    },
+    {},
     _pygment_token_mapping,
 )
 NeutralColors.colors._pygments_equiv = {
@@ -197,17 +167,7 @@ if os.name == "nt":
 
 LightBGColors = ColorScheme(
     "LightBG",
-    {
-        token.NUMBER: Colors.Cyan,
-        token.OP: Colors.Blue,
-        token.STRING: Colors.Blue,
-        token.COMMENT: Colors.Red,
-        token.NAME: Colors.Normal,
-        token.ERRORTOKEN: Colors.Red,
-        _KEYWORD: Colors.Green,
-        _TEXT: Colors.Blue,
-        "normal": Colors.Normal,  # color off (usu. Colors.Normal)
-    },
+    {},
     _pygment_token_mapping,
 )
 LightBGColors.colors._pygments_equiv = {
