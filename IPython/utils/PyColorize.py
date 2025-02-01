@@ -44,7 +44,7 @@ from IPython.utils.coloransi import (
 )
 from .colorable import Colorable
 from io import StringIO
-from pygments.token import Token
+from pygments.token import Token, _TokenType
 
 __all__ = ["ANSICodeColors", "Parser"]
 
@@ -64,6 +64,17 @@ _TEXT = token.NT_OFFSET + 2
 
 Colors = TermColors  # just a shorthand
 
+_pygment_token_mapping: dict[int, _TokenType] = {
+    token.NUMBER: Token.Literal.Number,
+    token.OP: Token.Operator,
+    token.STRING: Token.Literal.String,
+    token.COMMENT: Token.Comment,
+    token.NAME: Token.Name,
+    token.ERRORTOKEN: Token.Error,
+    _KEYWORD: Token.Keyword,
+    _TEXT: Token.Text,
+}
+
 # Build a few color schemes
 NoColor = ColorScheme(
     "NoColor",
@@ -78,7 +89,7 @@ NoColor = ColorScheme(
         _TEXT: Colors.NoColor,
         "normal": Colors.NoColor,  # color off (usu. Colors.Normal)
     },
-    {},
+    _pygment_token_mapping,
 )
 
 NoColor.colors._pygments_equiv = {
@@ -115,7 +126,7 @@ LinuxColors = ColorScheme(
         _TEXT: Colors.Yellow,
         "normal": Colors.Normal,  # color off (usu. Colors.Normal)
     },
-    {},
+    _pygment_token_mapping,
 )
 LinuxColors.colors._pygments_equiv = {
     Token.Header: "ansibrightred",
@@ -151,7 +162,7 @@ NeutralColors = ColorScheme(
         _TEXT: Colors.Blue,
         "normal": Colors.Normal,  # color off (usu. Colors.Normal)
     },
-    {},
+    _pygment_token_mapping,
 )
 NeutralColors.colors._pygments_equiv = {
     Token.Header: "ansired",
@@ -197,7 +208,7 @@ LightBGColors = ColorScheme(
         _TEXT: Colors.Blue,
         "normal": Colors.Normal,  # color off (usu. Colors.Normal)
     },
-    {},
+    _pygment_token_mapping,
 )
 LightBGColors.colors._pygments_equiv = {
     Token.Header: "ansired",
@@ -360,6 +371,7 @@ class Parser(Colorable):
             toktype = token.OP
         elif toktype == token.NAME and keyword.iskeyword(toktext):
             toktype = _KEYWORD
+        pyg_tok_type = colors.token_mapping.get(toktype, Token.Text)
         color = colors.get(toktype, colors[_TEXT])
 
         # Triple quoted strings must be handled carefully so that backtracking
@@ -370,7 +382,8 @@ class Parser(Colorable):
             )
 
         # send text
-        owrite("%s%s%s" % (color, toktext, colors.normal))
+        # owrite("%s%s%s" % (color, toktext, colors.normal))
+        owrite(colors._format_with_style([(pyg_tok_type, "|" + toktext)]))
         buff.seek(0)
         return buff.read()
 

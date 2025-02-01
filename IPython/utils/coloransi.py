@@ -73,13 +73,13 @@ class ColorScheme:
     ## 2025: migration helper
     ## temporary carry equivalent pygments token to style
     # _pygments_equiv: dict[type, str]
-    token_mapping: dict[int, _TokenType]
+    # token_mapping: dict[int, _TokenType]
 
     def __init__(self, __scheme_name_, colordict, token_mapping):
         self.name = __scheme_name_
         self.colors = Struct(colordict)
         self.colors._format_with_style = self._format_with_style
-        self.token_mapping = token_mapping
+        self.colors.token_mapping = token_mapping
 
     def copy(self,name=None):
         """Return a full copy of the object, optionally renaming it."""
