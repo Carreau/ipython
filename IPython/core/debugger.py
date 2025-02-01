@@ -151,22 +151,11 @@ from pdb import Pdb as OldPdb
 import pygments
 from pygments.formatters.terminal256 import Terminal256Formatter
 from pygments.style import Style
-from pygments.token import Token, _TokenType
-
-from typing import TypeAlias
-
-TokenStream: TypeAlias = list[tuple[_TokenType, str]]
+from pygments.token import Token
 
 
-def _format_with_style(stream: TokenStream, color: PyColorize.ColorScheme) -> str:
-    assert hasattr(color, "_pygments_equiv")
 
-    assert isinstance(color._pygments_equiv, dict)
 
-    class MyStyle(Style):
-        styles = color._pygments_equiv
-
-    return pygments.format(stream, Terminal256Formatter(style=MyStyle))
 
 
 # Allow the set_trace code to operate outside of an ipython instance, even if
@@ -518,30 +507,28 @@ class Pdb(OldPdb):
                     continue
                 if skipped:
                     print(
-                        _format_with_style(
+                        Colors._format_with_style(
                             [
                                 (
                                     Token.ExcName,
                                     f"    [... skipping {skipped} hidden frame(s)]",
                                 ),
                                 (Token, "\n"),
-                            ],
-                            Colors,
+                            ]
                         )
                     )
                     skipped = 0
                 self.print_stack_entry(frame_lineno, context=context)
             if skipped:
                 print(
-                    _format_with_style(
+                    Colors._format_with_style(
                         [
                             (
                                 Token.ExcName,
                                 f"    [... skipping {skipped} hidden frame(s)]",
                             ),
                             (Token, "\n"),
-                        ],
-                        Colors,
+                        ]
                     )
                 )
         except KeyboardInterrupt:
@@ -657,24 +644,22 @@ class Pdb(OldPdb):
                 Colors=Colors,
             )
             if frame is self.curframe or show_arrow:
-                retline = _format_with_style(
+                retline = Colors._format_with_style(
                     [
                         (Token, bp_str),
                         (Token.LinenoEm, num),
                         (Token, " "),
                         (Token.Line, colored_line),
-                    ],
-                    Colors,
+                    ]
                 )
             else:
-                retline = _format_with_style(
+                retline = Colors._format_with_style(
                     [
                         (Token, bp_str),
                         (Token.Lineno, num),
                         (Token, " "),
                         (Token, colored_line),
-                    ],
-                    Colors,
+                    ]
                 )
             ret.append(retline)
         return "".join(ret)
@@ -727,27 +712,25 @@ class Pdb(OldPdb):
                     bp, num, colored_line = self.__line_content(
                         filename, lineno, line, arrow=True, Colors=Colors
                     )
-                    line = _format_with_style(
+                    line = Colors._format_with_style(
                         [
                             (Token, bp),
                             (Token.LinenoEm, num),
                             (Token, " "),
                             (Token.Line, colored_line),
-                        ],
-                        Colors,
+                        ]
                     )
                 else:
                     bp, num, colored_line = self.__line_content(
                         filename, lineno, line, arrow=False, Colors=Colors
                     )
-                    line = _format_with_style(
+                    line = Colors._format_with_style(
                         [
                             (Token, bp),
                             (Token.Lineno, num),
                             (Token, " "),
                             (Token, colored_line),
-                        ],
-                        Colors,
+                        ]
                     )
 
                 src.append(line)
@@ -1050,15 +1033,14 @@ class Pdb(OldPdb):
             if self.report_skipped:
                 Colors = self.color_scheme_table.active_colors
                 print(
-                    _format_with_style(
+                    Colors._format_with_style(
                         [
                             (
                                 Token.ExcName,
                                 "    [... skipped 1 hidden frame(s)]",
                             ),
                             (Token, "\n"),
-                        ],
-                        Colors,
+                        ]
                     )
                 )
         return super().stop_here(frame)
@@ -1105,15 +1087,14 @@ class Pdb(OldPdb):
         self._select_frame(_newframe)
         if skipped:
             print(
-                _format_with_style(
+                Colors._format_with_style(
                     [
                         (
                             Token.ExcName,
                             f"    [... skipped {skipped} hidden frame(s)]",
                         ),
                         (Token, "\n"),
-                    ],
-                    Colors,
+                    ]
                 )
             )
 
@@ -1154,15 +1135,14 @@ class Pdb(OldPdb):
             Colors = self.color_scheme_table.active_colors
             if skipped:
                 print(
-                    _format_with_style(
+                    Colors._format_with_style(
                         [
                             (
                                 Token.ExcName,
                                 f"    [... skipped {skipped} hidden frame(s)]",
                             ),
                             (Token, "\n"),
-                        ],
-                        Colors,
+                        ]
                     )
                 )
             _newframe = i

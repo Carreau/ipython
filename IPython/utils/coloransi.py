@@ -13,6 +13,8 @@ import os
 import warnings
 
 from IPython.utils.ipstruct import Struct
+from pygments.token import _TokenType
+from typing import TypeAlias
 
 __all__ = ["TermColors", "ColorScheme", "ColorSchemeTable"]
 
@@ -58,6 +60,8 @@ class TermColors:
     BlinkLightGray = "\033[5;37m"
 
 
+TokenStream: TypeAlias = list[tuple[_TokenType, str]]
+
 class ColorScheme:
     """Generic color scheme class. Just a name and a Struct."""
 
@@ -76,6 +80,14 @@ class ColorScheme:
         if name is None:
             name = self.name
         return ColorScheme(name, self.colors.dict())
+
+    def _format_with_style(self, stream: TokenStream) -> str:
+        assert isinstance(self._pygments_equiv, dict)
+
+        class MyStyle(Style):
+            styles = color._pygments_equiv
+
+        return pygments.format(stream, Terminal256Formatter(style=MyStyle))
 
 
 class ColorSchemeTable(dict):

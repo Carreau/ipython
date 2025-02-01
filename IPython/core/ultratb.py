@@ -110,7 +110,6 @@ import IPython.utils.colorable as colorable
 # IPython's own modules
 from IPython import get_ipython
 from IPython.core import debugger
-from IPython.core.debugger import _format_with_style
 from IPython.core.display_trap import DisplayTrap
 from IPython.utils import PyColorize
 from IPython.utils.PyColorize import ANSICodeColors
@@ -218,7 +217,7 @@ def _format_traceback_lines(
 
     for stack_line in lines:
         if stack_line is stack_data.LINE_GAP:
-            res.append(_format_with_style([(Token.LinenoEm, "   (...)")], Colors))
+            res.append(Colors._format_with_style([(Token.LinenoEm, "   (...)")]))
             continue
 
         line = stack_line.render(pygmented=has_colors).rstrip("\n") + "\n"
@@ -227,24 +226,22 @@ def _format_traceback_lines(
             # This is the line with the error
             pad = numbers_width - len(str(lineno))
             num = "%s%s" % (debugger.make_arrow(pad), str(lineno))
-            line = _format_with_style(
+            line = Colors._format_with_style(
                 [
                     (Token.LinenoEm, debugger.make_arrow(pad)),
                     (Token.LinenoEm, str(lineno)),
                     (Token, " "),
                     (Token, line),
-                ],
-                Colors,
+                ]
             )
         else:
             num = "%*s" % (numbers_width, lineno)
-            line = _format_with_style(
+            line = Colors._format_with_style(
                 [
                     (Token.LinenoEm, str(num)),
                     (Token, " "),
                     (Token, line),
-                ],
-                Colors,
+                ]
             )
 
         res.append(line)
@@ -292,25 +289,23 @@ def _simple_format_traceback_lines(
         if i == lnum:
             # This is the line with the error
             pad = numbers_width - len(str(i))
-            line = _format_with_style(
+            line = Colors._format_with_style(
                 [
                     (Token.LinenoEm, debugger.make_arrow(pad)),
                     (Token.LinenoEm, str(lnum)),
                     (Token, " "),
                     (Token, colored_line),
-                ],
-                Colors,
+                ]
             )
         else:
             padding_num = "%*s" % (numbers_width, i)
 
-            line = _format_with_style(
+            line = Colors._format_with_style(
                 [
                     (Token.LinenoEm, padding_num),
                     (Token, " "),
                     (Token, colored_line),
-                ],
-                Colors,
+                ]
             )
 
         res.append(line)
@@ -326,7 +321,7 @@ def _format_filename(
     *,
     lineno: int | None = None,
 ) -> str:
-    return _format_with_style(_tokens_filename(em, file, lineno=lineno), Colors)
+    return Colors._format_with_style(_tokens_filename(em, file, lineno=lineno))
 
 
 def _tokens_filename(
@@ -623,15 +618,14 @@ class ListTB(TBTools):
                 elist = elist[tb_offset:]
 
             out_list.append(
-                _format_with_style(
+                Colors._format_with_style(
                     [
                         (Token, "Traceback"),
                         (Token, " "),
                         (Token.NormalEm, "(most recent call last)"),
                         (Token, ":"),
                         (Token, "\n"),
-                    ],
-                    Colors,
+                    ]
                 ),
             )
             out_list.extend(self._format_list(elist))
@@ -686,33 +680,28 @@ class ListTB(TBTools):
             # Will emphasize the last entry
             em = True if ind == len(extracted_list) - 1 else False
 
-            item = _format_with_style(
+            item = Colors._format_with_style(
                 [(Token.NormalEm if em else Token.Normal, "  ")]
-                + _tokens_filename(em, filename, lineno=lineno),
-                Colors,
+                + _tokens_filename(em, filename, lineno=lineno)
             )
 
             # This seem to be only in xmode plain (%run sinpleer), investigate why not share with verbose.
             # look at _format_filename in forma_record.
             if name != "<module>":
-                item += _format_with_style(
+                item += Colors._format_with_style(
                     [
                         (Token.NormalEm if em else Token.Normal, " in "),
                         (Token.NameEm if em else Token.Name, name),
-                    ],
-                    Colors,
+                    ]
                 )
-            item += _format_with_style(
-                [(Token.NormalEm if em else Token, "\n")], Colors
-            )
+            item += Colors._format_with_style([(Token.NormalEm if em else Token, "\n")])
             if line:
-                item += _format_with_style(
+                item += Colors._format_with_style(
                     [
                         (Token.Line if em else Token, "    "),
                         (Token.Line if em else Token, line.strip()),
                         (Token, "\n"),
-                    ],
-                    Colors,
+                    ]
                 )
             output_list.append(item)
 
@@ -751,15 +740,14 @@ class ListTB(TBTools):
                     lineno = "unknown"
                     textline = ""
                 output_list.append(
-                    _format_with_style(
+                    Colors._format_with_style(
                         [(Token, "  ")]
                         + _tokens_filename(
                             True,
                             value.filename,
                             lineno=(None if lineno == "unknown" else lineno),
                         )
-                        + [(Token, "\n")],
-                        Colors,
+                        + [(Token, "\n")]
                     )
                 )
                 if textline == "":
@@ -770,13 +758,12 @@ class ListTB(TBTools):
                     while i < len(textline) and textline[i].isspace():
                         i += 1
                     output_list.append(
-                        _format_with_style(
+                        Colors._format_with_style(
                             [
                                 (Token.Line, "    "),
                                 (Token.Line, textline.strip()),
                                 (Token, "\n"),
-                            ],
-                            Colors,
+                            ]
                         )
                     )
                     if value.offset is not None:
@@ -798,15 +785,14 @@ class ListTB(TBTools):
                 s = self._some_str(value)
             if s:
                 output_list.append(
-                    _format_with_style(
+                    Colors._format_with_style(
                         stype_tokens
                         + [
                             (Token.ExcName, ":"),
                             (Token, " "),
                             (Token, s),
                             (Token, "\n"),
-                        ],
-                        Colors,
+                        ]
                     )
                 )
             else:
@@ -1002,7 +988,7 @@ class VerboseTB(TBTools):
         assert hasattr(Colors, "_pygments_equiv")
 
         if isinstance(frame_info._sd, stack_data.RepeatedFrames):
-            return _format_with_style(
+            return Colors._format_with_style(
                 [
                     (Token, "    "),
                     (
@@ -1010,8 +996,7 @@ class VerboseTB(TBTools):
                         "[... skipping similar frames: %s]" % frame_info.description,
                     ),
                     (Token, "\n"),
-                ],
-                Colors,
+                ]
             )
 
         indent: str = " " * INDENT_SIZE
@@ -1052,13 +1037,12 @@ class VerboseTB(TBTools):
                 #  dict( (k,v.strip()) for (k,v) in range(10) )
                 # will illustrate the error, if this exception catch is
                 # disabled.
-                call = _format_with_style(
+                call = Colors._format_with_style(
                     [
                         (Token, "in "),
                         (Token.VName, func),
                         (Token.ValEm, "(***failed resolving arguments***)"),
-                    ],
-                    Colors,
+                    ]
                 )
 
         lvals = ""
@@ -1087,25 +1071,23 @@ class VerboseTB(TBTools):
                     ]
                 )
         if lvals_toks:
-            lvals = _format_with_style(
+            lvals = Colors._format_with_style(
                 sum(
                     ([(Token, indent)] + toks + [(Token, "\n")] for toks in lvals_toks),
                     start=[],
                     # strip the last newline
-                )[:-1],
-                Colors,
+                )[:-1]
             )
 
         if frame_info._sd is None:
             # fast fallback if file is too long
-            level = _format_with_style(
+            level = Colors._format_with_style(
                 [
                     (Token.FilenameEm, util_path.compress_user(frame_info.filename)),
                     (Token, " "),
                     (Token, call),
                     (Token, "\n"),
-                ],
-                Colors,
+                ]
             )
             _line_format = PyColorize.Parser(
                 style=self.color_scheme_table.active_scheme_name, parent=self
@@ -1163,7 +1145,7 @@ class VerboseTB(TBTools):
             pyver = "Python " + sys.version.split()[0] + ": " + sys.executable
             date = time.ctime(time.time())
 
-            head = _format_with_style(
+            head = self.Colors._format_with_style(
                 [
                     (Token.Topline, "-" * width),
                     (Token, "\n"),
@@ -1172,8 +1154,7 @@ class VerboseTB(TBTools):
                     (Token, pyver),
                     (Token, "\n"),
                     (Token, date.rjust(width)),
-                ],
-                self.Colors,
+                ]
             )
             head += (
                 "\nA problem occurred executing Python code.  Here is the sequence of function"
@@ -1181,15 +1162,14 @@ class VerboseTB(TBTools):
             )
         else:
             # Simplified header
-            head = _format_with_style(
+            head = self.Colors._format_with_style(
                 [
                     (Token.ExcName, etype),
                     (
                         Token,
                         "Traceback (most recent call last)".rjust(width - len(etype)),
                     ),
-                ],
-                self.Colors,
+                ]
             )
 
         return head
@@ -1210,14 +1190,12 @@ class VerboseTB(TBTools):
 
         # ... and format it
         return [
-            _format_with_style(
-                [(Token.ExcName, etype_str), (Token, ": "), (Token, evalue_str)],
-                self.Colors,
+            Colors._format_with_style(
+                [(Token.ExcName, etype_str), (Token, ": "), (Token, evalue_str)]
             ),
             *(
-                _format_with_style(
-                    [(Token, _safe_string(py3compat.cast_unicode(n), "note"))],
-                    self.Colors,
+                Colors._format_with_style(
+                    [(Token, _safe_string(py3compat.cast_unicode(n), "note"))]
                 )
                 for n in notes
             ),
@@ -1266,26 +1244,24 @@ class VerboseTB(TBTools):
                     continue
             if skipped:
                 frames.append(
-                    _format_with_style(
+                    self.Colors._format_with_style(
                         [
                             (Token, "    "),
                             (Token.ExcName, "[... skipping hidden %s frame]" % skipped),
                             (Token, "\n"),
-                        ],
-                        self.Colors,
+                        ]
                     )
                 )
                 skipped = 0
             frames.append(self.format_record(record))
         if skipped:
             frames.append(
-                _format_with_style(
+                self.Colors._format_with_style(
                     [
                         (Token, "    "),
                         (Token.ExcName, "[... skipping hidden %s frame]" % skipped),
                         (Token, "\n"),
-                    ],
-                    self.Colors,
+                    ]
                 )
             )
 
@@ -1372,14 +1348,13 @@ class VerboseTB(TBTools):
         )
 
         termsize = min(75, get_terminal_size()[0])
-        head: str = _format_with_style(
+        head: str = self.Colors._format_with_style(
             [
                 (
                     Token.Topline,
                     "-" * termsize,
                 ),
-            ],
-            self.Colors,
+            ]
         )
         structured_traceback_parts: list[str] = [head]
         chained_exceptions_tb_offset = 0
