@@ -116,6 +116,7 @@ from IPython.utils.PyColorize import ANSICodeColors
 from IPython.utils import path as util_path
 from IPython.utils import py3compat
 from IPython.utils.terminal import get_terminal_size
+from IPython.utils.coloransi import ColorScheme
 
 # Globals
 # amount of space to put line numbers before verbose tracebacks
@@ -409,7 +410,9 @@ class TBTools(colorable.Colorable):
 
         # Create color table
         # 2025: warnings this is now a shared instance
-        self.color_scheme_table = ANSICodeColors
+        from copy import copy
+
+        self.color_scheme_table = copy(ANSICodeColors)
 
         self.set_colors(color_scheme)
         self.old_scheme = color_scheme  # save initial value for toggles
@@ -724,7 +727,7 @@ class ListTB(TBTools):
         Colors = self.Colors
         output_list = []
         stype_tokens = [(Token.ExcName, etype.__name__)]
-        stype: str = _format_with_style(stype_tokens, Colors)
+        stype: str = Colors._format_with_style(stype_tokens)
         if value is None:
             # Not sure if this can still happen in Python 2.6 and above
             output_list.append(stype + "\n")
@@ -774,8 +777,8 @@ class ListTB(TBTools):
                             else:
                                 s += " "
                         output_list.append(
-                            _format_with_style(
-                                [(Token.Caret, s + "^"), (Token, "\n")], Colors
+                            Colors._format_with_style(
+                                [(Token.Caret, s + "^"), (Token, "\n")]
                             )
                         )
 
@@ -1017,8 +1020,8 @@ class VerboseTB(TBTools):
                     args, varargs, varkw, locals_, formatvalue=var_repr
                 )
                 assert isinstance(scope, str)
-                call = _format_with_style(
-                    [(Token, "in "), (Token.VName, func), (Token.ValEm, scope)], Colors
+                call = Colors._format_with_style(
+                    [(Token, "in "), (Token.VName, func), (Token.ValEm, scope)]
                 )
             except KeyError:
                 # This happens in situations like errors inside generator
@@ -1190,11 +1193,11 @@ class VerboseTB(TBTools):
 
         # ... and format it
         return [
-            Colors._format_with_style(
+            self.Colors._format_with_style(
                 [(Token.ExcName, etype_str), (Token, ": "), (Token, evalue_str)]
             ),
             *(
-                Colors._format_with_style(
+                self.Colors._format_with_style(
                     [(Token, _safe_string(py3compat.cast_unicode(n), "note"))]
                 )
                 for n in notes

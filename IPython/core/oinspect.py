@@ -23,6 +23,7 @@ import linecache
 import os
 import types
 import warnings
+from pygments.token import Token
 
 
 from typing import (
@@ -421,8 +422,7 @@ class Inspector(Colorable):
 
     def __head(self,h) -> str:
         """Return a header string with proper colors."""
-        return '%s%s%s' % (self.color_table.active_colors.header,h,
-                           self.color_table.active_colors.normal)
+        return self.color_table.active_colors._format_with_style([(Token.Header, h)])
 
     def set_active_scheme(self, scheme):
         if scheme is not None:

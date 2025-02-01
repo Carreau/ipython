@@ -288,7 +288,9 @@ class Pdb(OldPdb):
         self.aliases = {}
 
         # 2025 warning this is now a shared instance.
-        self.color_scheme_table = ANSICodeColors
+        from copy import copy
+
+        self.color_scheme_table = copy(ANSICodeColors)
 
         # Add a python parser so we can syntax highlight source while
         # debugging.
@@ -602,7 +604,7 @@ class Pdb(OldPdb):
         # s = filename + '(' + `lineno` + ')'
         filename = self.canonic(frame.f_code.co_filename)
 
-        link = _format_with_style([(Token.FilenameEm, filename)], Colors)
+        link = Colors._format_with_style([(Token.FilenameEm, filename)])
 
         if frame.f_code.co_name:
             func = frame.f_code.co_name
@@ -615,9 +617,7 @@ class Pdb(OldPdb):
                 args = reprlib.repr(loc_frame["__args__"])
             else:
                 args = "()"
-            call = _format_with_style(
-                [(Token.VName, func), (Token.ValEm, args)], Colors
-            )
+            call = Colors._format_with_style([(Token.VName, func), (Token.ValEm, args)])
 
         # The level info should be generated in the same format pdb uses, to
         # avoid breaking the pdbtrack functionality of python-mode in *emacs.
@@ -691,7 +691,7 @@ class Pdb(OldPdb):
             num = "%s%s" % (make_arrow(pad), str(lineno))
         else:
             num = "%*s" % (numbers_width - len(bp_mark), str(lineno))
-        bp_str = _format_with_style([(BreakpointToken, bp_mark)], Colors)
+        bp_str = Colors._format_with_style([(BreakpointToken, bp_mark)])
         return (bp_str, num, line)
 
     def print_list_lines(self, filename, first, last):

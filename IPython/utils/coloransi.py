@@ -14,6 +14,9 @@ import warnings
 
 from IPython.utils.ipstruct import Struct
 from pygments.token import _TokenType
+from pygments.style import Style
+from pygments.formatters import Terminal256Formatter
+import pygments
 from typing import TypeAlias
 
 __all__ = ["TermColors", "ColorScheme", "ColorSchemeTable"]
@@ -67,13 +70,14 @@ class ColorScheme:
 
     name: str
     colors: Struct
-    # 2025: migration helper
-    # temporary carry equivalent pygments token to style
-    _pygments_equiv: dict[type, str]
+    ## 2025: migration helper
+    ## temporary carry equivalent pygments token to style
+    # _pygments_equiv: dict[type, str]
 
     def __init__(self, __scheme_name_, colordict=None):
         self.name = __scheme_name_
         self.colors = Struct(colordict)
+        self.colors._format_with_style = self._format_with_style
 
     def copy(self,name=None):
         """Return a full copy of the object, optionally renaming it."""
@@ -82,10 +86,10 @@ class ColorScheme:
         return ColorScheme(name, self.colors.dict())
 
     def _format_with_style(self, stream: TokenStream) -> str:
-        assert isinstance(self._pygments_equiv, dict)
+        assert isinstance(self.colors._pygments_equiv, dict)
 
         class MyStyle(Style):
-            styles = color._pygments_equiv
+            styles = self.colors._pygments_equiv
 
         return pygments.format(stream, Terminal256Formatter(style=MyStyle))
 
@@ -132,6 +136,9 @@ class ColorSchemeTable(dict):
         if not isinstance(new_scheme, ColorScheme):
             raise ValueError('ColorSchemeTable only accepts ColorScheme instances')
         self[new_scheme.name] = new_scheme
+
+    def _active(self):
+        return self[self.active_scheme_name]
 
     def set_active_scheme(self, scheme):
         """Set the currently active scheme.
