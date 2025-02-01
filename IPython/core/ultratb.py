@@ -221,12 +221,12 @@ def _format_traceback_lines(
             res.append(Colors._format_with_style([(Token.LinenoEm, "   (...)")]))
             continue
 
+        # TODO: this does not use the current pygment style
         line = stack_line.render(pygmented=has_colors).rstrip("\n") + "\n"
         lineno = stack_line.lineno
         if stack_line.is_current:
             # This is the line with the error
             pad = numbers_width - len(str(lineno))
-            num = "%s%s" % (debugger.make_arrow(pad), str(lineno))
             line = Colors._format_with_style(
                 [
                     (Token.LinenoEm, debugger.make_arrow(pad)),

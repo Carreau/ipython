@@ -345,7 +345,6 @@ class Parser(Colorable):
         """like call but write to a temporary buffer"""
         buff = StringIO()
         srow, scol = start_pos
-        colors = self.colors
         owrite = buff.write
 
         # line separator, so this works across platforms
@@ -371,19 +370,12 @@ class Parser(Colorable):
             toktype = token.OP
         elif toktype == token.NAME and keyword.iskeyword(toktext):
             toktype = _KEYWORD
-        pyg_tok_type = colors.token_mapping.get(toktype, Token.Text)
-        color = colors.get(toktype, colors[_TEXT])
+        pyg_tok_type = self.colors.token_mapping.get(toktype, Token.Text)
 
-        # Triple quoted strings must be handled carefully so that backtracking
-        # in pagers works correctly. We need color terminators on _each_ line.
-        if linesep in toktext:
-            toktext = toktext.replace(
-                linesep, "%s%s%s" % (colors.normal, linesep, color)
-            )
+        # send text, pygments should take care of splitting on newline and resending
+        # the correct self.colors after the new line, which is necessary for pagers
 
-        # send text
-        # owrite("%s%s%s" % (color, toktext, colors.normal))
-        owrite(colors._format_with_style([(pyg_tok_type, "|" + toktext)]))
+        owrite(self.colors._format_with_style([(pyg_tok_type, toktext)]))
         buff.seek(0)
         return buff.read()
 
