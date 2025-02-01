@@ -78,6 +78,7 @@ NoColor = ColorScheme(
         _TEXT: Colors.NoColor,
         "normal": Colors.NoColor,  # color off (usu. Colors.Normal)
     },
+    {},
 )
 
 NoColor.colors._pygments_equiv = {
@@ -114,6 +115,7 @@ LinuxColors = ColorScheme(
         _TEXT: Colors.Yellow,
         "normal": Colors.Normal,  # color off (usu. Colors.Normal)
     },
+    {},
 )
 LinuxColors.colors._pygments_equiv = {
     Token.Header: "ansibrightred",
@@ -149,6 +151,7 @@ NeutralColors = ColorScheme(
         _TEXT: Colors.Blue,
         "normal": Colors.Normal,  # color off (usu. Colors.Normal)
     },
+    {},
 )
 NeutralColors.colors._pygments_equiv = {
     Token.Header: "ansired",
@@ -194,6 +197,7 @@ LightBGColors = ColorScheme(
         _TEXT: Colors.Blue,
         "normal": Colors.Normal,  # color off (usu. Colors.Normal)
     },
+    {},
 )
 LightBGColors.colors._pygments_equiv = {
     Token.Header: "ansired",
