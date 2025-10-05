@@ -76,7 +76,7 @@ exec(
 # - modindex_common_prefix
 
 
-intersphinx_mapping = get_intersphinx_mapping(
+assert intersphinx_mapping == get_intersphinx_mapping(
     packages={
         "python",
         "rpy2",

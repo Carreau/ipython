@@ -1,3 +1,18 @@
+[intersphinx_registry]
+packages = [
+    'python',
+    'rpy2',
+    'jupyterclient',
+    'jupyter',
+    'jedi',
+    'traitlets',
+    'ipykernel',
+    'prompt_toolkit',
+    'ipywidgets',
+    'ipyparallel',
+    'pip'
+]
+
 [sphinx]
 templates_path = ["_templates"]
 master_doc = "index"
