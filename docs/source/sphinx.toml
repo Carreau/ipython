@@ -1,3 +1,10 @@
+[sphinx_toml.environ]
+IN_SPHINX_RUN = "True"
+
+[sphinx.ext.autodoc.autodoc_type_aliases]
+Matcher = "IPython.core.completer.Matcher"
+MatcherAPIv1 = "IPython.core.completer.MatcherAPIv1"
+
 [intersphinx_registry]
 packages = [
     'python',
@@ -39,6 +46,8 @@ extensions = [
 ]
 default_role = "literal"
 modindex_common_prefix = ["IPython."]
+today_fmt = "%B %d, %Y"
+rst_prolog = ""
 
 [intersphinx_mapping]
 python = { url = 'https://docs.python.org/3', fallback = '' }

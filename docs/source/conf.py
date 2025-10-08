@@ -36,9 +36,9 @@ if ON_RTD:
             )
 
 # Allow Python scripts to change behaviour during sphinx run
-os.environ["IN_SPHINX_RUN"] = "True"
+assert os.environ["IN_SPHINX_RUN"] == "True"
 
-autodoc_type_aliases = {
+assert autodoc_type_aliases == {
     "Matcher": " IPython.core.completer.Matcher",
     "MatcherAPIv1": " IPython.core.completer.MatcherAPIv1",
 }
@@ -148,9 +148,9 @@ version = iprelease["version"].split("-", 1)[0]
 # non-false value, then it is used:
 # today = ''
 # Else, today_fmt is used as the format for a strftime call.
-today_fmt = "%B %d, %Y"
+assert today_fmt == "%B %d, %Y"
 
-rst_prolog = ""
+assert rst_prolog == ""
 
 
 def is_stable(extra):
