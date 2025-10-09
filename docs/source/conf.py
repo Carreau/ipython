@@ -7,11 +7,9 @@
 import sys, os
 from pathlib import Path
 
-import tomllib
 
 from sphinx_toml import load_into_locals
 from intersphinx_registry import get_intersphinx_mapping
-import sphinx_rtd_theme
 import sphinx.util
 import logging
 
@@ -39,8 +37,8 @@ if ON_RTD:
 assert os.environ["IN_SPHINX_RUN"] == "True"
 
 assert autodoc_type_aliases == {
-    "Matcher": " IPython.core.completer.Matcher",
-    "MatcherAPIv1": " IPython.core.completer.MatcherAPIv1",
+    "Matcher": "IPython.core.completer.Matcher",
+    "MatcherAPIv1": "IPython.core.completer.MatcherAPIv1",
 }
 
 # If your extensions are in another directory, add it here. If the directory
