@@ -45,10 +45,10 @@ class EventManager:
             A boolean flag to set whether the EventManager will print a warning which a event errors.
         """
         self.shell = shell
-        self.callbacks: dict[str, list[Callable]] = {n:[] for n in available_events}
+        self.callbacks: dict[str, list[Callable[..., Any]]] = {n:[] for n in available_events}
         self.print_on_error = print_on_error
     
-    def register(self, event: str, function: Callable) -> None:
+    def register(self, event: str, function: Callable[..., Any]) -> None:
         """Register a new event callback.
 
         Parameters
@@ -71,7 +71,7 @@ class EventManager:
         if function not in self.callbacks[event]:
             self.callbacks[event].append(function)
     
-    def unregister(self, event: str, function: Callable) -> None:
+    def unregister(self, event: str, function: Callable[..., Any]) -> None:
         """Remove a callback from the given event."""
         if function in self.callbacks[event]:
             return self.callbacks[event].remove(function)
@@ -97,9 +97,9 @@ class EventManager:
                 self.shell.showtraceback()
 
 # event_name -> prototype mapping
-available_events: dict[str, Callable] = {}
+available_events: dict[str, Callable[..., Any]] = {}
 
-def _define_event(callback_function: Callable) -> Callable:
+def _define_event(callback_function: Callable[..., Any]) -> Callable[..., Any]:
     available_events[callback_function.__name__] = callback_function
     return callback_function
 
