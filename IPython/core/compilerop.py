@@ -66,6 +66,10 @@ def code_name(code, number=0):
 # Classes and functions
 #-----------------------------------------------------------------------------
 
+from mypy_extensions import mypyc_attr
+
+
+@mypyc_attr(allow_interpreted_subclasses=True)
 class CachingCompiler(codeop.Compile):
     """A compiler that caches code compiled from interactive statements.
     """
