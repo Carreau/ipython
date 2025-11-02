@@ -166,9 +166,13 @@ module = [
     "IPython.core.events",
     "IPython.utils.text",
 ]
+check_untyped_defs = true
+disallow_incomplete_defs = true
+disallow_untyped_calls = true
+disallow_untyped_decorators = true
+disallow_untyped_defs = true
 ignore_errors = false
 ignore_missing_imports = false
-strict = true
 
 [[tool.mypy.overrides]]
 module = [
