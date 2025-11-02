@@ -13,6 +13,8 @@ events and the arguments which will be passed to them.
    This API is experimental in IPython 2.0, and may be revised in future versions.
 """
 
+from typing import Callable
+
 
 class EventManager:
     """Manage a collection of events and a sequence of callbacks for each.
@@ -38,7 +40,7 @@ class EventManager:
             A boolean flag to set whether the EventManager will print a warning which a event errors.
         """
         self.shell = shell
-        self.callbacks = {n:[] for n in available_events}
+        self.callbacks: dict[str, list[Callable]] = {n:[] for n in available_events}
         self.print_on_error = print_on_error
     
     def register(self, event, function):
