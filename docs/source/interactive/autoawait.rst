@@ -8,9 +8,9 @@ Asynchronous in REPL: Autoawait
    This feature is experimental and behavior can change between python and
    IPython version without prior deprecation.
 
-Starting with IPython 7.0, and when using Python 3.6 and above, IPython offer the
-ability to run asynchronous code from the REPL. Constructs which are
-:exc:`SyntaxError` s in the Python REPL can be used seamlessly in IPython.
+Starting with IPython 7.0, IPython offers the ability to run asynchronous code
+from the REPL. Constructs which are :exc:`SyntaxError` s in the Python REPL can
+be used seamlessly in IPython.
 
 The examples given here are for terminal IPython, running async code in a
 notebook interface or any other frontend using the Jupyter protocol needs
@@ -25,8 +25,8 @@ top level scope, or if any structure valid only in `async def
 context are present. For example, the following being a syntax error in the
 Python REPL::
 
-    Python 3.6.0 
-    [GCC 4.2.1]
+    Python 3.12.0
+    [GCC 11.4.0]
     Type "help", "copyright", "credits" or "license" for more information.
     >>> import aiohttp
     >>> session = aiohttp.ClientSession()
@@ -39,9 +39,9 @@ Python REPL::
 
 Should behave as expected in the IPython REPL::
 
-    Python 3.6.0
+    Python 3.12.0
     Type 'copyright', 'credits' or 'license' for more information
-    IPython 7.0.0 -- An enhanced Interactive Python. Type '?' for help.
+    IPython 9.0.0 -- An enhanced Interactive Python. Type '?' for help.
 
     In [1]: import aiohttp
        ...: session = aiohttp.ClientSession()
