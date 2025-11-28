@@ -1,0 +1,23 @@
+{
+  "name": "minimal",
+  "base": "default",
+  "colors": {
+    "Token.Prompt": "ansiblue",
+    "Token.PromptNum": "ansiblue bold",
+    "Token.OutPrompt": "ansired",
+    "Token.OutPromptNum": "ansired bold",
+    "Token.String": "ansigreen",
+    "Token.Comment": "ansibrightblack",
+    "Token.Keyword": "ansired",
+    "Token.Number": "ansiblue",
+    "Token.Name.Class": "ansiblue bold",
+    "Token.Name.Function": "ansicyan",
+    "Token.Header": "ansired bold",
+    "Token.ExcName": "ansired bold",
+    "Token.Filename": "ansiblue",
+    "Token.Lineno": "ansibrightblack",
+    "Token.LinenoEm": "ansibrightblack bold",
+    "Token.Topline": "ansired",
+    "Token.Line": "ansiyellow"
+  }
+}

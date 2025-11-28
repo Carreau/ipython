@@ -1,0 +1,28 @@
+{
+  "name": "linux",
+  "base": "monokai",
+  "colors": {
+    "Token.Header": "ansibrightred",
+    "Token.LinenoEm": "ansibrightgreen",
+    "Token.Lineno": "ansigreen",
+    "Token.ValEm": "ansibrightblue",
+    "Token.VName": "ansicyan",
+    "Token.Caret": "",
+    "Token.Filename": "ansibrightgreen",
+    "Token.ExcName": "ansibrightred",
+    "Token.Topline": "ansibrightred",
+    "Token.FilenameEm": "ansigreen",
+    "Token.Normal": "",
+    "Token.NormalEm": "ansibrightcyan",
+    "Token.Line": "ansiyellow",
+    "Token.TB.Name": "ansimagenta",
+    "Token.TB.NameEm": "ansibrightmagenta",
+    "Token.Breakpoint": "",
+    "Token.Breakpoint.Enabled": "ansibrightred",
+    "Token.Breakpoint.Disabled": "ansired",
+    "Token.Prompt": "ansibrightgreen",
+    "Token.PromptNum": "ansigreen bold",
+    "Token.OutPrompt": "ansibrightred",
+    "Token.OutPromptNum": "ansired bold"
+  }
+}

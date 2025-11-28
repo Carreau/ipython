@@ -1,0 +1,28 @@
+{
+  "name": "lightbg",
+  "base": "pastie",
+  "colors": {
+    "Token.Header": "ansired",
+    "Token.LinenoEm": "ansigreen",
+    "Token.Lineno": "ansibrightgreen",
+    "Token.ValEm": "ansiblue",
+    "Token.VName": "ansicyan",
+    "Token.Caret": "",
+    "Token.Filename": "ansigreen",
+    "Token.FilenameEm": "ansibrightgreen",
+    "Token.ExcName": "ansired",
+    "Token.Topline": "ansired",
+    "Token.Normal": "",
+    "Token.NormalEm": "ansicyan",
+    "Token.Line": "ansired",
+    "Token.TB.Name": "ansibrightmagenta",
+    "Token.TB.NameEm": "ansimagenta",
+    "Token.Breakpoint": "",
+    "Token.Breakpoint.Enabled": "ansibrightred",
+    "Token.Breakpoint.Disabled": "ansired",
+    "Token.Prompt": "ansibrightblue",
+    "Token.PromptNum": "ansiblue bold",
+    "Token.OutPrompt": "ansibrightred",
+    "Token.OutPromptNum": "ansired bold"
+  }
+}

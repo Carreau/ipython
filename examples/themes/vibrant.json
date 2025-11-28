@@ -1,0 +1,28 @@
+{
+  "name": "vibrant",
+  "base": "monokai",
+  "colors": {
+    "Token.Prompt": "#00FF00",
+    "Token.PromptNum": "#00FF00 bold",
+    "Token.OutPrompt": "#FF0000",
+    "Token.OutPromptNum": "#FF0000 bold",
+    "Token.String": "#00FFFF",
+    "Token.Comment": "#FFFFFF",
+    "Token.Keyword": "#FF00FF",
+    "Token.Number": "#FFFF00",
+    "Token.Name.Class": "#00FF00 bold",
+    "Token.Name.Function": "#FF00FF bold",
+    "Token.Header": "#FF0000",
+    "Token.ExcName": "#FF0000 bold",
+    "Token.Filename": "#00FFFF bold",
+    "Token.Lineno": "#FFFF00",
+    "Token.LinenoEm": "#FFFF00 bold",
+    "Token.Topline": "#FF0000 bold",
+    "Token.Line": "#FF00FF"
+  },
+  "symbols": {
+    "arrow_body": "█",
+    "arrow_head": "█",
+    "top_line": "█"
+  }
+}

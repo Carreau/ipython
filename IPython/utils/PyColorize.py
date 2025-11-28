@@ -385,6 +385,31 @@ theme_table: dict[str, Theme] = {
 }
 
 
+def _load_json_themes() -> None:
+    """Load JSON themes from default directories.
+
+    Loads themes from default directories and adds them to theme_table
+    without overriding built-in themes. Errors are silently suppressed
+    to prevent startup failures.
+    """
+    try:
+        from . import theme_loader
+
+        for theme_dir in theme_loader.get_default_theme_directories():
+            json_themes = theme_loader.load_themes_from_directory(theme_dir)
+            for name, theme in json_themes.items():
+                if name not in theme_table:
+                    theme_table[name] = theme
+    except Exception as e:
+        warnings.warn(
+            f"Failed to load JSON themes: {e}",
+            stacklevel=2,
+        )
+
+
+_load_json_themes()
+
+
 class Parser:
     """Format colored Python source."""
 

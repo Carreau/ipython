@@ -1,0 +1,43 @@
+{
+  "name": "comprehensive",
+  "base": "monokai",
+  "colors": {
+    "Token.Prompt": "ansibrightgreen",
+    "Token.PromptNum": "ansigreen bold",
+    "Token.OutPrompt": "ansibrightred",
+    "Token.OutPromptNum": "ansired bold",
+    "Token.Header": "ansibrightred",
+    "Token.LinenoEm": "ansibrightgreen",
+    "Token.Lineno": "ansigreen",
+    "Token.ValEm": "ansibrightblue",
+    "Token.VName": "ansicyan",
+    "Token.Caret": "",
+    "Token.Filename": "ansibrightgreen",
+    "Token.FilenameEm": "ansigreen",
+    "Token.ExcName": "ansibrightred",
+    "Token.Topline": "ansibrightred",
+    "Token.Normal": "",
+    "Token.NormalEm": "ansibrightcyan",
+    "Token.Line": "ansiyellow",
+    "Token.TB.Name": "ansimagenta",
+    "Token.TB.NameEm": "ansibrightmagenta",
+    "Token.Breakpoint": "",
+    "Token.Breakpoint.Enabled": "ansibrightred",
+    "Token.Breakpoint.Disabled": "ansired",
+    "Token.Comment": "ansibrightblack",
+    "Token.String": "ansiyellow",
+    "Token.String.Escape": "ansibrightmagenta",
+    "Token.Keyword": "ansiblue",
+    "Token.Name.Class": "ansibrightblue bold",
+    "Token.Name.Function": "ansibrightcyan",
+    "Token.Name.Exception": "ansibrightred",
+    "Token.Number": "ansibrightmagenta",
+    "Token.Operator": "ansicyan",
+    "Token.Error": "ansibrightred"
+  },
+  "symbols": {
+    "arrow_body": "─",
+    "arrow_head": "→",
+    "top_line": "─"
+  }
+}

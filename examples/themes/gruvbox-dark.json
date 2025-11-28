@@ -1,0 +1,26 @@
+{
+  "name": "gruvbox-dark",
+  "base": "gruvbox-dark",
+  "colors": {
+    "Token.Lineno": "#8EC07C",
+    "Token.LinenoEm": "#8EC07C bold",
+    "Token.ValEm": "#D79921 bold",
+    "Token.VName": "#83A598",
+    "Token.Caret": "",
+    "Token.Filename": "#FBF1C7",
+    "Token.FilenameEm": "#FBF1C7 bold",
+    "Token.ExcName": "#FB4934 bold",
+    "Token.Topline": "#CC241D",
+    "Token.Breakpoint.Enabled": "#FB4934",
+    "Token.Breakpoint.Disabled": "#CC241D",
+    "Token.Prompt": "#689D6A",
+    "Token.PromptNum": "#8EC07C bold",
+    "Token.OutPrompt": "#B16286",
+    "Token.OutPromptNum": "#D3869B bold"
+  },
+  "symbols": {
+    "arrow_body": "━",
+    "arrow_head": "▶",
+    "top_line": "━"
+  }
+}
