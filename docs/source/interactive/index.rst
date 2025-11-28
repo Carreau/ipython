@@ -25,6 +25,7 @@ done some work in the classic Python REPL.
    tips
    python-ipython-diff
    magics
+   themes
 
 .. seealso::
 
