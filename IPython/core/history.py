@@ -65,6 +65,9 @@ except ModuleNotFoundError:
 
 InOrInOut = typing.Union[str, tuple[str, Optional[str]]]
 
+# Sentinel object to detect when latest parameter is explicitly passed
+_LATEST_SENTINEL = object()
+
 # -----------------------------------------------------------------------------
 # Classes and functions
 # -----------------------------------------------------------------------------
@@ -94,8 +97,7 @@ def only_when_enabled(f, self, *a, **kw):  # type: ignore [no-untyped-def]
     """Decorator: return an empty list in the absence of sqlite."""
     if not self.enabled:
         return []
-    else:
-        return f(self, *a, **kw)
+    return f(self, *a, **kw)
 
 
 # use 16kB as threshold for whether a corrupt history db should be saved
@@ -350,13 +352,62 @@ class HistoryAccessor(HistoryAccessorBase):
     ## -------------------------------
     ## Methods for retrieving history:
     ## -------------------------------
+    def _build_query_parts(self, raw: bool, output: bool) -> tuple[str, str]:
+        """Build the column list and FROM clause for SQL queries.
+
+        Parameters
+        ----------
+        raw : bool
+            If True, select source_raw column, otherwise source
+        output : bool
+            If True, include output_history table join
+
+        Returns
+        -------
+        columns : str
+            Comma-separated column list for SELECT
+        from_clause : str
+            FROM clause with optional JOIN
+        """
+        source_col = "source_raw" if raw else "source"
+
+        if output:
+            from_clause = "history LEFT JOIN output_history USING (session, line)"
+            columns = f"session, line, history.{source_col}, output_history.output"
+        else:
+            from_clause = "history"
+            columns = f"session, line, {source_col}"
+
+        return columns, from_clause
+
+    def _format_results(
+        self, cur: typing.Iterable, output: bool
+    ) -> Iterable[tuple[int, int, InOrInOut]]:
+        """Format SQL results into the standard history tuple format.
+
+        Parameters
+        ----------
+        cur : Iterable
+            Database cursor with query results
+        output : bool
+            If True, regroup into (session, line, (input, output)) tuples
+
+        Returns
+        -------
+        Iterable of tuples
+            Either (session, line, input) or (session, line, (input, output))
+        """
+        if output:
+            return ((ses, lin, (inp, out)) for ses, lin, inp, out in cur)
+        return cur
+
     def _run_sql(
         self,
         sql: str,
         params: tuple,
         raw: bool = True,
         output: bool = False,
-        latest: bool = False,
+        latest: typing.Any = _LATEST_SENTINEL,
     ) -> Iterable[tuple[int, int, InOrInOut]]:
         """Prepares and runs an SQL query for the history database.
 
@@ -366,8 +417,64 @@ class HistoryAccessor(HistoryAccessorBase):
             Any filtering expressions to go after SELECT ... FROM ...
         params : tuple
             Parameters passed to the SQL query (to replace "?")
-        raw, output : bool
-            See :meth:`get_range`
+        raw : bool
+            If True, return untranslated input
+        output : bool
+            If True, attempt to include output. This will be 'real' Python
+            objects for the current session, or text reprs from previous
+            sessions if db_log_output was enabled at the time. Where no output
+            is found, None is used.
+        latest : bool
+            Deprecated. Use :meth:`_run_sql_with_latest` instead.
+
+        Returns
+        -------
+        Tuples as :meth:`get_range`
+        """
+        # Warn if latest parameter is explicitly passed
+        if latest is not _LATEST_SENTINEL:
+            warn(
+                "The 'latest' parameter in _run_sql is deprecated. "
+                "Use _run_sql_with_latest() instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return self._run_sql_with_latest(sql, params, raw=raw, output=output, latest=latest)
+
+        # Build query components
+        columns, from_clause = self._build_query_parts(raw, output)
+        query = f"SELECT {columns} FROM {from_clause} {sql}"
+        cur = self.db.execute(query, params)
+
+        # Format and return results
+        return self._format_results(cur, output)
+
+    def _run_sql_with_latest(
+        self,
+        sql: str,
+        params: tuple,
+        raw: bool = True,
+        output: bool = False,
+        latest: bool = False,
+    ) -> Iterable[tuple[int, int, InOrInOut]]:
+        """Internal helper for _run_sql that handles deduplication with latest.
+
+        This method includes the 'latest' logic for selecting rows with
+        max (session, line), used by search() for unique results.
+
+        Parameters
+        ----------
+        sql : str
+            Any filtering expressions to go after SELECT ... FROM ...
+        params : tuple
+            Parameters passed to the SQL query (to replace "?")
+        raw : bool
+            If True, return untranslated input
+        output : bool
+            If True, attempt to include output. This will be 'real' Python
+            objects for the current session, or text reprs from previous
+            sessions if db_log_output was enabled at the time. Where no output
+            is found, None is used.
         latest : bool
             Select rows with max (session, line)
 
@@ -375,20 +482,22 @@ class HistoryAccessor(HistoryAccessorBase):
         -------
         Tuples as :meth:`get_range`
         """
-        toget = "source_raw" if raw else "source"
-        sqlfrom = "history"
-        if output:
-            sqlfrom = "history LEFT JOIN output_history USING (session, line)"
-            toget = "history.%s, output_history.output" % toget
+        # Build query components
+        columns, from_clause = self._build_query_parts(raw, output)
+
+        # Add ranking column for deduplication if needed
         if latest:
-            toget += ", MAX(session * 128 * 1024 + line)"
-        this_querry = "SELECT session, line, %s FROM %s " % (toget, sqlfrom) + sql
-        cur = self.db.execute(this_querry, params)
+            columns += ", MAX(session * 128 * 1024 + line)"
+
+        query = f"SELECT {columns} FROM {from_clause} {sql}"
+        cur = self.db.execute(query, params)
+
+        # Strip ranking column if it was added
         if latest:
             cur = (row[:-1] for row in cur)
-        if output:  # Regroup into 3-tuples, and parse JSON
-            return ((ses, lin, (inp, out)) for ses, lin, inp, out in cur)
-        return cur
+
+        # Format and return results
+        return self._format_results(cur, output)
 
     @only_when_enabled
     @catch_corrupt_db
@@ -443,8 +552,13 @@ class HistoryAccessor(HistoryAccessorBase):
         ----------
         n : int
             The number of lines to get
-        raw, output : bool
-            See :meth:`get_range`
+        raw : bool
+            If True, return untranslated input
+        output : bool
+            If True, attempt to include output. This will be 'real' Python
+            objects for the current session, or text reprs from previous
+            sessions if db_log_output was enabled at the time. Where no output
+            is found, None is used.
         include_latest : bool
             If False (default), n+1 lines are fetched, and the latest one
             is discarded. This is intended to be used where the function
@@ -483,8 +597,13 @@ class HistoryAccessor(HistoryAccessorBase):
             The wildcarded pattern to match when searching
         search_raw : bool
             If True, search the raw input, otherwise, the parsed input
-        raw, output : bool
-            See :meth:`get_range`
+        raw : bool
+            If True, return untranslated input
+        output : bool
+            If True, attempt to include output. This will be 'real' Python
+            objects for the current session, or text reprs from previous
+            sessions if db_log_output was enabled at the time. Where no output
+            is found, None is used.
         n : None or int
             If an integer is given, it defines the limit of
             returned entries.
@@ -495,20 +614,20 @@ class HistoryAccessor(HistoryAccessorBase):
         -------
         Tuples as :meth:`get_range`
         """
-        tosearch = "source_raw" if search_raw else "source"
+        search_column = "source_raw" if search_raw else "source"
         if output:
-            tosearch = "history." + tosearch
+            search_column = "history." + search_column
         self.writeout_cache()
-        sqlform = "WHERE %s GLOB ?" % tosearch
+        where_clause = f"WHERE {search_column} GLOB ?"
         params: tuple[typing.Any, ...] = (pattern,)
         if unique:
-            sqlform += " GROUP BY {0}".format(tosearch)
+            where_clause += f" GROUP BY {search_column}"
         if n is not None:
-            sqlform += " ORDER BY session DESC, line DESC LIMIT ?"
+            where_clause += " ORDER BY session DESC, line DESC LIMIT ?"
             params += (n,)
         elif unique:
-            sqlform += " ORDER BY session, line"
-        cur = self._run_sql(sqlform, params, raw=raw, output=output, latest=unique)
+            where_clause += " ORDER BY session, line"
+        cur = self._run_sql_with_latest(where_clause, params, raw=raw, output=output, latest=unique)
         if n is not None:
             return reversed(list(cur))
         return cur
@@ -550,14 +669,14 @@ class HistoryAccessor(HistoryAccessorBase):
         """
         params: tuple[typing.Any, ...]
         if stop:
-            lineclause = "line >= ? AND line < ?"
+            line_filter = "line >= ? AND line < ?"
             params = (session, start, stop)
         else:
-            lineclause = "line>=?"
+            line_filter = "line>=?"
             params = (session, start)
 
         return self._run_sql(
-            "WHERE session==? AND %s" % lineclause, params, raw=raw, output=output
+            f"WHERE session==? AND {line_filter}", params, raw=raw, output=output
         )
 
     def get_range_by_str(
@@ -827,8 +946,13 @@ class HistoryManager(HistoryAccessor):
         ----------
         n : int
             The number of lines to get
-        raw, output : bool
-            See :meth:`get_range`
+        raw : bool
+            If True, return untranslated input
+        output : bool
+            If True, attempt to include output. This will be 'real' Python
+            objects for the current session, or text reprs from previous
+            sessions if db_log_output was enabled at the time. Where no output
+            is found, None is used.
         include_latest : bool
             If False (default), n+1 lines are fetched, and the latest one
             is discarded. This is intended to be used where the function
@@ -997,7 +1121,6 @@ class HistoryManager(HistoryAccessor):
         """
         if (not self.db_log_output) or (line_num not in self.output_hist_reprs):
             return
-        lnum: int = line_num
         output = self.output_hist_reprs[line_num]
 
         with self.db_output_cache_lock:
