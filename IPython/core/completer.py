@@ -1417,10 +1417,11 @@ def get__all__entries(obj):
 class _DictKeyState(enum.Flag):
     """Represent state of the key match in context of other possible matches.
 
-    - given `d1 = {'a': 1}` completion on `d1['<tab>` will yield `{'a': END_OF_ITEM}` as there is no tuple.
-    - given `d2 = {('a', 'b'): 1}`: `d2['a', '<tab>` will yield `{'b': END_OF_TUPLE}` as there is no tuple members to add beyond `'b'`.
-    - given `d3 = {('a', 'b'): 1}`: `d3['<tab>` will yield `{'a': IN_TUPLE}` as `'a'` can be added.
-    - given `d4 = {'a': 1, ('a', 'b'): 2}`: `d4['<tab>` will yield `{'a': END_OF_ITEM & END_OF_TUPLE}`
+    - given ``d1 = {'a': 1}`` completion on ``d1['<tab>`` will yield ``{'a': END_OF_ITEM}`` as there is no tuple.
+    - given ``d2 = {('a', 'b'): 1}``: ``d2['a', '<tab>`` will yield ``{'b': END_OF_TUPLE}`` as there is no tuple members
+      to add beyond ``'b'``.
+    - given ``d3 = {('a', 'b'): 1}``: ``d3['<tab>`` will yield ``{'a': IN_TUPLE}`` as ``'a'`` can be added.
+    - given ``d4 = {'a': 1, ('a', 'b'): 2}``: ``d4['<tab>`` will yield ``{'a': END_OF_ITEM & END_OF_TUPLE}``
     """
 
     BASELINE = 0
