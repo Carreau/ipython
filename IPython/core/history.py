@@ -1213,7 +1213,7 @@ $""",
 def extract_hist_ranges(ranges_str: str) -> Iterable[tuple[int, int, Optional[int]]]:
     """Turn a string of history ranges into 3-tuples of (session, start, stop).
 
-    Empty string results in a `[(0, 1, None)]`, i.e. "everything from current
+    Empty string results in a ``[(0, 1, None)]``, i.e. "everything from current
     session".
 
     Examples

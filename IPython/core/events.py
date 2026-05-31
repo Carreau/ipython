@@ -42,7 +42,7 @@ class EventManager:
         available_events: Iterable[str],
         print_on_error: bool = True,
     ) -> None:
-        """Initialise the :class:`CallbackManager`.
+        """Initialise the :class:`EventManager`.
 
         Parameters
         ----------

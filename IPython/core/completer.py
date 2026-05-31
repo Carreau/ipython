@@ -1498,12 +1498,12 @@ def match_dict_keys(
     keys
         list of keys in dictionary currently being completed.
     prefix
-        Part of the text already typed by the user. E.g. `mydict[b'fo`
+        Part of the text already typed by the user. E.g. ``mydict[b'fo``
     delims
         String of delimiters to consider when finding the current key.
     extra_prefix : optional
         Part of the text already typed in multi-key index cases. E.g. for
-        `mydict['foo', "bar", 'b`, this would be `('foo', 'bar')`.
+        ``mydict['foo', "bar", 'b``, this would be ``('foo', 'bar')``.
 
     Returns
     -------

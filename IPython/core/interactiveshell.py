@@ -322,7 +322,7 @@ class ExecutionResult:
         return (self.error_before_exec is None) and (self.error_in_exec is None)
 
     def raise_error(self):
-        """Reraises error if `success` is `False`, otherwise does nothing"""
+        """Reraises error if ``success`` is `False`, otherwise does nothing"""
         if self.error_before_exec is not None:
             raise self.error_before_exec
         if self.error_in_exec is not None:
@@ -3880,7 +3880,7 @@ class InteractiveShell(SingletonConfigurable):
             make sense in all contexts, for example a terminal ipython can't
             display figures inline.
         import_all : optional, bool, default: True
-            Whether to do `from numpy import *` and `from pylab import *`
+            Whether to do ``from numpy import *`` and ``from pylab import *``
             in addition to module imports.
         """
         from IPython.core.pylabtools import import_pylab

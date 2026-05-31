@@ -523,8 +523,8 @@ class MagicsManager(Configurable):
         * For cell magics: `def f(line, cell)`
         * For a function that does both: `def f(line, cell=None)`
 
-        In the latter case, the function will be called with `cell==None` when
-        invoked as `%f`, and with cell as a string when invoked as `%%f`.
+        In the latter case, the function will be called with ``cell==None`` when
+        invoked as ``%f``, and with cell as a string when invoked as ``%%f``.
 
         Parameters
         ----------
@@ -592,7 +592,7 @@ class Magics(Configurable):
     Shell functions which can be reached as %function_name. All magic
     functions should accept a string, which they can parse for their own
     needs. This can make some functions easier to type, eg `%cd ../`
-    vs. `%cd("../")`
+    vs. ``%cd("../")``
 
     Classes providing magic functions need to subclass this class, and they
     MUST:

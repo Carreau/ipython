@@ -176,7 +176,7 @@ CHAIN_EXCEPTIONS = sys.version_info < (3, 13)
 
 
 def BdbQuit_excepthook(et, ev, tb, excepthook=None):
-    """Exception hook which handles `BdbQuit` exceptions.
+    """Exception hook which handles `bdb.BdbQuit` exceptions.
 
     All other exceptions are processed using the `excepthook`
     parameter.

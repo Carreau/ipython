@@ -309,9 +309,9 @@ def update_display(obj, *, display_id, **kwargs):
 class DisplayHandle:
     """A handle on an updatable display
 
-    Call `.update(obj)` to display a new object.
+    Call ``.update(obj)`` to display a new object.
 
-    Call `.display(obj`) to add a new instance of this display,
+    Call ``.display(obj)` to add a new instance of this display,
     and update existing instances.
 
     See Also

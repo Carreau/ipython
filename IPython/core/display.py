@@ -893,7 +893,7 @@ class Image(DisplayObject):
             This always results in embedded image data.
 
         url : unicode
-            A URL to download the data from. If you specify `url=`,
+            A URL to download the data from. If you specify `url`,
             the image data will not be embedded unless you also specify `embed=True`.
 
         filename : unicode
