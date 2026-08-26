@@ -2,6 +2,157 @@
  9.x Series
 ============
 
+.. _version 9.17:
+
+IPython 9.17
+------------
+
+Summary
+~~~~~~~
+
+This release is mostly about how long IPython takes to start. Two further
+passes over the startup path -- deferring imports to their use sites, keeping
+pygments' plugin machinery out of it, and declaring IPython's own magics
+lazily -- together cut a large fraction off ``import IPython`` and off getting
+to a prompt, without any change in behaviour. Alongside that: a new
+``IPYTHON_KITTY_GRAPHICS`` environment variable to override terminal graphics
+detection, ``as`` aliasing in :magic:`aimport`, and two input- and
+output-handling fixes.
+
+There are no backwards-incompatible changes in this release.
+
+``%aimport`` understands ``as`` aliases
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+``%aimport`` now accepts the ``module as alias`` form, matching a plain
+``import`` statement::
+
+    %aimport numpy as np
+
+The module is marked for autoreloading as before, and is pushed into the user
+namespace under the alias rather than under its own name.
+
+Malformed number literals are reported as syntax errors
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Since Python 3.12 the tokenizer raises ``TokenError`` for malformed numeric
+literals such as ``0b12``, ``0o1239`` or ``1__2``. IPython did not recognise
+those errors, and the resulting token stream had no ``ENDMARKER``, so
+``check_complete`` reported the input as *incomplete*: typing one of them in the
+terminal left you at a continuation prompt instead of raising ``SyntaxError``.
+They are now treated like the other hard tokenizer errors and the input is
+reported as invalid. Genuinely unfinished input -- an unterminated multiline
+string or expression -- is still reported as incomplete.
+
+Control characters are stripped from the terminal title
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:func:`~IPython.utils.terminal.set_term_title` writes the title inside a
+terminal escape sequence, so a title containing control characters -- an
+escape, a bell, or a newline -- could end the sequence early and have the rest
+interpreted by the terminal. This mattered for titles built from data IPython
+does not control, such as a directory name. Control characters are now removed
+before the title is written.
+
+Forcing kitty graphics support on or off
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+IPython decides whether the terminal understands the `kitty graphics protocol
+<https://sw.kovidgoyal.net/kitty/graphics-protocol/>`__ by walking up the
+process tree looking for a known terminal emulator. That guess can be wrong --
+for instance inside ``tmux``, a container, or an emulator not on the list -- and
+it is not free: it imports ``psutil`` and inspects the process tree on every
+startup that has a tty.
+
+The ``IPYTHON_KITTY_GRAPHICS`` environment variable now states the answer
+outright and skips the detection entirely::
+
+    IPYTHON_KITTY_GRAPHICS=1 ipython     # my terminal does support it
+    IPYTHON_KITTY_GRAPHICS=0 ipython     # it does not; do not even look
+
+Accepted values are ``1``/``true`` and ``0``/``false``, case-insensitive.
+Leaving it unset, or setting it to the empty string, keeps the existing
+autodetection. Any other value is ignored with a warning, so a typo cannot
+silently turn graphics off.
+
+Built-in magics are declared lazily
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+IPython's own magics are now declared lazily. Starting a shell used to import
+all fifteen modules under :mod:`IPython.core.magics` and instantiate every
+:class:`~IPython.core.magic.Magics` class in them, even though a session
+typically uses a handful of magics at most. Only the magic *names* are now known
+up front, from a hand-maintained table in ``IPython.core.magics._table``, and the
+module implementing a magic is imported the first time it is looked up. This
+takes roughly 25 ms off ``import IPython`` and shell startup.
+
+This reuses :attr:`~IPython.core.magic.MagicsManager.lazy_magics`, which already
+existed for extensions, so third-party code can declare its magics the same way::
+
+    shell.magics_manager.register_lazy("my_magic", "my_package.magics:MyMagics")
+
+Its values may now be either ``"package.module"``, loaded as an IPython extension
+as before, or ``"package.module:MagicsClass"``, imported and registered directly.
+Unlike before, a magic declared through
+:meth:`~IPython.core.magic.MagicsManager.register_lazy` shows up in ``%lsmagic``
+and in completion right away rather than only after its first use.
+
+Until a magic is loaded, ``shell.magics_manager.magics[kind][name]`` holds a
+:class:`~IPython.core.magic.LazyMagic` placeholder. Calling it, or reading any
+attribute of it, loads and delegates to the real magic, so existing code that
+reaches into that table keeps working. A magics class only appears in
+``shell.configurables`` once loaded; ``%config`` loads everything first, so the
+list of configurable classes it shows is unchanged.
+
+More startup work moved off the critical path
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A second pass over what IPython does before it can show a prompt, on top of the
+lazy imports and lazy magic registration. Nothing here is visible in normal
+use; it is all work that used to happen on every start and is now either
+avoided or postponed until something actually needs it.
+
+* Resolving a theme's base pygments style no longer imports
+  :mod:`pygments.styles`, and with it the pygments plugin machinery,
+  :mod:`importlib.metadata` and :mod:`email`. Only the base style's ``styles``
+  mapping was ever used, so for the builtin styles IPython's own themes are
+  based on the defining module is read directly. Styles that are not builtin --
+  including any provided by a pygments plugin -- still resolve exactly as
+  before.
+
+* Detecting whether the terminal speaks the kitty graphics protocol no longer
+  imports psutil on Linux. The walk up the process tree needs each ancestor's
+  name and parent pid, and ``/proc/<pid>/stat`` has both. macOS still uses
+  psutil. This one only ever showed up in an actual terminal: a headless
+  ``ipython -c ...`` stops at the ``isatty`` check before reaching it. Setting
+  ``IPYTHON_KITTY_GRAPHICS`` still skips detection entirely.
+
+* The prompt style is built the first time it is drawn rather than each of the
+  several times it is invalidated while a shell is being set up, and not at all
+  for a run that never draws a prompt.
+
+* More single-use imports moved to their use sites: :mod:`platform`,
+  :mod:`pprint`, :mod:`textwrap`, :mod:`html`, :mod:`mimetypes`,
+  :mod:`locale`, :mod:`glob` and :mod:`runpy`. The AST operator tables the
+  terminal shortcut filters need moved out of
+  :mod:`IPython.core.guarded_eval` into a module of their own, so evaluating
+  a shortcut's filter expression no longer imports the whole guarded
+  evaluation machinery (and ``typing_extensions``). They are still importable
+  from :mod:`IPython.core.guarded_eval`.
+
+Together this takes another ~13% off starting an interactive ``ipython`` in a
+real terminal, ~9% off ``ipython -c pass``, and another ~43 modules off an
+interactive start, on top of the previous rounds.
+
+Thanks
+~~~~~~
+
+Thanks as well to the `D. E. Shaw group <https://deshaw.com/>`_ for sponsoring
+work on IPython.
+
+As usual, you can find the full list of PRs on GitHub under `the 9.17
+<https://github.com/ipython/ipython/milestone/169?closed=1>`__ milestone.
+
 .. _version 9.16:
 
 IPython 9.16
