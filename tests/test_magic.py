@@ -1946,6 +1946,38 @@ def test_lazy_magics():
                 ip.run_line_magic("lazy_line", "")
 
 
+def test_registered_magic_beats_lazy_one():
+    """A magic registered for real outranks one that is only declared.
+
+    IPykernel overrides core magics such as ``%edit`` by registering its own
+    class at shell init; loading the class that lazily declares them (for any
+    of the other magics it provides) must not take the override back out.
+    See https://github.com/ipython/ipython/issues/15380.
+    """
+
+    @magics_class
+    class OverridingMagics(Magics):
+        @line_magic
+        def edit(self, line):
+            print("Overridden Edit")
+
+    mm = ip.magics_manager
+    original = mm.magics["line"]["edit"]
+    try:
+        mm.register(OverridingMagics)
+        # `%load` comes from the same class as the core `%edit`.
+        mm.load_lazy("load")
+        assert mm.find("line", "edit").__self__.__class__ is OverridingMagics
+        # Neither does re-declaring the core one shadow it.
+        mm.register_lazy("edit", "IPython.core.magics.code:CodeMagics", "line")
+        assert mm.find("line", "edit").__self__.__class__ is OverridingMagics
+        mm.load_all_lazy_magics()
+        assert mm.find("line", "edit").__self__.__class__ is OverridingMagics
+    finally:
+        mm.magics["line"]["edit"] = original
+        mm.registry.pop("OverridingMagics", None)
+
+
 TEST_MODULE = """
 print('Loaded my_tmp')
 if __name__ == "__main__":

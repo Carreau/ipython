@@ -564,6 +564,9 @@ class MagicsManager(Configurable):
         self.lazy_magics[name] = fully_qualified_name
         kinds = magic_kinds if magic_kind == "line_cell" else (magic_kind,)
         for kind in kinds:
+            existing = self.magics[kind].get(name)
+            if existing is not None and not isinstance(existing, LazyMagic):
+                continue
             self.magics[kind][name] = LazyMagic(self, fully_qualified_name, kind, name)
 
     def load_lazy(self, magic_name: str) -> None:
@@ -590,7 +593,10 @@ class MagicsManager(Configurable):
             if sep:
                 from importlib import import_module
 
-                self.register(getattr(import_module(module_name), class_name))
+                self._register(
+                    (getattr(import_module(module_name), class_name),),
+                    lazy_spec=spec,
+                )
             else:
                 assert self.shell is not None
                 self.shell.run_line_magic("load_ext", spec)
@@ -645,6 +651,22 @@ class MagicsManager(Configurable):
         ----------
         *magic_objects : one or more classes or instances
         """
+        self._register(magic_objects, lazy_spec=None)
+
+    def _register(
+        self,
+        magic_objects: tuple[type[Magics] | Magics, ...],
+        lazy_spec: str | None,
+    ) -> None:
+        """Back end of :meth:`register`.
+
+        `lazy_spec` is the spec being resolved when this registration is the
+        result of a lazy load, and None when the caller asked for it
+        explicitly.  A lazily loaded class only fills in the names it is still
+        the declared provider of: a magic somebody registered for real -- as
+        IPykernel does with ``%edit`` -- outranks a declaration, whichever
+        happens to be loaded last.
+        """
         # Start by validating them to ensure they have all had their magic
         # methods registered at the instance level
         for m in magic_objects:
@@ -661,7 +683,16 @@ class MagicsManager(Configurable):
             # table of callables
             self.registry[m.__class__.__name__] = m
             for mtype in magic_kinds:
-                self.magics[mtype].update(m.magics[mtype])
+                table = self.magics[mtype]
+                for magic_name, func in m.magics[mtype].items():
+                    if lazy_spec is not None:
+                        existing = table.get(magic_name)
+                        if existing is not None and not (
+                            isinstance(existing, LazyMagic)
+                            and existing.spec == lazy_spec
+                        ):
+                            continue
+                    table[magic_name] = func
 
     def register_function(
         self,
