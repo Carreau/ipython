@@ -1059,11 +1059,9 @@ class InteractiveShell(SingletonConfigurable):
     @property
     def banner(self):
         banner = self.banner1
+        when = os.environ.get("SOURCE_DATE_EPOCH", None)
         # Only use SOURCE_DATE_EPOCH if the user hasn't set a custom banner
-        if (
-            banner is default_banner
-            and (when := os.environ.get("SOURCE_DATE_EPOCH", None)) is not None
-        ):
+        if banner is default_banner and when is not None:
             import textwrap
             from datetime import datetime
 
@@ -1080,7 +1078,7 @@ class InteractiveShell(SingletonConfigurable):
             banner += '\nIPython profile: %s\n' % self.profile
         if self.banner2:
             banner += '\n' + self.banner2
-        elif self.enable_tip:
+        elif self.enable_tip and (when is None):
             banner += f"Tip: {pick_tip()}\n"
         return banner
 
